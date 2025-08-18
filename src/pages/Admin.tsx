@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, LogOut, Users, FileText, TrendingUp } from "lucide-react";
+import { ArrowLeft, LogOut, Users, FileText, TrendingUp, Mail } from "lucide-react";
 import { TicketDetails } from "@/components/admin/TicketDetails";
 
 interface Ticket {
@@ -151,6 +151,13 @@ const Admin = () => {
               >
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Voltar ao Site
+              </Button>
+              <Button 
+                variant="ghost" 
+                onClick={() => window.location.href = "/emails-pendentes"}
+              >
+                <Mail className="mr-2 h-4 w-4" />
+                Emails Pendentes
               </Button>
               <h1 className="text-xl font-bold">Painel Administrativo - Ouvidoria</h1>
             </div>
