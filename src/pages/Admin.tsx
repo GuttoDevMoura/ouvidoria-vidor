@@ -92,7 +92,7 @@ const Admin = () => {
       const { data, error } = await supabase
         .from('tickets')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: true }); // Oldest first
 
       if (error) throw error;
       setTickets(data || []);
