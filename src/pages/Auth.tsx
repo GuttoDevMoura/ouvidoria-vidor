@@ -263,16 +263,58 @@ const Auth = () => {
                   <p><strong>Senha:</strong> admin123</p>
                 </div>
                 <Button
-                  onClick={() => {
-                    setEmail("admin@ouvidoria.com");
-                    setPassword("admin123");
-                    toast.success("Credenciais preenchidas! Clique em 'Entrar'");
+                  onClick={async () => {
+                    const testEmail = "admin@ouvidoria.com";
+                    const testPassword = "admin123";
+                    const testNome = "Administrador Sistema";
+                    
+                    setLoading(true);
+                    
+                    try {
+                      console.log('Criando usuário admin automaticamente...');
+                      
+                      // Primeiro tentar criar a conta
+                      const { error: signUpError } = await signUp(testEmail, testPassword, testNome);
+                      
+                      if (signUpError && !signUpError.message.includes('already registered')) {
+                        console.error('Erro ao criar usuário:', signUpError);
+                        toast.error(`Erro ao criar conta: ${signUpError.message}`);
+                        return;
+                      }
+                      
+                      // Aguardar um pouco para o usuário ser criado
+                      await new Promise(resolve => setTimeout(resolve, 2000));
+                      
+                      // Tentar fazer login
+                      console.log('Tentando fazer login...');
+                      const { error: signInError } = await signIn(testEmail, testPassword);
+                      
+                      if (signInError) {
+                        console.error('Erro no login:', signInError);
+                        // Se falhar, apenas preencher credenciais
+                        setEmail(testEmail);
+                        setPassword(testPassword);
+                        toast.info("Conta criada. Use o botão 'Entrar' abaixo.");
+                      } else {
+                        toast.success("Login realizado com sucesso!");
+                        navigate(redirect);
+                      }
+                      
+                    } catch (error) {
+                      console.error('Erro inesperado:', error);
+                      setEmail(testEmail);
+                      setPassword(testPassword);
+                      toast.info("Credenciais preenchidas. Use o botão 'Entrar'.");
+                    } finally {
+                      setLoading(false);
+                    }
                   }}
                   variant="outline"
                   size="sm"
                   className="w-full text-xs bg-blue-100 hover:bg-blue-200 border-blue-300"
+                  disabled={loading}
                 >
-                  Preencher Credenciais
+                  {loading ? "Criando conta..." : "Criar & Acessar Admin"}
                 </Button>
               </div>
             </div>
