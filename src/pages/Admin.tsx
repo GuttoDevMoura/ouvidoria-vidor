@@ -7,7 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, LogOut, Users, FileText, TrendingUp, Mail, User, BarChart3, Circle } from "lucide-react";
+import { ArrowLeft, LogOut, Users, FileText, TrendingUp, Mail, User, BarChart3, Circle, Clock } from "lucide-react";
 import { TicketDetails } from "@/components/admin/TicketDetails";
 
 interface Ticket {
@@ -38,6 +38,7 @@ const Admin = () => {
     total: 0,
     abertos: 0,
     em_andamento: 0,
+    aguardando: 0,
     fechados: 0
   });
   const { toast } = useToast();
@@ -125,6 +126,7 @@ const Admin = () => {
         total: data?.length || 0,
         abertos: statusCount['Aberto'] || 0,
         em_andamento: statusCount['Em andamento'] || 0,
+        aguardando: statusCount['Aguardando'] || 0,
         fechados: statusCount['Fechado'] || 0
       });
     } catch (error) {
@@ -319,6 +321,18 @@ const Admin = () => {
                 <div className="ml-4">
                   <p className="text-sm font-medium text-orange-600 dark:text-orange-400">Em Andamento</p>
                   <p className="text-2xl font-bold text-orange-700 dark:text-orange-300">{stats.em_andamento}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-none bg-yellow-egg dark:bg-yellow-500/20">
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <Clock className="h-8 w-8 text-yellow-600" />
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-yellow-700 dark:text-yellow-400">Aguardando</p>
+                  <p className="text-2xl font-bold text-yellow-800 dark:text-yellow-300">{stats.aguardando}</p>
                 </div>
               </div>
             </CardContent>

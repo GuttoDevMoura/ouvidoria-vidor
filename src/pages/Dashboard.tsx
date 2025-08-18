@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
-import { Calendar, Users, FileText, TrendingUp, Award, MapPin, ArrowLeft } from "lucide-react";
+import { Calendar, Users, FileText, TrendingUp, Award, MapPin, ArrowLeft, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -11,6 +11,7 @@ interface DashboardData {
   totalTickets: number;
   openTickets: number;
   inProgressTickets: number;
+  waitingTickets: number;
   closedTickets: number;
   ticketsByType: { name: string; value: number }[];
   ticketsByCampus: { name: string; value: number }[];
@@ -27,6 +28,7 @@ export default function Dashboard() {
     totalTickets: 0,
     openTickets: 0,
     inProgressTickets: 0,
+    waitingTickets: 0,
     closedTickets: 0,
     ticketsByType: [],
     ticketsByCampus: [],
@@ -54,6 +56,7 @@ export default function Dashboard() {
       const totalTickets = tickets.length;
       const openTickets = tickets.filter(t => t.status === 'Aberto').length;
       const inProgressTickets = tickets.filter(t => t.status === 'Em andamento').length;
+      const waitingTickets = tickets.filter(t => t.status === 'Aguardando').length;
       const closedTickets = tickets.filter(t => t.status === 'Fechado').length;
 
       // Tickets por tipo
@@ -123,6 +126,7 @@ export default function Dashboard() {
         totalTickets,
         openTickets,
         inProgressTickets,
+        waitingTickets,
         closedTickets,
         ticketsByType,
         ticketsByCampus,
@@ -208,6 +212,18 @@ export default function Dashboard() {
                   <p className="text-3xl font-bold text-orange-700 dark:text-orange-300">{data.inProgressTickets}</p>
                 </div>
                 <TrendingUp className="h-8 w-8 text-orange-500" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-none bg-yellow-egg dark:bg-yellow-500/20">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-yellow-700 dark:text-yellow-400">Aguardando</p>
+                  <p className="text-3xl font-bold text-yellow-800 dark:text-yellow-300">{data.waitingTickets}</p>
+                </div>
+                <Clock className="h-8 w-8 text-yellow-600" />
               </div>
             </CardContent>
           </Card>
