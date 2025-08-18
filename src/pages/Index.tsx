@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
   const [currentSection, setCurrentSection] = useState("home");
+  const [selectedType, setSelectedType] = useState<string>("");
   const [content, setContent] = useState({
     hero_title: "OUVIDORIA NC",
     hero_subtitle: "Canal direto de diálogo com a Igreja Novos Começos. Uma porta aberta para participação através da escuta atenta, visando transparência, ética e melhorias em nossos ministérios e atividades.",
@@ -41,7 +42,8 @@ const Index = () => {
     setCurrentSection(section);
   };
 
-  const handleOpenForm = () => {
+  const handleOpenForm = (type?: string) => {
+    if (type) setSelectedType(type);
     setCurrentSection("form");
   };
 
@@ -58,7 +60,7 @@ const Index = () => {
         />
         
         {currentSection === "form" ? (
-          <OuvidoriaForm onBack={handleBackToHome} />
+          <OuvidoriaForm onBack={handleBackToHome} selectedType={selectedType} />
         ) : (
           <HeroSection 
             onOpenForm={handleOpenForm}

@@ -12,9 +12,10 @@ import { ArrowLeft, Send } from "lucide-react";
 
 interface OuvidoriaFormProps {
   onBack: () => void;
+  selectedType?: string;
 }
 
-export const OuvidoriaForm = ({ onBack }: OuvidoriaFormProps) => {
+export const OuvidoriaForm = ({ onBack, selectedType }: OuvidoriaFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isIdentified, setIsIdentified] = useState<string>("");
   const [formData, setFormData] = useState({
@@ -23,7 +24,7 @@ export const OuvidoriaForm = ({ onBack }: OuvidoriaFormProps) => {
     email: "",
     confirmarEmail: "",
     campus: "",
-    tipoSolicitacao: "",
+    tipoSolicitacao: selectedType || "",
     descricao: ""
   });
   const { toast } = useToast();
@@ -80,7 +81,7 @@ export const OuvidoriaForm = ({ onBack }: OuvidoriaFormProps) => {
         email: "",
         confirmarEmail: "",
         campus: "",
-        tipoSolicitacao: "",
+        tipoSolicitacao: selectedType || "",
         descricao: ""
       });
       setIsIdentified("");
@@ -203,21 +204,24 @@ export const OuvidoriaForm = ({ onBack }: OuvidoriaFormProps) => {
                     </Select>
                   </div>
 
-                  <div>
-                    <Label htmlFor="tipoSolicitacao">Tipo de Solicitação *</Label>
-                    <Select onValueChange={(value) => setFormData({...formData, tipoSolicitacao: value})}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione o tipo" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {tipoOptions.map((tipo) => (
-                          <SelectItem key={tipo} value={tipo}>
-                            {tipo}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                   <div>
+                     <Label htmlFor="tipoSolicitacao">Tipo de Solicitação *</Label>
+                     <Select 
+                       value={formData.tipoSolicitacao}
+                       onValueChange={(value) => setFormData({...formData, tipoSolicitacao: value})}
+                     >
+                       <SelectTrigger>
+                         <SelectValue placeholder="Selecione o tipo" />
+                       </SelectTrigger>
+                       <SelectContent>
+                         {tipoOptions.map((tipo) => (
+                           <SelectItem key={tipo} value={tipo}>
+                             {tipo}
+                           </SelectItem>
+                         ))}
+                       </SelectContent>
+                     </Select>
+                   </div>
 
                   <div>
                     <Label htmlFor="descricao">Descrição da Solicitação *</Label>

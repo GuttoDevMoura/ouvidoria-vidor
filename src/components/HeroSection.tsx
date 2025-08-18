@@ -1,10 +1,10 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { MessageCircle, Shield, Clock, Users } from "lucide-react";
+import { MessageCircle, Shield, Clock, Users, ThumbsUp, MessageSquare, AlertTriangle, Lightbulb } from "lucide-react";
 
 interface HeroSectionProps {
-  onOpenForm: () => void;
+  onOpenForm: (type?: string) => void;
   content: {
     hero_title: string;
     hero_subtitle: string;
@@ -32,14 +32,45 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
             <p className="text-xl md:text-2xl text-muted-foreground mb-8 leading-relaxed">
               {content.hero_subtitle}
             </p>
-            <Button 
-              size="lg" 
-              onClick={onOpenForm}
-              className="text-lg px-8 py-6 h-auto"
-            >
-              <MessageCircle className="mr-2 h-5 w-5" />
-              Abrir Solicitação
-            </Button>
+            
+            {/* Botões de tipos de manifestação */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+              <Button 
+                size="lg" 
+                onClick={() => onOpenForm("Elogio")}
+                className="flex flex-col h-auto py-6 px-4 text-center space-y-2 bg-green-600 hover:bg-green-700"
+              >
+                <ThumbsUp className="h-8 w-8" />
+                <span className="text-sm font-medium">Fazer um Elogio</span>
+              </Button>
+              
+              <Button 
+                size="lg" 
+                onClick={() => onOpenForm("Crítica")}
+                className="flex flex-col h-auto py-6 px-4 text-center space-y-2 bg-red-600 hover:bg-red-700"
+              >
+                <MessageSquare className="h-8 w-8" />
+                <span className="text-sm font-medium">Fazer uma Crítica</span>
+              </Button>
+              
+              <Button 
+                size="lg" 
+                onClick={() => onOpenForm("Denúncia")}
+                className="flex flex-col h-auto py-6 px-4 text-center space-y-2 bg-orange-600 hover:bg-orange-700"
+              >
+                <AlertTriangle className="h-8 w-8" />
+                <span className="text-sm font-medium">Fazer uma Denúncia</span>
+              </Button>
+              
+              <Button 
+                size="lg" 
+                onClick={() => onOpenForm("Sugestão")}
+                className="flex flex-col h-auto py-6 px-4 text-center space-y-2 bg-blue-600 hover:bg-blue-700"
+              >
+                <Lightbulb className="h-8 w-8" />
+                <span className="text-sm font-medium">Fazer uma Sugestão</span>
+              </Button>
+            </div>
           </div>
         </div>
       </div>
