@@ -9,9 +9,9 @@ const Index = () => {
   const [currentSection, setCurrentSection] = useState("home");
   const [selectedType, setSelectedType] = useState<string>("");
   const [content, setContent] = useState({
-    hero_title: "OUVIDORIA NC",
-    hero_subtitle: "Ouvindo por algo maior...",
-    about_text: "A Ouvidoria da Igreja Novos Começos é um canal direto de comunicação entre nossa comunidade e a liderança."
+    hero_title: "",
+    hero_subtitle: "",
+    about_text: ""
   });
 
   useEffect(() => {
@@ -31,7 +31,11 @@ const Index = () => {
           return acc;
         }, {} as Record<string, string>);
         
-        setContent(prev => ({ ...prev, ...contentMap }));
+        setContent({
+          hero_title: contentMap.hero_title || "OUVIDORIA NC",
+          hero_subtitle: contentMap.hero_subtitle || "Ouvindo por algo maior...", 
+          about_text: contentMap.about_text || "A Ouvidoria da Igreja Novos Começos é um canal direto de comunicação entre nossa comunidade e a liderança."
+        });
       }
     } catch (error) {
       console.error('Erro ao carregar conteúdo:', error);
