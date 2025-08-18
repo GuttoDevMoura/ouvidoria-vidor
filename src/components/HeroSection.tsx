@@ -16,10 +16,10 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
-      <div className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+      <div className="pt-40 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <div className="text-center">
-            <div className="flex justify-center mb-8">
+            <div className="flex justify-center mb-12">
               <img 
                 src="/lovable-uploads/127fdf71-f341-47a6-9849-5730551fe462.png" 
                 alt="Igreja Novos Começos" 
@@ -27,19 +27,19 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
               />
             </div>
             
-            <h1 className="text-4xl md:text-5xl font-light text-foreground mb-4 tracking-wide">
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-2 tracking-wide">
               {content.hero_title}
             </h1>
-            <p className="text-lg text-muted-foreground/80 mb-16 font-light max-w-xl mx-auto">
+            <p className="text-lg text-muted-foreground/80 mb-20 font-bold max-w-xl mx-auto">
               {content.hero_subtitle}
             </p>
             
             {/* Título da seção de manifestação */}
-            <div className="mb-12">
-            <h2 className="text-2xl text-foreground font-bold mb-3">
+            <div className="mb-16">
+              <h2 className="text-xl text-foreground font-bold mb-2">
                 Qual tipo de manifestação você deseja fazer?
               </h2>
-              <p className="text-base text-muted-foreground/70 font-light">
+              <p className="text-sm text-muted-foreground/70 font-light mb-8">
                 Selecione um dos tipos abaixo:
               </p>
             </div>
@@ -95,7 +95,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
       </div>
 
       {/* Features */}
-      <div className="py-12 sm:py-16 bg-muted px-4 sm:px-6 lg:px-8">
+      <div className="py-20 sm:py-24 bg-muted px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12">
             <div className="text-center">
