@@ -91,7 +91,7 @@ const handler = async (req: Request): Promise<Response> => {
       console.log(`Protocolo: ${protocolNumber}`);
       
       const emailResponse = await resend.emails.send({
-        from: "Ouvidoria <onboarding@resend.dev>",
+        from: "Ouvidoria <ouvidoria@igrejanovoscomecos.com.br>",
         to: [to],
         subject: subject,
         html: htmlContent,
