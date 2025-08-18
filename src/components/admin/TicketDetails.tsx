@@ -80,56 +80,30 @@ export const TicketDetails = ({ ticket, onBack, onTicketUpdate }: TicketDetailsP
     try {
       setLoading(true);
       
-      // Get current user
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Usuário não autenticado');
       
-      console.log('Usuário autenticado:', user.id);
-      
-      // Verify user has profile
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('user_id, nome_completo')
-        .eq('user_id', user.id)
-        .maybeSingle();
-      
-      console.log('Profile encontrado:', profile);
-      console.log('Profile error:', profileError);
-      
-      if (!profile) {
-        throw new Error('Perfil não encontrado para o usuário');
-      }
-      
-      console.log('Tentando inserir nota com:', {
-        ticket_id: ticket.id,
-        agente_id: user.id,
-        nota: newNote
-      });
-      
-      const { data: noteData, error } = await supabase
+      const { error } = await supabase
         .from('ticket_notes')
         .insert([{
           ticket_id: ticket.id,
           agente_id: user.id,
           nota: newNote
-        }])
-        .select();
-
-      console.log('Resultado da inserção:', { noteData, error });
+        }]);
 
       if (error) throw error;
 
       setNewNote("");
       loadNotes();
       toast({
-        title: "Nota adicionada",
-        description: "A nota foi adicionada com sucesso.",
+        title: "Nota interna adicionada",
+        description: "A nota foi adicionada com sucesso e é visível apenas para administradores e agentes.",
       });
     } catch (error) {
-      console.error('Erro detalhado ao adicionar nota:', error);
+      console.error('Erro ao adicionar nota:', error);
       toast({
         title: "Erro",
-        description: `Não foi possível adicionar a nota: ${error.message}`,
+        description: "Não foi possível adicionar a nota interna.",
         variant: "destructive"
       });
     } finally {
@@ -205,160 +179,172 @@ export const TicketDetails = ({ ticket, onBack, onTicketUpdate }: TicketDetailsP
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="bg-card border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center h-16">
-            <Button variant="ghost" onClick={onBack}>
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Voltar
-            </Button>
-            <h1 className="ml-4 text-xl font-bold">
-              Ticket #{ticket.numero_protocolo}
-            </h1>
-            <Badge className="ml-4" variant={getStatusBadgeVariant(ticket.status)}>
+      {/* Header minimalista */}
+      <div className="border-b">
+        <div className="max-w-4xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Button variant="ghost" size="sm" onClick={onBack}>
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Voltar
+              </Button>
+              <div>
+                <h1 className="text-xl font-semibold">#{ticket.numero_protocolo}</h1>
+                <p className="text-sm text-muted-foreground">{ticket.tipo_solicitacao}</p>
+              </div>
+            </div>
+            <Badge variant={getStatusBadgeVariant(ticket.status)}>
               {ticket.status}
             </Badge>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Informações do Ticket */}
-          <div className="lg:col-span-2 space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Detalhes da Solicitação</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Protocolo</p>
-                    <p className="font-medium">{ticket.numero_protocolo}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Tipo</p>
-                    <p className="font-medium">{ticket.tipo_solicitacao}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Campus</p>
-                    <p className="font-medium">{ticket.campus}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Data de Abertura</p>
-                    <p className="font-medium">{formatDate(ticket.created_at)}</p>
-                  </div>
-                </div>
+      <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
+        {/* Card principal - mais compacto */}
+        <Card>
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg">Detalhes da Solicitação</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-3 gap-4 text-sm">
+              <div>
+                <span className="text-muted-foreground">Campus:</span>
+                <p className="font-medium">{ticket.campus}</p>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Abertura:</span>
+                <p className="font-medium">{formatDate(ticket.created_at)}</p>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Vencimento:</span>
+                <p className="font-medium">{formatDate(ticket.data_vencimento)}</p>
+              </div>
+            </div>
 
-                {!ticket.eh_anonimo && (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground">Nome</p>
-                      <p className="font-medium">{ticket.nome_completo}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground">E-mail</p>
-                      <p className="font-medium">{ticket.email}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground">WhatsApp</p>
-                      <p className="font-medium">{ticket.contato_whatsapp}</p>
-                    </div>
-                  </div>
-                )}
-
+            {!ticket.eh_anonimo && ticket.nome_completo && (
+              <div className="grid grid-cols-3 gap-4 text-sm pt-2 border-t">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground mb-2">Descrição</p>
-                  <div className="p-4 bg-muted rounded-lg">
-                    <p className="whitespace-pre-wrap">{ticket.descricao}</p>
-                  </div>
+                  <span className="text-muted-foreground">Solicitante:</span>
+                  <p className="font-medium">{ticket.nome_completo}</p>
                 </div>
-              </CardContent>
-            </Card>
+                <div>
+                  <span className="text-muted-foreground">E-mail:</span>
+                  <p className="font-medium">{ticket.email}</p>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">WhatsApp:</span>
+                  <p className="font-medium">{ticket.contato_whatsapp}</p>
+                </div>
+              </div>
+            )}
 
-            {/* Notas Internas */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Notas Internas</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4 mb-4">
+            <div className="pt-2 border-t">
+              <span className="text-sm text-muted-foreground">Descrição:</span>
+              <div className="mt-2 p-3 bg-muted/50 rounded text-sm">
+                <p className="whitespace-pre-wrap">{ticket.descricao}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Grid responsivo para ações e notas */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Ações - Status e Tratativa */}
+          <Card>
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg">Gerenciar Solicitação</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <label className="text-sm font-medium mb-2 block">Status</label>
+                <Select value={status} onValueChange={setStatus}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Aberto">Aberto</SelectItem>
+                    <SelectItem value="Em andamento">Em andamento</SelectItem>
+                    <SelectItem value="Aguardando">Aguardando</SelectItem>
+                    <SelectItem value="Fechado">Fechado</SelectItem>
+                    <SelectItem value="Reaberto">Reaberto</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium mb-2 block">
+                  Resumo da Tratativa
+                  <span className="text-xs text-muted-foreground ml-1">(visível ao usuário)</span>
+                </label>
+                <Textarea
+                  placeholder="Descreva as ações tomadas para resolver esta solicitação..."
+                  value={resumoTratativa}
+                  onChange={(e) => setResumoTratativa(e.target.value)}
+                  rows={3}
+                  className="text-sm"
+                />
+              </div>
+
+              <Button onClick={updateTicket} disabled={loading} className="w-full">
+                <Save className="mr-2 h-4 w-4" />
+                Salvar Alterações
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Notas Internas */}
+          <Card>
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg">
+                Notas Internas 
+                <span className="text-xs text-muted-foreground ml-2">(apenas admin/agentes)</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {notes.length > 0 && (
+                <div className="space-y-3 max-h-60 overflow-y-auto">
                   {notes.map((note) => (
-                    <div key={note.id} className="p-4 bg-muted rounded-lg">
-                      <div className="flex justify-between items-start mb-2">
-                        <p className="font-medium text-sm">
+                    <div key={note.id} className="p-3 bg-muted/50 rounded text-sm">
+                      <div className="flex justify-between items-start mb-1">
+                        <span className="font-medium text-xs">
                           {note.profiles?.nome_completo || "Usuário"}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
+                        </span>
+                        <span className="text-xs text-muted-foreground">
                           {formatDate(note.created_at)}
-                        </p>
+                        </span>
                       </div>
-                      <p className="text-sm whitespace-pre-wrap">{note.nota}</p>
+                      <p className="whitespace-pre-wrap">{note.nota}</p>
                     </div>
                   ))}
                 </div>
+              )}
 
-                <div className="space-y-2">
-                  <Textarea
-                    placeholder="Adicionar nota interna..."
-                    value={newNote}
-                    onChange={(e) => setNewNote(e.target.value)}
-                    rows={3}
-                  />
-                  <Button onClick={addNote} disabled={loading || !newNote.trim()}>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Adicionar Nota
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Sidebar direita */}
-          <div className="space-y-6">
-            {/* Histórico */}
-            <TicketHistory ticketId={ticket.id} />
-
-            {/* Ações */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Atualizar Status</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium">Status</label>
-                  <Select value={status} onValueChange={setStatus}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Aberto">Aberto</SelectItem>
-                      <SelectItem value="Em andamento">Em andamento</SelectItem>
-                      <SelectItem value="Aguardando">Aguardando</SelectItem>
-                      <SelectItem value="Fechado">Fechado</SelectItem>
-                      <SelectItem value="Reaberto">Reaberto</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <label className="text-sm font-medium">Resumo da Tratativa</label>
-                  <Textarea
-                    placeholder="Descreva o que foi feito para resolver esta solicitação..."
-                    value={resumoTratativa}
-                    onChange={(e) => setResumoTratativa(e.target.value)}
-                    rows={4}
-                  />
-                </div>
-
-                <Button onClick={updateTicket} disabled={loading} className="w-full">
-                  <Save className="mr-2 h-4 w-4" />
-                  Salvar Alterações
+              <div className="space-y-2">
+                <Textarea
+                  placeholder="Adicionar nota interna (não visível ao usuário)..."
+                  value={newNote}
+                  onChange={(e) => setNewNote(e.target.value)}
+                  rows={3}
+                  className="text-sm"
+                />
+                <Button 
+                  onClick={addNote} 
+                  disabled={loading || !newNote.trim()}
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Adicionar Nota Interna
                 </Button>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
+
+        {/* Histórico em uma seção separada mais compacta */}
+        <TicketHistory ticketId={ticket.id} />
       </div>
     </div>
   );

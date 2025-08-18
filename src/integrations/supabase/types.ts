@@ -186,7 +186,7 @@ export type Database = {
             columns: ["agente_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "ticket_notes_ticket_id_fkey"
