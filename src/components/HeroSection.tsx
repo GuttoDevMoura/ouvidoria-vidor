@@ -19,18 +19,18 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
       <div className="pt-20 pb-32 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <div className="text-center">
-            <div className="flex justify-center mb-16">
+            <div className="flex justify-center mb-8">
               <img 
                 src="/lovable-uploads/127fdf71-f341-47a6-9849-5730551fe462.png" 
                 alt="Igreja Novos Começos" 
-                className="h-8 w-auto opacity-60"
+                className="h-12 w-auto opacity-60"
               />
             </div>
             
-            <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-1 tracking-wide">
+            <h1 className="text-5xl md:text-6xl font-black text-foreground mb-1 tracking-wide">
               {content.hero_title}
             </h1>
-            <p className="text-xl text-muted-foreground/80 mb-24 font-bold max-w-xl mx-auto">
+            <p className="text-xl text-muted-foreground/80 mb-12 font-bold max-w-xl mx-auto">
               {content.hero_subtitle}
             </p>
             
