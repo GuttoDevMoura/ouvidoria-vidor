@@ -73,40 +73,27 @@ export default function GerenciarEquipe() {
   const handleSaveMember = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.nome_completo || !formData.email || !formData.senha) {
+    if (!formData.nome_completo) {
       toast({
         title: "Campos obrigatórios",
-        description: "Preencha todos os campos.",
+        description: "O nome completo é obrigatório.",
         variant: "destructive",
       });
       return;
     }
 
     try {
-      // Criar usuário no Supabase Auth
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.senha,
-        options: {
-          data: {
-            nome_completo: formData.nome_completo
-          }
-        }
-      });
-
-      if (authError) {
-        throw authError;
-      }
-
-      if (authData.user) {
-        // Atualizar o perfil para admin
+      if (editingMember) {
+        // Modo edição - atualizar apenas o perfil existente
+        console.log('Editando membro:', editingMember);
+        
         const { error: profileError } = await supabase
           .from('profiles')
           .update({ 
             nome_completo: formData.nome_completo,
             role: formData.role
           })
-          .eq('user_id', authData.user.id);
+          .eq('user_id', editingMember.user_id);
 
         if (profileError) {
           throw profileError;
@@ -114,18 +101,66 @@ export default function GerenciarEquipe() {
 
         toast({
           title: "Sucesso",
-          description: "Membro da equipe criado com sucesso.",
+          description: "Dados do membro atualizados com sucesso.",
+        });
+      } else {
+        // Modo criação - validar campos obrigatórios para criação
+        if (!formData.email || !formData.senha) {
+          toast({
+            title: "Campos obrigatórios",
+            description: "Para criar um novo membro, email e senha são obrigatórios.",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        // Criar usuário no Supabase Auth
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+          email: formData.email,
+          password: formData.senha,
+          options: {
+            data: {
+              nome_completo: formData.nome_completo
+            }
+          }
         });
 
-        setIsDialogOpen(false);
-        setFormData({ nome_completo: "", email: "", senha: "", role: "agent" });
-        loadTeamMembers();
+        if (authError) {
+          throw authError;
+        }
+
+        if (authData.user) {
+          // Atualizar o perfil
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .update({ 
+              nome_completo: formData.nome_completo,
+              role: formData.role
+            })
+            .eq('user_id', authData.user.id);
+
+          if (profileError) {
+            throw profileError;
+          }
+
+          toast({
+            title: "Sucesso",
+            description: "Membro da equipe criado com sucesso.",
+          });
+        }
       }
+
+      // Fechar modal e resetar form
+      setIsDialogOpen(false);
+      setEditingMember(null);
+      setFormData({ nome_completo: "", email: "", senha: "", role: "agent" });
+      loadTeamMembers();
+      
     } catch (error: any) {
-      console.error('Erro ao criar membro:', error);
+      console.error('Erro ao salvar membro:', error);
       toast({
         title: "Erro",
-        description: error.message || "Não foi possível criar o membro da equipe.",
+        description: error.message || "Não foi possível salvar os dados do membro.",
         variant: "destructive",
       });
     }
@@ -248,7 +283,8 @@ export default function GerenciarEquipe() {
                     value={formData.email}
                     onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                     className="pl-10"
-                    required
+                    required={!editingMember}
+                    disabled={!!editingMember}
                   />
                 </div>
               </div>
@@ -259,11 +295,11 @@ export default function GerenciarEquipe() {
                   <Input
                     id="senha"
                     type="password"
-                    placeholder="Senha do usuário"
+                    placeholder={editingMember ? "Deixe em branco para manter a senha atual" : "Senha do usuário"}
                     value={formData.senha}
                     onChange={(e) => setFormData(prev => ({ ...prev, senha: e.target.value }))}
                     className="pl-10"
-                    required
+                    required={!editingMember}
                   />
                 </div>
               </div>
