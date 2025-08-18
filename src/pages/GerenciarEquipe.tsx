@@ -19,6 +19,7 @@ interface TeamMember {
   nome_completo: string;
   role: string;
   created_at: string;
+  email?: string;
 }
 
 export default function GerenciarEquipe() {
@@ -397,8 +398,8 @@ export default function GerenciarEquipe() {
                                 setEditingMember(member);
                                 setFormData({
                                   nome_completo: member.nome_completo || "",
-                                  email: "",
-                                  senha: "",
+                                  email: member.email || "",
+                                  senha: "••••••••",
                                   role: member.role as "admin" | "agent"
                                 });
                                 setIsDialogOpen(true);
