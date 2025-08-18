@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.55.0';
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -88,41 +89,46 @@ const handler = async (req: Request): Promise<Response> => {
       </html>
     `;
 
-    // Vou implementar uma solução usando um webhook que REALMENTE funciona
+    // Salvar email pendente no banco para envio manual
     try {
-      console.log("=== INICIANDO ENVIO DE EMAIL ===");
+      console.log("=== SALVANDO EMAIL PENDENTE ===");
       console.log(`Para: ${to}`);
       console.log(`Assunto: ${subject}`);
       console.log(`Protocolo: ${protocolNumber}`);
       
-      // Usar serviço Make.com webhook que pode enviar emails via SMTP
-      const webhookUrl = "https://hook.us1.make.com/your-webhook-here"; // Placeholder
+      // Inicializar cliente Supabase
+      const supabaseUrl = Deno.env.get('SUPABASE_URL') || 'https://qkuocpywdymmvojkiwzg.supabase.co';
+      const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || Deno.env.get('SUPABASE_ANON_KEY');
       
-      // Por enquanto, vamos usar uma implementação mais simples
-      // Vou criar um sistema que funciona via Telegram ou WhatsApp como fallback
+      if (!supabaseKey) {
+        throw new Error('Chave do Supabase não encontrada');
+      }
       
-      const emailData = {
-        destinatario: to,
-        assunto: subject,
-        protocolo: protocolNumber,
-        status: status,
-        nome: nome || "Solicitante",
-        conteudo_html: htmlContent,
-        timestamp: new Date().toISOString()
-      };
+      const supabase = createClient(supabaseUrl, supabaseKey);
       
-      console.log("=== DADOS DO EMAIL PREPARADOS ===");
-      console.log(JSON.stringify(emailData, null, 2));
+      // Salvar email pendente
+      const { data, error } = await supabase
+        .from('emails_pendentes')
+        .insert({
+          destinatario: to,
+          assunto: subject,
+          protocolo: protocolNumber,
+          status: status,
+          nome: nome || "Solicitante",
+          conteudo_html: htmlContent
+        });
       
-      // SOLUÇÃO TEMPORÁRIA: Salvar no banco para processar depois
-      console.log("Salvando solicitação de email no banco para processamento...");
+      if (error) {
+        console.error('Erro ao salvar email pendente:', error);
+        throw error;
+      }
       
-      console.log("=== EMAIL PROCESSADO COM SUCESSO ===");
-      console.log("ATENÇÃO: Implemente um sistema externo para processar os emails pendentes");
+      console.log("=== EMAIL PENDENTE SALVO COM SUCESSO ===");
+      console.log("O email foi salvo na tabela emails_pendentes para envio manual");
       
     } catch (emailError) {
-      console.error("Erro no processamento de email:", emailError);
-      throw new Error(`Falha no processamento: ${emailError.message}`);
+      console.error("Erro ao salvar email pendente:", emailError);
+      throw new Error(`Falha ao salvar email: ${emailError.message}`);
     }
 
     return new Response(JSON.stringify({ 

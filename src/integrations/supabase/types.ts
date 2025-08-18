@@ -38,6 +38,48 @@ export type Database = {
         }
         Relationships: []
       }
+      emails_pendentes: {
+        Row: {
+          assunto: string
+          conteudo_html: string
+          data_envio: string | null
+          data_solicitacao: string
+          destinatario: string
+          enviado: boolean | null
+          id: string
+          nome: string | null
+          protocolo: string
+          status: string
+          tentativas: number | null
+        }
+        Insert: {
+          assunto: string
+          conteudo_html: string
+          data_envio?: string | null
+          data_solicitacao?: string
+          destinatario: string
+          enviado?: boolean | null
+          id?: string
+          nome?: string | null
+          protocolo: string
+          status: string
+          tentativas?: number | null
+        }
+        Update: {
+          assunto?: string
+          conteudo_html?: string
+          data_envio?: string | null
+          data_solicitacao?: string
+          destinatario?: string
+          enviado?: boolean | null
+          id?: string
+          nome?: string | null
+          protocolo?: string
+          status?: string
+          tentativas?: number | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
