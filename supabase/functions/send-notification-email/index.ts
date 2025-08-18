@@ -91,14 +91,37 @@ const handler = async (req: Request): Promise<Response> => {
       </html>
     `;
 
-    // Simular envio de email com logs detalhados
-    console.log("=== SIMULANDO ENVIO DE EMAIL ===");
-    console.log(`Para: ${to}`);
-    console.log(`Assunto: ${subject}`);
-    console.log(`Protocolo: ${protocolNumber}`);
-    console.log(`Status: ${status}`);
-    console.log("Email HTML preparado com sucesso");
-    console.log("=== EMAIL PROCESSADO COM SUCESSO ===");
+    // Implementar envio real via SMTP
+    try {
+      console.log("Importando nodemailer...");
+      const nodemailer = await import("npm:nodemailer@6.9.7");
+      console.log("Nodemailer importado com sucesso");
+      
+      const transporter = nodemailer.createTransporter({
+        host: host,
+        port: parseInt(port),
+        secure: true, // SSL para porta 465
+        auth: {
+          user: username,
+          pass: password,
+        },
+      });
+
+      const mailOptions = {
+        from: `"Ouvidoria Igreja Novos Começos" <${username}>`,
+        to: to,
+        subject: subject,
+        html: htmlContent,
+      };
+
+      console.log("Enviando email real...");
+      const info = await transporter.sendMail(mailOptions);
+      console.log(`Email enviado com sucesso! Message ID: ${info.messageId}`);
+      
+    } catch (smtpError) {
+      console.error("Erro no envio SMTP:", smtpError);
+      throw new Error(`Falha no envio: ${smtpError.message}`);
+    }
 
     return new Response(JSON.stringify({ 
       success: true, 
