@@ -366,18 +366,18 @@ const Admin = () => {
                   <div className="flex-1">
                     <div className="flex items-center space-x-4">
                       {getSLAIcon(getSLAStatus(ticket.created_at, ticket.status), ticket.status)}
-                      <Badge 
-                        variant={getStatusBadgeVariant(ticket.status)}
-                        className={
-                          ticket.status === 'Em andamento' 
-                            ? 'bg-orange-500 hover:bg-orange-600 text-white' 
-                            : (ticket.status === 'Fechado' || ticket.status === 'Concluído')
-                            ? 'bg-green-500 hover:bg-green-600 text-white border-green-500'
-                            : ''
-                        }
-                      >
-                        {ticket.status}
-                      </Badge>
+                       <Badge 
+                         variant={getStatusBadgeVariant(ticket.status)}
+                         className={
+                           ticket.status === 'Em andamento' 
+                             ? 'bg-orange hover:bg-orange text-orange-foreground border-orange' 
+                             : (ticket.status === 'Fechado' || ticket.status === 'Concluído')
+                             ? 'bg-success hover:bg-success text-success-foreground border-success'
+                             : ''
+                         }
+                       >
+                         {ticket.status}
+                       </Badge>
                       <span className="font-medium">{ticket.numero_protocolo}</span>
                       <span className="text-sm text-muted-foreground">
                         {ticket.eh_anonimo ? "Anônimo" : ticket.nome_completo}

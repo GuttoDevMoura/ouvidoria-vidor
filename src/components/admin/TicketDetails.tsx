@@ -178,6 +178,16 @@ export const TicketDetails = ({ ticket, onBack, onTicketUpdate }: TicketDetailsP
     }
   };
 
+  const getStatusBadgeClassName = (status: string) => {
+    if (status === 'Em andamento') {
+      return 'bg-orange hover:bg-orange text-orange-foreground border-orange';
+    }
+    if (status === 'Fechado') {
+      return 'bg-success hover:bg-success text-success-foreground border-success';
+    }
+    return '';
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString('pt-BR');
   };
@@ -198,7 +208,10 @@ export const TicketDetails = ({ ticket, onBack, onTicketUpdate }: TicketDetailsP
                 <p className="text-sm text-muted-foreground">{ticket.tipo_solicitacao}</p>
               </div>
             </div>
-            <Badge variant={getStatusBadgeVariant(currentTicket.status)}>
+            <Badge 
+              variant={getStatusBadgeVariant(currentTicket.status)}
+              className={getStatusBadgeClassName(currentTicket.status)}
+            >
               {currentTicket.status}
             </Badge>
           </div>
