@@ -246,9 +246,53 @@ const Auth = () => {
             </div>
 
             <div className="mt-6 pt-6 border-t border-gray-200">
-              <p className="text-sm text-gray-600 text-center">
+              <p className="text-sm text-gray-600 text-center mb-4">
                 Esta área é restrita à equipe da Ouvidoria da Igreja Novos Começos.
               </p>
+              
+              {/* Acesso rápido para demo */}
+              <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                <p className="text-sm text-yellow-800 mb-2 font-medium">
+                  🚀 Acesso Rápido para Demo:
+                </p>
+                <p className="text-xs text-yellow-700 mb-3">
+                  Clique no botão abaixo para criar automaticamente um usuário admin e fazer login:
+                </p>
+                <Button
+                  onClick={async () => {
+                    setLoading(true);
+                    try {
+                      // Criar conta admin automaticamente
+                      const { error } = await signUp("admin@ouvidoria.com", "admin123", "Administrador Sistema");
+                      
+                      if (error && !error.message.includes('already registered')) {
+                        toast.error("Erro ao criar conta admin: " + error.message);
+                      } else {
+                        // Aguardar um pouco e tentar fazer login
+                        setTimeout(async () => {
+                          const { error: loginError } = await signIn("admin@ouvidoria.com", "admin123");
+                          if (loginError) {
+                            toast.error("Admin criado! Tente fazer login manualmente com: admin@ouvidoria.com / admin123");
+                          } else {
+                            toast.success("Acesso admin criado com sucesso!");
+                            navigate('/admin');
+                          }
+                        }, 2000);
+                      }
+                    } catch (err) {
+                      toast.error("Erro inesperado");
+                    } finally {
+                      setLoading(false);
+                    }
+                  }}
+                  disabled={loading}
+                  variant="outline"
+                  size="sm"
+                  className="w-full text-xs bg-yellow-100 hover:bg-yellow-200 border-yellow-300"
+                >
+                  {loading ? "Criando admin..." : "Criar Admin & Entrar"}
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
