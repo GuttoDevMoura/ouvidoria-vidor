@@ -36,7 +36,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
             
             {/* Título da seção de manifestação */}
             <div className="mb-12">
-              <h2 className="text-2xl text-foreground font-light mb-3">
+            <h2 className="text-2xl text-foreground font-bold mb-3">
                 Qual tipo de manifestação você deseja fazer?
               </h2>
               <p className="text-base text-muted-foreground/70 font-light">
@@ -54,7 +54,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
                 <div className="bg-green-50 group-hover:bg-green-100 rounded-full p-3 sm:p-4 transition-colors duration-300 mx-auto">
                   <ThumbsUp className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" />
                 </div>
-                <span className="text-sm sm:text-base font-semibold text-foreground group-hover:text-green-700 transition-colors leading-tight">Fazer um Elogio</span>
+                <span className="text-sm sm:text-base font-bold text-foreground group-hover:text-green-700 transition-colors leading-tight">Fazer um Elogio</span>
               </Button>
               
               <Button 
@@ -65,7 +65,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
                 <div className="bg-blue-50 group-hover:bg-blue-100 rounded-full p-3 sm:p-4 transition-colors duration-300 mx-auto">
                   <Lightbulb className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
                 </div>
-                <span className="text-sm sm:text-base font-semibold text-foreground group-hover:text-blue-700 transition-colors leading-tight">Fazer uma Sugestão</span>
+                <span className="text-sm sm:text-base font-bold text-foreground group-hover:text-blue-700 transition-colors leading-tight">Fazer uma Sugestão</span>
               </Button>
               
               <Button 
@@ -76,7 +76,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
                 <div className="bg-orange-50 group-hover:bg-orange-100 rounded-full p-3 sm:p-4 transition-colors duration-300 mx-auto">
                   <MessageSquare className="h-6 w-6 sm:h-8 sm:w-8 text-orange-600" />
                 </div>
-                <span className="text-sm sm:text-base font-semibold text-foreground group-hover:text-orange-700 transition-colors leading-tight">Fazer uma Crítica</span>
+                <span className="text-sm sm:text-base font-bold text-foreground group-hover:text-orange-700 transition-colors leading-tight">Fazer uma Crítica</span>
               </Button>
               
               <Button 
@@ -87,7 +87,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
                 <div className="bg-red-50 group-hover:bg-red-100 rounded-full p-3 sm:p-4 transition-colors duration-300 mx-auto">
                   <Megaphone className="h-6 w-6 sm:h-8 sm:w-8 text-red-600" />
                 </div>
-                <span className="text-sm sm:text-base font-semibold text-foreground group-hover:text-red-700 transition-colors leading-tight">Fazer uma Denúncia</span>
+                <span className="text-sm sm:text-base font-bold text-foreground group-hover:text-red-700 transition-colors leading-tight">Fazer uma Denúncia</span>
               </Button>
             </div>
           </div>
