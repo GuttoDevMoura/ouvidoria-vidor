@@ -29,7 +29,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
             <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6">
               {content.hero_title}
             </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground mb-8 leading-relaxed">
+            <p className="text-2xl md:text-3xl text-muted-foreground mb-8 leading-relaxed font-bold">
               {content.hero_subtitle}
             </p>
             
