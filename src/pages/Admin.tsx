@@ -6,7 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, LogOut, Users, FileText, TrendingUp, Mail } from "lucide-react";
+import { ArrowLeft, LogOut, Users, FileText, TrendingUp, Mail, User } from "lucide-react";
 import { TicketDetails } from "@/components/admin/TicketDetails";
 
 interface Ticket {
@@ -166,6 +166,13 @@ const Admin = () => {
               >
                 <Mail className="mr-2 h-4 w-4" />
                 Emails Pendentes
+              </Button>
+              <Button 
+                variant="ghost" 
+                onClick={() => navigate('/gerenciar-equipe')}
+              >
+                <User className="mr-2 h-4 w-4" />
+                Gerenciar Equipe
               </Button>
               <h1 className="text-xl font-bold">Painel Administrativo - Ouvidoria</h1>
             </div>
