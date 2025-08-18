@@ -84,10 +84,10 @@ export const TicketDetails = ({ ticket, onBack, onTicketUpdate }: TicketDetailsP
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Usuário não autenticado');
       
-      // Get profile ID
+      // Verify user has profile
       const { data: profile } = await supabase
         .from('profiles')
-        .select('id')
+        .select('user_id')
         .eq('user_id', user.id)
         .maybeSingle();
       
@@ -97,7 +97,7 @@ export const TicketDetails = ({ ticket, onBack, onTicketUpdate }: TicketDetailsP
         .from('ticket_notes')
         .insert([{
           ticket_id: ticket.id,
-          agente_id: profile.id,
+          agente_id: user.id, // Use user.id directly since foreign key references profiles.user_id
           nota: newNote
         }]);
 
