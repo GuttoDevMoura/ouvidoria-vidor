@@ -55,26 +55,34 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const checkAdminStatus = async (userId: string) => {
     try {
+      console.log('Verificando status admin para user_id:', userId);
+      
       const { data, error } = await supabase
         .from('profiles')
         .select('role')
         .eq('user_id', userId)
         .maybeSingle();
       
+      console.log('Resultado da consulta profiles:', { data, error });
+      
       if (error) {
         console.error('Erro ao verificar status de admin:', error);
+        // Não bloquear o login por causa de erro na verificação de admin
         setIsAdmin(false);
         return;
       }
       
       if (data) {
-        setIsAdmin(data.role === 'admin');
+        const adminStatus = data.role === 'admin';
+        console.log('Status admin definido como:', adminStatus);
+        setIsAdmin(adminStatus);
       } else {
         console.log('Perfil não encontrado para o usuário:', userId);
         setIsAdmin(false);
       }
     } catch (error) {
-      console.error('Erro ao verificar status de admin:', error);
+      console.error('Erro inesperado ao verificar status de admin:', error);
+      // Não bloquear o login por causa de erro na verificação de admin
       setIsAdmin(false);
     }
   };
