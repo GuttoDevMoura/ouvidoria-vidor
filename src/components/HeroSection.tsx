@@ -137,32 +137,32 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
       </div>
 
       {/* Base Bíblica */}
-      <div className="py-16 bg-card">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-4">
+      <div className="py-12 bg-card">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-foreground mb-3">
               Base Bíblica
             </h2>
-            <p className="text-lg text-muted-foreground">
-              A base Bíblica da criação da Ouvidoria se encontra na carta escrita pelo apóstolo Paulo à igreja de Corintos.
+            <p className="text-base text-muted-foreground">
+              Fundamentada em 1 Coríntios 6:1-8, que orienta a resolução de conflitos dentro da comunidade cristã.
             </p>
           </div>
           
-          <Card className="max-w-4xl mx-auto p-8 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border-blue-200 dark:border-blue-800">
-            <div className="text-center mb-6">
-              <h3 className="text-2xl font-semibold text-blue-800 dark:text-blue-200 mb-2">
+          <Card className="max-w-3xl mx-auto p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border-blue-200 dark:border-blue-800">
+            <div className="text-center mb-4">
+              <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-200">
                 1 Coríntios 6:1-8
               </h3>
             </div>
-            <div className="space-y-4 text-base leading-relaxed text-gray-700 dark:text-gray-300">
-              <p><span className="font-semibold">¹</span> Se algum de vocês tem queixa contra outro irmão, como ousa apresentar a causa para ser julgada pelos ímpios, em vez de levá-la aos santos?</p>
-              <p><span className="font-semibold">²</span> Vocês não sabem que os santos hão de julgar o mundo? Se vocês hão de julgar o mundo, acaso não são capazes de julgar as causas de menor importância?</p>
-              <p><span className="font-semibold">³</span> Vocês não sabem que haveremos de julgar os anjos? Quanto mais as coisas desta vida!</p>
-              <p><span className="font-semibold">⁴</span> Portanto, se vocês têm questões relativas às coisas desta vida, designem para juízes os que são da igreja, mesmo que sejam os menos importantes.</p>
-              <p><span className="font-semibold">⁵</span> Digo isso para envergonhá-los. Acaso não há entre vocês alguém suficientemente sábio para julgar uma causa entre irmãos?</p>
-              <p><span className="font-semibold">⁶</span> Mas, ao invés disso, um irmão vai ao tribunal contra outro irmão, e isso diante de descrentes!</p>
-              <p><span className="font-semibold">⁷</span> O fato de haver litígios entre vocês já significa uma completa derrota. Por que não preferem sofrer a injustiça? Por que não preferem sofrer o prejuízo?</p>
-              <p><span className="font-semibold">⁸</span> Em vez disso vocês mesmos causam injustiças e prejuízos, e isso contra irmãos!</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm leading-relaxed text-gray-700 dark:text-gray-300">
+              <p><span className="font-semibold text-blue-600">¹</span> Se algum de vocês tem queixa contra outro irmão, como ousa apresentar a causa para ser julgada pelos ímpios, em vez de levá-la aos santos?</p>
+              <p><span className="font-semibold text-blue-600">²</span> Vocês não sabem que os santos hão de julgar o mundo? Se vocês hão de julgar o mundo, acaso não são capazes de julgar as causas de menor importância?</p>
+              <p><span className="font-semibold text-blue-600">³</span> Vocês não sabem que haveremos de julgar os anjos? Quanto mais as coisas desta vida!</p>
+              <p><span className="font-semibold text-blue-600">⁴</span> Portanto, se vocês têm questões relativas às coisas desta vida, designem para juízes os que são da igreja, mesmo que sejam os menos importantes.</p>
+              <p><span className="font-semibold text-blue-600">⁵</span> Digo isso para envergonhá-los. Acaso não há entre vocês alguém suficientemente sábio para julgar uma causa entre irmãos?</p>
+              <p><span className="font-semibold text-blue-600">⁶</span> Mas, ao invés disso, um irmão vai ao tribunal contra outro irmão, e isso diante de descrentes!</p>
+              <p><span className="font-semibold text-blue-600">⁷</span> O fato de haver litígios entre vocês já significa uma completa derrota. Por que não preferem sofrer a injustiça?</p>
+              <p><span className="font-semibold text-blue-600">⁸</span> Em vez disso vocês mesmos causam injustiças e prejuízos, e isso contra irmãos!</p>
             </div>
           </Card>
         </div>
