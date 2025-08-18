@@ -69,6 +69,25 @@ export const OuvidoriaForm = ({ onBack, selectedType }: OuvidoriaFormProps) => {
 
       if (error) throw error;
 
+      // Enviar email de confirmação se for identificado
+      if (isIdentified === "identificado" && formData.email) {
+        try {
+          await supabase.functions.invoke('send-notification-email', {
+            body: {
+              to: formData.email,
+              subject: 'Confirmação de Manifestação - Ouvidoria Igreja Novos Começos',
+              protocolNumber: data.numero_protocolo,
+              status: 'Aberto',
+              nome: formData.nomeCompleto,
+              isAnonymous: false
+            }
+          });
+        } catch (emailError) {
+          console.error('Erro ao enviar email:', emailError);
+          // Não bloquear o processo se o email falhar
+        }
+      }
+
       toast({
         title: "Solicitação enviada com sucesso!",
         description: `Protocolo: ${data.numero_protocolo}. Você receberá uma resposta em até 15 dias úteis.`,
