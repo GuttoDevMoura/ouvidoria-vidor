@@ -38,7 +38,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
               Qual tipo de manifestação você deseja fazer?
             </h2>
             <p className="text-base md:text-lg text-muted-foreground mb-8">
-              Selecione um dos tipos de manifestação abaixo:
+              Selecione um dos tipos abaixo:
             </p>
             
             {/* Botões de tipos de manifestação */}
