@@ -49,45 +49,45 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
               <Button 
                 size="lg" 
                 onClick={() => onOpenForm("Elogio")}
-                className="group flex flex-col h-32 px-6 text-center space-y-4 bg-card/50 border border-border/50 hover:border-green-300/50 rounded-2xl shadow-none hover:shadow-sm transition-all duration-300 hover:bg-card w-full"
+                className="group flex flex-col h-auto py-6 sm:py-8 px-4 sm:px-6 text-center space-y-3 sm:space-y-4 bg-card border-2 border-border hover:border-green-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 w-full"
               >
-                <div className="rounded-full p-3 transition-colors duration-300 mx-auto">
-                  <ThumbsUp className="h-6 w-6 text-green-500" />
+                <div className="bg-green-50 group-hover:bg-green-100 rounded-full p-3 sm:p-4 transition-colors duration-300 mx-auto">
+                  <ThumbsUp className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" />
                 </div>
-                <span className="text-sm font-normal text-foreground/80 leading-tight">Fazer um Elogio</span>
+                <span className="text-sm sm:text-base font-semibold text-foreground group-hover:text-green-700 transition-colors leading-tight">Fazer um Elogio</span>
               </Button>
               
               <Button 
                 size="lg" 
                 onClick={() => onOpenForm("Sugestão")}
-                className="group flex flex-col h-32 px-6 text-center space-y-4 bg-card/50 border border-border/50 hover:border-blue-300/50 rounded-2xl shadow-none hover:shadow-sm transition-all duration-300 hover:bg-card w-full"
+                className="group flex flex-col h-auto py-6 sm:py-8 px-4 sm:px-6 text-center space-y-3 sm:space-y-4 bg-card border-2 border-border hover:border-blue-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 w-full"
               >
-                <div className="rounded-full p-3 transition-colors duration-300 mx-auto">
-                  <Lightbulb className="h-6 w-6 text-blue-500" />
+                <div className="bg-blue-50 group-hover:bg-blue-100 rounded-full p-3 sm:p-4 transition-colors duration-300 mx-auto">
+                  <Lightbulb className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
                 </div>
-                <span className="text-sm font-normal text-foreground/80 leading-tight">Fazer uma Sugestão</span>
+                <span className="text-sm sm:text-base font-semibold text-foreground group-hover:text-blue-700 transition-colors leading-tight">Fazer uma Sugestão</span>
               </Button>
               
               <Button 
                 size="lg" 
                 onClick={() => onOpenForm("Crítica")}
-                className="group flex flex-col h-32 px-6 text-center space-y-4 bg-card/50 border border-border/50 hover:border-orange-300/50 rounded-2xl shadow-none hover:shadow-sm transition-all duration-300 hover:bg-card w-full"
+                className="group flex flex-col h-auto py-6 sm:py-8 px-4 sm:px-6 text-center space-y-3 sm:space-y-4 bg-card border-2 border-border hover:border-orange-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 w-full"
               >
-                <div className="rounded-full p-3 transition-colors duration-300 mx-auto">
-                  <MessageSquare className="h-6 w-6 text-orange-500" />
+                <div className="bg-orange-50 group-hover:bg-orange-100 rounded-full p-3 sm:p-4 transition-colors duration-300 mx-auto">
+                  <MessageSquare className="h-6 w-6 sm:h-8 sm:w-8 text-orange-600" />
                 </div>
-                <span className="text-sm font-normal text-foreground/80 leading-tight">Fazer uma Crítica</span>
+                <span className="text-sm sm:text-base font-semibold text-foreground group-hover:text-orange-700 transition-colors leading-tight">Fazer uma Crítica</span>
               </Button>
               
               <Button 
                 size="lg" 
                 onClick={() => onOpenForm("Denúncia")}
-                className="group flex flex-col h-32 px-6 text-center space-y-4 bg-card/50 border border-border/50 hover:border-red-300/50 rounded-2xl shadow-none hover:shadow-sm transition-all duration-300 hover:bg-card w-full"
+                className="group flex flex-col h-auto py-6 sm:py-8 px-4 sm:px-6 text-center space-y-3 sm:space-y-4 bg-card border-2 border-border hover:border-red-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 w-full"
               >
-                <div className="rounded-full p-3 transition-colors duration-300 mx-auto">
-                  <Megaphone className="h-6 w-6 text-red-500" />
+                <div className="bg-red-50 group-hover:bg-red-100 rounded-full p-3 sm:p-4 transition-colors duration-300 mx-auto">
+                  <Megaphone className="h-6 w-6 sm:h-8 sm:w-8 text-red-600" />
                 </div>
-                <span className="text-sm font-normal text-foreground/80 leading-tight">Fazer uma Denúncia</span>
+                <span className="text-sm sm:text-base font-semibold text-foreground group-hover:text-red-700 transition-colors leading-tight">Fazer uma Denúncia</span>
               </Button>
             </div>
           </div>
