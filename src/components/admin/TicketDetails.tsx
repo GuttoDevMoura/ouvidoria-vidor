@@ -46,6 +46,7 @@ export const TicketDetails = ({ ticket, onBack, onTicketUpdate }: TicketDetailsP
   const [status, setStatus] = useState<string>(ticket.status);
   const [resumoTratativa, setResumoTratativa] = useState(ticket.resumo_tratativa || "");
   const [loading, setLoading] = useState(false);
+  const [currentTicket, setCurrentTicket] = useState(ticket);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -114,7 +115,7 @@ export const TicketDetails = ({ ticket, onBack, onTicketUpdate }: TicketDetailsP
   const updateTicket = async () => {
     try {
       setLoading(true);
-      const oldStatus = ticket.status;
+      const oldStatus = currentTicket.status;
       
       const { error } = await supabase
         .from('tickets')
@@ -122,21 +123,25 @@ export const TicketDetails = ({ ticket, onBack, onTicketUpdate }: TicketDetailsP
           status: status as any,
           resumo_tratativa: resumoTratativa || null
         })
-        .eq('id', ticket.id);
+        .eq('id', currentTicket.id);
 
       if (error) throw error;
 
+      // Atualizar o ticket local com o novo status
+      const updatedTicket = { ...currentTicket, status, resumo_tratativa: resumoTratativa || null };
+      setCurrentTicket(updatedTicket);
+
       // Enviar email se o status mudou e há email
-      if (oldStatus !== status && ticket.email) {
+      if (oldStatus !== status && currentTicket.email) {
         try {
           await supabase.functions.invoke('send-notification-email', {
             body: {
-              to: ticket.email,
-              subject: `Atualização da Manifestação ${ticket.numero_protocolo}`,
-              protocolNumber: ticket.numero_protocolo,
+              to: currentTicket.email,
+              subject: `Atualização da Manifestação ${currentTicket.numero_protocolo}`,
+              protocolNumber: currentTicket.numero_protocolo,
               status,
-              nome: ticket.nome_completo,
-              isAnonymous: ticket.eh_anonimo
+              nome: currentTicket.nome_completo,
+              isAnonymous: currentTicket.eh_anonimo
             }
           });
         } catch (emailError) {
@@ -193,8 +198,8 @@ export const TicketDetails = ({ ticket, onBack, onTicketUpdate }: TicketDetailsP
                 <p className="text-sm text-muted-foreground">{ticket.tipo_solicitacao}</p>
               </div>
             </div>
-            <Badge variant={getStatusBadgeVariant(ticket.status)}>
-              {ticket.status}
+            <Badge variant={getStatusBadgeVariant(currentTicket.status)}>
+              {currentTicket.status}
             </Badge>
           </div>
         </div>
