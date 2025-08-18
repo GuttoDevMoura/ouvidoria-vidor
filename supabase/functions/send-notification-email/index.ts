@@ -91,13 +91,20 @@ const handler = async (req: Request): Promise<Response> => {
       console.log(`Protocolo: ${protocolNumber}`);
       
       const emailResponse = await resend.emails.send({
-        from: "Ouvidoria <ouvidoria@igrejanovoscomecos.com.br>",
+        from: "Ouvidoria <onboarding@resend.dev>",
         to: [to],
         subject: subject,
         html: htmlContent,
       });
 
-      console.log("Email enviado com sucesso:", emailResponse);
+      console.log("Resposta completa do Resend:", JSON.stringify(emailResponse, null, 2));
+      
+      if (emailResponse.error) {
+        console.error("ERRO DO RESEND:", emailResponse.error);
+        throw new Error(`Erro do Resend: ${emailResponse.error.message || JSON.stringify(emailResponse.error)}`);
+      }
+      
+      console.log("Email enviado com sucesso - ID:", emailResponse.data?.id);
       
     } catch (emailError) {
       console.error("Erro no envio com Resend:", emailError);
