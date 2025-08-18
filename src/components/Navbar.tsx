@@ -33,7 +33,7 @@ export const Navbar = ({ onSectionChange, currentSection }: NavbarProps) => {
               onClick={() => handleSectionClick("home")}
               className="text-xl font-bold text-primary"
             >
-              Vidorê
+              OUVIDORIA NC
             </button>
           </div>
 

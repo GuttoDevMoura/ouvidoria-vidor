@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 const Index = () => {
   const [currentSection, setCurrentSection] = useState("home");
   const [content, setContent] = useState({
-    hero_title: "Vidorê - Ouvidoria da Igreja",
+    hero_title: "OUVIDORIA NC",
     hero_subtitle: "Sua voz é importante para nós. Compartilhe suas experiências, sugestões e feedbacks.",
     about_text: "A Ouvidoria da Igreja Novos Começos é um canal direto de comunicação entre nossa comunidade e a liderança."
   });
