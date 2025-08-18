@@ -17,10 +17,10 @@ const Auth = () => {
   const [searchParams] = useSearchParams();
   const redirect = searchParams.get('redirect') || '/admin';
   
-  const { user, signIn, signUp, loading: authLoading } = useAuth();
+  const { user, signIn, signUp, signOut, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
-  // Redirect if already authenticated
+  // Log do estado sem redirecionar automaticamente
   useEffect(() => {
     console.log('Auth.tsx: useEffect executado:', { 
       hasUser: !!user, 
@@ -28,12 +28,7 @@ const Auth = () => {
       redirect,
       userEmail: user?.email 
     });
-    
-    if (user && !authLoading) {
-      console.log('Auth.tsx: Usuário autenticado encontrado, redirecionando para:', redirect);
-      navigate(redirect);
-    }
-  }, [user, authLoading, navigate, redirect]);
+  }, [user, authLoading, redirect]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -106,6 +101,10 @@ const Auth = () => {
     }
   };
 
+  const handleLogout = async () => {
+    await signOut();
+    toast.success("Logout realizado com sucesso!");
+  };
 
   if (authLoading) {
     console.log('Auth.tsx: Ainda carregando autenticação...', { authLoading, hasUser: !!user });
@@ -142,191 +141,215 @@ const Auth = () => {
               Acesso Administrativo
             </CardTitle>
             <CardDescription className="text-gray-600">
-              Área restrita para membros da equipe da ouvidoria
+              {user ? `Logado como: ${user.email}` : "Área restrita para membros da equipe da ouvidoria"}
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {!isSignUp ? (
-              <form onSubmit={handleSignIn} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="signin-email" className="flex items-center gap-2">
-                    <Mail className="h-4 w-4" />
-                    Email
-                  </Label>
-                  <Input
-                    id="signin-email"
-                    type="email"
-                    placeholder="seu.email@exemplo.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    disabled={loading}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="signin-password" className="flex items-center gap-2">
-                    <Lock className="h-4 w-4" />
-                    Senha
-                  </Label>
-                  <Input
-                    id="signin-password"
-                    type="password"
-                    placeholder="Digite sua senha"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    disabled={loading}
-                  />
+            {user ? (
+              <div className="space-y-4">
+                <div className="text-center p-4 bg-green-50 rounded-lg border border-green-200">
+                  <p className="text-green-800 font-medium">Usuário autenticado com sucesso!</p>
+                  <p className="text-green-700 text-sm">Email: {user.email}</p>
                 </div>
                 <Button 
-                  type="submit" 
-                  className="w-full" 
-                  disabled={loading}
+                  onClick={() => navigate(redirect)}
+                  className="w-full"
                 >
-                  {loading ? "Entrando..." : "Entrar"}
+                  Acessar Área Administrativa
                 </Button>
-              </form>
-            ) : (
-              <form onSubmit={handleSignUp} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="signup-name" className="flex items-center gap-2">
-                    <UserPlus className="h-4 w-4" />
-                    Nome Completo
-                  </Label>
-                  <Input
-                    id="signup-name"
-                    type="text"
-                    placeholder="Seu nome completo"
-                    value={nomeCompleto}
-                    onChange={(e) => setNomeCompleto(e.target.value)}
-                    required
-                    disabled={loading}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="signup-email" className="flex items-center gap-2">
-                    <Mail className="h-4 w-4" />
-                    Email
-                  </Label>
-                  <Input
-                    id="signup-email"
-                    type="email"
-                    placeholder="seu.email@exemplo.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    disabled={loading}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="signup-password" className="flex items-center gap-2">
-                    <Lock className="h-4 w-4" />
-                    Senha
-                  </Label>
-                  <Input
-                    id="signup-password"
-                    type="password"
-                    placeholder="Digite sua senha"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    disabled={loading}
-                  />
-                </div>
                 <Button 
-                  type="submit" 
-                  className="w-full" 
-                  disabled={loading}
-                >
-                  {loading ? "Criando conta..." : "Criar Conta"}
-                </Button>
-              </form>
-            )}
-
-            <div className="mt-4 text-center">
-              <Button
-                variant="link"
-                onClick={() => setIsSignUp(!isSignUp)}
-                disabled={loading}
-                className="text-sm"
-              >
-                {isSignUp ? "Já tem conta? Faça login" : "Precisa criar uma conta?"}
-              </Button>
-            </div>
-
-            <div className="mt-6 pt-6 border-t border-gray-200">
-              <p className="text-sm text-gray-600 text-center mb-4">
-                Esta área é restrita à equipe da Ouvidoria da Igreja Novos Começos.
-              </p>
-              
-              {/* Credenciais de teste */}
-              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                <p className="text-sm text-blue-800 mb-2 font-medium">
-                  🚀 Credenciais de Teste:
-                </p>
-                <p className="text-xs text-blue-700 mb-2">
-                  Use as credenciais abaixo para acessar o sistema:
-                </p>
-                <div className="bg-white p-3 rounded border text-xs mb-3">
-                  <p><strong>Email:</strong> admin@ouvidoria.com</p>
-                  <p><strong>Senha:</strong> admin123</p>
-                </div>
-                <Button
-                  onClick={async () => {
-                    const testEmail = "admin@ouvidoria.com";
-                    const testPassword = "admin123";
-                    const testNome = "Administrador Sistema";
-                    
-                    setLoading(true);
-                    
-                    try {
-                      console.log('Criando usuário admin automaticamente...');
-                      
-                      // Primeiro tentar criar a conta
-                      const { error: signUpError } = await signUp(testEmail, testPassword, testNome);
-                      
-                      if (signUpError && !signUpError.message.includes('already registered')) {
-                        console.error('Erro ao criar usuário:', signUpError);
-                        toast.error(`Erro ao criar conta: ${signUpError.message}`);
-                        return;
-                      }
-                      
-                      // Aguardar um pouco para o usuário ser criado
-                      await new Promise(resolve => setTimeout(resolve, 2000));
-                      
-                      // Tentar fazer login
-                      console.log('Tentando fazer login...');
-                      const { error: signInError } = await signIn(testEmail, testPassword);
-                      
-                      if (signInError) {
-                        console.error('Erro no login:', signInError);
-                        // Se falhar, apenas preencher credenciais
-                        setEmail(testEmail);
-                        setPassword(testPassword);
-                        toast.info("Conta criada. Use o botão 'Entrar' abaixo.");
-                      } else {
-                        toast.success("Login realizado com sucesso!");
-                        navigate(redirect);
-                      }
-                      
-                    } catch (error) {
-                      console.error('Erro inesperado:', error);
-                      setEmail(testEmail);
-                      setPassword(testPassword);
-                      toast.info("Credenciais preenchidas. Use o botão 'Entrar'.");
-                    } finally {
-                      setLoading(false);
-                    }
-                  }}
                   variant="outline"
-                  size="sm"
-                  className="w-full text-xs bg-blue-100 hover:bg-blue-200 border-blue-300"
-                  disabled={loading}
+                  onClick={handleLogout}
+                  className="w-full"
                 >
-                  {loading ? "Criando conta..." : "Criar & Acessar Admin"}
+                  Fazer Logout
                 </Button>
               </div>
-            </div>
+            ) : (
+              <>
+                {!isSignUp ? (
+                  <form onSubmit={handleSignIn} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="signin-email" className="flex items-center gap-2">
+                        <Mail className="h-4 w-4" />
+                        Email
+                      </Label>
+                      <Input
+                        id="signin-email"
+                        type="email"
+                        placeholder="seu.email@exemplo.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        disabled={loading}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="signin-password" className="flex items-center gap-2">
+                        <Lock className="h-4 w-4" />
+                        Senha
+                      </Label>
+                      <Input
+                        id="signin-password"
+                        type="password"
+                        placeholder="Digite sua senha"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        disabled={loading}
+                      />
+                    </div>
+                    <Button 
+                      type="submit" 
+                      className="w-full" 
+                      disabled={loading}
+                    >
+                      {loading ? "Entrando..." : "Entrar"}
+                    </Button>
+                  </form>
+                ) : (
+                  <form onSubmit={handleSignUp} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-name" className="flex items-center gap-2">
+                        <UserPlus className="h-4 w-4" />
+                        Nome Completo
+                      </Label>
+                      <Input
+                        id="signup-name"
+                        type="text"
+                        placeholder="Seu nome completo"
+                        value={nomeCompleto}
+                        onChange={(e) => setNomeCompleto(e.target.value)}
+                        required
+                        disabled={loading}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-email" className="flex items-center gap-2">
+                        <Mail className="h-4 w-4" />
+                        Email
+                      </Label>
+                      <Input
+                        id="signup-email"
+                        type="email"
+                        placeholder="seu.email@exemplo.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        disabled={loading}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-password" className="flex items-center gap-2">
+                        <Lock className="h-4 w-4" />
+                        Senha
+                      </Label>
+                      <Input
+                        id="signup-password"
+                        type="password"
+                        placeholder="Digite sua senha"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        disabled={loading}
+                      />
+                    </div>
+                    <Button 
+                      type="submit" 
+                      className="w-full" 
+                      disabled={loading}
+                    >
+                      {loading ? "Criando conta..." : "Criar Conta"}
+                    </Button>
+                  </form>
+                )}
+
+                <div className="mt-4 text-center">
+                  <Button
+                    variant="link"
+                    onClick={() => setIsSignUp(!isSignUp)}
+                    disabled={loading}
+                    className="text-sm"
+                  >
+                    {isSignUp ? "Já tem conta? Faça login" : "Precisa criar uma conta?"}
+                  </Button>
+                </div>
+
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <p className="text-sm text-gray-600 text-center mb-4">
+                    Esta área é restrita à equipe da Ouvidoria da Igreja Novos Começos.
+                  </p>
+                  
+                  {/* Credenciais de teste */}
+                  <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                    <p className="text-sm text-blue-800 mb-2 font-medium">
+                      🚀 Credenciais de Teste:
+                    </p>
+                    <p className="text-xs text-blue-700 mb-2">
+                      Use as credenciais abaixo para acessar o sistema:
+                    </p>
+                    <div className="bg-white p-3 rounded border text-xs mb-3">
+                      <p><strong>Email:</strong> admin@ouvidoria.com</p>
+                      <p><strong>Senha:</strong> admin123</p>
+                    </div>
+                    <Button
+                      onClick={async () => {
+                        const testEmail = "admin@ouvidoria.com";
+                        const testPassword = "admin123";
+                        const testNome = "Administrador Sistema";
+                        
+                        setLoading(true);
+                        
+                        try {
+                          console.log('Criando usuário admin automaticamente...');
+                          
+                          // Primeiro tentar criar a conta
+                          const { error: signUpError } = await signUp(testEmail, testPassword, testNome);
+                          
+                          if (signUpError && !signUpError.message.includes('already registered')) {
+                            console.error('Erro ao criar usuário:', signUpError);
+                            toast.error(`Erro ao criar conta: ${signUpError.message}`);
+                            return;
+                          }
+                          
+                          // Aguardar um pouco para o usuário ser criado
+                          await new Promise(resolve => setTimeout(resolve, 2000));
+                          
+                          // Tentar fazer login
+                          console.log('Tentando fazer login...');
+                          const { error: signInError } = await signIn(testEmail, testPassword);
+                          
+                          if (signInError) {
+                            console.error('Erro no login:', signInError);
+                            // Se falhar, apenas preencher credenciais
+                            setEmail(testEmail);
+                            setPassword(testPassword);
+                            toast.info("Conta criada. Use o botão 'Entrar' abaixo.");
+                          } else {
+                            toast.success("Login realizado com sucesso!");
+                            navigate(redirect);
+                          }
+                          
+                        } catch (error) {
+                          console.error('Erro inesperado:', error);
+                          setEmail(testEmail);
+                          setPassword(testPassword);
+                          toast.info("Credenciais preenchidas. Use o botão 'Entrar'.");
+                        } finally {
+                          setLoading(false);
+                        }
+                      }}
+                      variant="outline"
+                      size="sm"
+                      className="w-full text-xs bg-blue-100 hover:bg-blue-200 border-blue-300"
+                      disabled={loading}
+                    >
+                      {loading ? "Criando conta..." : "Criar & Acessar Admin"}
+                    </Button>
+                  </div>
+                </div>
+              </>
+            )}
           </CardContent>
         </Card>
       </div>
