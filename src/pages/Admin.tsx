@@ -40,13 +40,17 @@ const Admin = () => {
   const { toast } = useToast();
 
   useEffect(() => {
+    console.log('Admin.tsx - useEffect executado:', { user: user?.email, isAdmin, authLoading });
+    
     if (!authLoading && !user) {
+      console.log('Admin.tsx - Usuário não logado, redirecionando para auth');
       // Redirect to auth page if not logged in
       navigate('/auth?redirect=/admin');
       return;
     }
 
     if (user && !isAdmin) {
+      console.log('Admin.tsx - Usuário logado mas não é admin, redirecionando para home');
       toast({
         title: "Acesso negado",
         description: "Você não tem permissão para acessar esta área.",
@@ -57,6 +61,7 @@ const Admin = () => {
     }
 
     if (user && isAdmin) {
+      console.log('Admin.tsx - Usuário logado e é admin, carregando dados');
       loadTickets();
       loadStats();
     }
