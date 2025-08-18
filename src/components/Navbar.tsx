@@ -15,7 +15,6 @@ export const Navbar = ({ onSectionChange, currentSection }: NavbarProps) => {
   const navItems = [
     { id: "home", label: "Início" },
     { id: "about", label: "Sobre a Ouvidoria" },
-    { id: "form", label: "Abrir Solicitação" },
     { id: "contact", label: "Contato" },
   ];
 
