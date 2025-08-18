@@ -22,8 +22,15 @@ const Auth = () => {
 
   // Redirect if already authenticated
   useEffect(() => {
+    console.log('Auth.tsx: useEffect executado:', { 
+      hasUser: !!user, 
+      authLoading, 
+      redirect,
+      userEmail: user?.email 
+    });
+    
     if (user && !authLoading) {
-      console.log('Usuário logado, redirecionando para:', redirect);
+      console.log('Auth.tsx: Usuário autenticado encontrado, redirecionando para:', redirect);
       navigate(redirect);
     }
   }, [user, authLoading, navigate, redirect]);
