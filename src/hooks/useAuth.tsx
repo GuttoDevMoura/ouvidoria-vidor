@@ -20,60 +20,70 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
 
+  console.log('AuthProvider: Estado atual:', { hasUser: !!user, isAdmin, loading });
+
   useEffect(() => {
     console.log('useAuth: Iniciando configuração de autenticação...');
     
-    // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        console.log('useAuth: Auth state changed:', { event, hasSession: !!session, hasUser: !!session?.user });
+    try {
+      // Set up auth state listener FIRST
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(
+        (event, session) => {
+          console.log('useAuth: Auth state changed:', { event, hasSession: !!session, hasUser: !!session?.user });
+          
+          setSession(session);
+          setUser(session?.user ?? null);
+          
+          // Check admin status when user changes
+          if (session?.user) {
+            console.log('useAuth: Usuário logado, verificando status admin...');
+            setTimeout(() => {
+              checkAdminStatus(session.user.id);
+            }, 0);
+          } else {
+            console.log('useAuth: Usuário deslogado, removendo status admin');
+            setIsAdmin(false);
+          }
+          
+          // Só marca como não loading depois de processar tudo
+          setTimeout(() => {
+            console.log('useAuth: Marcando loading como false');
+            setLoading(false);
+          }, 100);
+        }
+      );
+
+      // THEN check for existing session
+      console.log('useAuth: Verificando sessão existente...');
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        console.log('useAuth: Sessão existente encontrada:', { hasSession: !!session, hasUser: !!session?.user });
         
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Check admin status when user changes
         if (session?.user) {
-          console.log('useAuth: Usuário logado, verificando status admin...');
-          setTimeout(() => {
-            checkAdminStatus(session.user.id);
-          }, 0);
-        } else {
-          console.log('useAuth: Usuário deslogado, removendo status admin');
-          setIsAdmin(false);
+          console.log('useAuth: Verificando admin status para sessão existente...');
+          checkAdminStatus(session.user.id);
         }
         
-        // Só marca como não loading depois de processar tudo
-        setTimeout(() => {
-          console.log('useAuth: Marcando loading como false');
+        // Só marca como não loading se não há sessão
+        if (!session) {
+          console.log('useAuth: Nenhuma sessão existente, marcando loading como false');
           setLoading(false);
-        }, 100);
-      }
-    );
-
-    // THEN check for existing session
-    console.log('useAuth: Verificando sessão existente...');
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log('useAuth: Sessão existente encontrada:', { hasSession: !!session, hasUser: !!session?.user });
-      
-      setSession(session);
-      setUser(session?.user ?? null);
-      
-      if (session?.user) {
-        console.log('useAuth: Verificando admin status para sessão existente...');
-        checkAdminStatus(session.user.id);
-      }
-      
-      // Só marca como não loading se não há sessão
-      if (!session) {
-        console.log('useAuth: Nenhuma sessão existente, marcando loading como false');
+        }
+      }).catch((error) => {
+        console.error('useAuth: Erro ao verificar sessão existente:', error);
         setLoading(false);
-      }
-    });
+      });
 
-    return () => {
-      console.log('useAuth: Limpando subscription de auth');
-      subscription.unsubscribe();
-    };
+      return () => {
+        console.log('useAuth: Limpando subscription de auth');
+        subscription.unsubscribe();
+      };
+    } catch (error) {
+      console.error('useAuth: Erro CRÍTICO na configuração de autenticação:', error);
+      setLoading(false);
+    }
   }, []);
 
   const checkAdminStatus = async (userId: string) => {

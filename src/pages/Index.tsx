@@ -6,6 +6,8 @@ import { TrackingForm } from "@/components/TrackingForm";
 import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
+  console.log('Index.tsx: Componente renderizando...');
+  
   const [currentSection, setCurrentSection] = useState("home");
   const [selectedType, setSelectedType] = useState<string>("");
   const [content, setContent] = useState({
@@ -58,6 +60,8 @@ const Index = () => {
   const handleBackToHome = () => {
     setCurrentSection("home");
   };
+
+  console.log('Index.tsx: Renderizando com seção:', currentSection);
 
   return (
     <div className="min-h-screen bg-background">
