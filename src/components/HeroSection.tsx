@@ -40,7 +40,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
                 onClick={() => onOpenForm("Elogio")}
                 className="flex flex-col h-auto py-6 px-4 text-center space-y-2 bg-green-600 hover:bg-green-700"
               >
-                <ThumbsUp className="h-12 w-12" />
+                <ThumbsUp className="h-[70px] w-[70px]" />
                 <span className="text-sm font-medium">Fazer um Elogio</span>
               </Button>
               
@@ -49,7 +49,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
                 onClick={() => onOpenForm("Sugestão")}
                 className="flex flex-col h-auto py-6 px-4 text-center space-y-2 bg-blue-600 hover:bg-blue-700"
               >
-                <Lightbulb className="h-12 w-12" />
+                <Lightbulb className="h-[70px] w-[70px]" />
                 <span className="text-sm font-medium">Fazer uma Sugestão</span>
               </Button>
               
@@ -58,7 +58,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
                 onClick={() => onOpenForm("Crítica")}
                 className="flex flex-col h-auto py-6 px-4 text-center space-y-2 bg-orange-600 hover:bg-orange-700"
               >
-                <MessageSquare className="h-12 w-12" />
+                <MessageSquare className="h-[70px] w-[70px]" />
                 <span className="text-sm font-medium">Fazer uma Crítica</span>
               </Button>
               
@@ -67,7 +67,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
                 onClick={() => onOpenForm("Denúncia")}
                 className="flex flex-col h-auto py-6 px-4 text-center space-y-2 bg-red-600 hover:bg-red-700"
               >
-                <AlertTriangle className="h-12 w-12" />
+                <AlertTriangle className="h-[70px] w-[70px]" />
                 <span className="text-sm font-medium">Fazer uma Denúncia</span>
               </Button>
             </div>
