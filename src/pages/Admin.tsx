@@ -6,7 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, LogOut, Users, FileText, TrendingUp, Mail, User, BarChart3 } from "lucide-react";
+import { ArrowLeft, LogOut, Users, FileText, TrendingUp, Mail, User, BarChart3, AlertTriangle } from "lucide-react";
 import { TicketDetails } from "@/components/admin/TicketDetails";
 
 interface Ticket {
@@ -145,6 +145,54 @@ const Admin = () => {
     return new Date(dateString).toLocaleDateString('pt-BR');
   };
 
+  const calculateBusinessDays = (startDate: Date, endDate: Date) => {
+    let count = 0;
+    const current = new Date(startDate);
+    
+    while (current <= endDate) {
+      const dayOfWeek = current.getDay();
+      if (dayOfWeek !== 0 && dayOfWeek !== 6) { // Not Sunday (0) or Saturday (6)
+        count++;
+      }
+      current.setDate(current.getDate() + 1);
+    }
+    
+    return count;
+  };
+
+  const getSLAStatus = (createdAt: string, status: string) => {
+    if (status === 'Fechado') return null;
+    
+    const created = new Date(createdAt);
+    const now = new Date();
+    const businessDaysElapsed = calculateBusinessDays(created, now);
+    
+    if (businessDaysElapsed >= 15) {
+      return 'overdue'; // Vencido
+    } else if (businessDaysElapsed >= 10) {
+      return 'warning'; // Faltando 5 dias
+    } else {
+      return 'ok'; // No prazo
+    }
+  };
+
+  const getSLAIcon = (slaStatus: string | null) => {
+    if (!slaStatus) return null;
+    
+    const baseClasses = "h-4 w-4 ml-2";
+    
+    switch (slaStatus) {
+      case 'overdue':
+        return <AlertTriangle className={`${baseClasses} text-destructive animate-pulse`} />;
+      case 'warning':
+        return <AlertTriangle className={`${baseClasses} text-orange-500 animate-pulse`} />;
+      case 'ok':
+        return <AlertTriangle className={`${baseClasses} text-green-500 animate-pulse opacity-50`} />;
+      default:
+        return null;
+    }
+  };
+
   if (authLoading || loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
@@ -214,7 +262,7 @@ const Admin = () => {
                 </Button>
               )}
               
-              <h1 className="text-lg font-semibold">Painel Administrativo - Ouvidoria</h1>
+              <h1 className="text-sm font-medium">Admin - Ouvidoria</h1>
             </div>
             <Button variant="outline" onClick={signOut}>
               <LogOut className="mr-2 h-4 w-4" />
@@ -298,6 +346,7 @@ const Admin = () => {
                       <span className="text-sm text-muted-foreground">
                         {ticket.eh_anonimo ? "Anônimo" : ticket.nome_completo}
                       </span>
+                      {getSLAIcon(getSLAStatus(ticket.created_at, ticket.status))}
                     </div>
                     <div className="mt-2">
                       <p className="text-sm text-muted-foreground">
