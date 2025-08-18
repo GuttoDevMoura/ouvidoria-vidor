@@ -206,21 +206,34 @@ export const OuvidoriaForm = ({ onBack, selectedType }: OuvidoriaFormProps) => {
 
                    <div>
                      <Label htmlFor="tipoSolicitacao">Tipo de Solicitação *</Label>
-                     <Select 
-                       value={formData.tipoSolicitacao}
-                       onValueChange={(value) => setFormData({...formData, tipoSolicitacao: value})}
-                     >
-                       <SelectTrigger>
-                         <SelectValue placeholder="Selecione o tipo" />
-                       </SelectTrigger>
-                       <SelectContent>
-                         {tipoOptions.map((tipo) => (
-                           <SelectItem key={tipo} value={tipo}>
-                             {tipo}
-                           </SelectItem>
-                         ))}
-                       </SelectContent>
-                     </Select>
+                     {selectedType ? (
+                       <div 
+                         className={`h-10 px-3 py-2 border rounded-md flex items-center font-bold text-white ${
+                           selectedType === 'Elogio' ? 'bg-green-600/80 border-green-600' :
+                           selectedType === 'Sugestão' ? 'bg-blue-600/80 border-blue-600' :
+                           selectedType === 'Crítica' ? 'bg-orange-600/80 border-orange-600' :
+                           selectedType === 'Denúncia' ? 'bg-red-600/80 border-red-600' : 'bg-gray-600/80 border-gray-600'
+                         }`}
+                       >
+                         {selectedType}
+                       </div>
+                     ) : (
+                       <Select 
+                         value={formData.tipoSolicitacao}
+                         onValueChange={(value) => setFormData({...formData, tipoSolicitacao: value})}
+                       >
+                         <SelectTrigger>
+                           <SelectValue placeholder="Selecione o tipo" />
+                         </SelectTrigger>
+                         <SelectContent>
+                           {tipoOptions.map((tipo) => (
+                             <SelectItem key={tipo} value={tipo}>
+                               {tipo}
+                             </SelectItem>
+                           ))}
+                         </SelectContent>
+                       </Select>
+                     )}
                    </div>
 
                   <div>
