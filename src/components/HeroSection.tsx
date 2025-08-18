@@ -38,37 +38,45 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
               <Button 
                 size="lg" 
                 onClick={() => onOpenForm("Elogio")}
-                className="flex flex-col h-auto py-6 px-4 text-center space-y-2 bg-green-600 hover:bg-green-700"
+                className="flex flex-col h-auto py-8 px-6 text-center space-y-4 bg-green-600 hover:bg-green-700 rounded-xl"
               >
-                <ThumbsUp className="h-[200px] w-[200px]" />
-                <span className="text-sm font-medium">Fazer um Elogio</span>
+                <div className="bg-white/20 rounded-full p-4">
+                  <ThumbsUp className="h-8 w-8 text-white" />
+                </div>
+                <span className="text-sm font-medium text-white">Fazer um Elogio</span>
               </Button>
               
               <Button 
                 size="lg" 
                 onClick={() => onOpenForm("Sugestão")}
-                className="flex flex-col h-auto py-6 px-4 text-center space-y-2 bg-blue-600 hover:bg-blue-700"
+                className="flex flex-col h-auto py-8 px-6 text-center space-y-4 bg-blue-600 hover:bg-blue-700 rounded-xl"
               >
-                <Lightbulb className="h-[200px] w-[200px]" />
-                <span className="text-sm font-medium">Fazer uma Sugestão</span>
+                <div className="bg-white/20 rounded-full p-4">
+                  <Lightbulb className="h-8 w-8 text-white" />
+                </div>
+                <span className="text-sm font-medium text-white">Fazer uma Sugestão</span>
               </Button>
               
               <Button 
                 size="lg" 
                 onClick={() => onOpenForm("Crítica")}
-                className="flex flex-col h-auto py-6 px-4 text-center space-y-2 bg-orange-600 hover:bg-orange-700"
+                className="flex flex-col h-auto py-8 px-6 text-center space-y-4 bg-orange-600 hover:bg-orange-700 rounded-xl"
               >
-                <MessageSquare className="h-[200px] w-[200px]" />
-                <span className="text-sm font-medium">Fazer uma Crítica</span>
+                <div className="bg-white/20 rounded-full p-4">
+                  <MessageSquare className="h-8 w-8 text-white" />
+                </div>
+                <span className="text-sm font-medium text-white">Fazer uma Crítica</span>
               </Button>
               
               <Button 
                 size="lg" 
                 onClick={() => onOpenForm("Denúncia")}
-                className="flex flex-col h-auto py-6 px-4 text-center space-y-2 bg-red-600 hover:bg-red-700"
+                className="flex flex-col h-auto py-8 px-6 text-center space-y-4 bg-red-600 hover:bg-red-700 rounded-xl"
               >
-                <AlertTriangle className="h-[200px] w-[200px]" />
-                <span className="text-sm font-medium">Fazer uma Denúncia</span>
+                <div className="bg-white/20 rounded-full p-4">
+                  <AlertTriangle className="h-8 w-8 text-white" />
+                </div>
+                <span className="text-sm font-medium text-white">Fazer uma Denúncia</span>
               </Button>
             </div>
           </div>
