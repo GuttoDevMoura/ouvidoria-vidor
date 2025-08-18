@@ -25,18 +25,15 @@ const Auth = () => {
     console.log('Auth.tsx: useEffect executado:', { 
       hasUser: !!user, 
       authLoading, 
-      redirect,
       userEmail: user?.email 
     });
     
     // Se o usuário já está logado e não está carregando, redirecionar automaticamente
     if (user && !authLoading) {
       console.log('Auth.tsx: Usuário já logado, redirecionando para /admin');
-      setTimeout(() => {
-        navigate('/admin', { replace: true });
-      }, 500);
+      window.location.href = '/admin';
     }
-  }, [user, authLoading, navigate]);
+  }, [user, authLoading]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,10 +65,8 @@ const Auth = () => {
       } else {
         console.log("Login realizado com sucesso!");
         toast.success("Login realizado com sucesso!");
-        // Aguardar um pouco para garantir que o estado foi atualizado
-        setTimeout(() => {
-          navigate('/admin', { replace: true });
-        }, 100);
+        // Redirecionamento imediato sem delay
+        window.location.href = '/admin';
       }
     } catch (error) {
       console.error('Erro inesperado no login:', error);
