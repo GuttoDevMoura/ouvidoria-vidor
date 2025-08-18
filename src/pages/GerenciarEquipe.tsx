@@ -92,6 +92,7 @@ export default function GerenciarEquipe() {
           .from('profiles')
           .update({ 
             nome_completo: formData.nome_completo,
+            email: formData.email,
             role: formData.role
           })
           .eq('user_id', editingMember.user_id);
@@ -136,6 +137,7 @@ export default function GerenciarEquipe() {
             .from('profiles')
             .update({ 
               nome_completo: formData.nome_completo,
+              email: formData.email,
               role: formData.role
             })
             .eq('user_id', authData.user.id);
