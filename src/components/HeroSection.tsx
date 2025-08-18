@@ -16,27 +16,27 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero */}
-      <div className="pt-28 pb-16">
+      <div className="pt-24 pb-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto">
-            <div className="flex justify-center mb-6">
+            <div className="flex justify-center mb-4">
               <img 
                 src="/lovable-uploads/127fdf71-f341-47a6-9849-5730551fe462.png" 
                 alt="Igreja Novos Começos" 
-                className="h-16 w-auto mb-3"
+                className="h-14 w-auto mb-2"
               />
             </div>
             
-            <h1 className="text-5xl md:text-7xl font-black text-foreground mb-3 tracking-tight">
+            <h1 className="text-5xl md:text-7xl font-black text-foreground mb-2 tracking-tight">
               {content.hero_title}
             </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground mb-12 font-light leading-relaxed max-w-3xl mx-auto">
+            <p className="text-xl md:text-2xl text-muted-foreground mb-8 font-light leading-relaxed max-w-3xl mx-auto">
               {content.hero_subtitle}
             </p>
             
             {/* Título da seção de manifestação */}
-            <div className="mb-10">
-              <h2 className="text-2xl md:text-3xl text-foreground font-bold mb-3">
+            <div className="mb-6">
+              <h2 className="text-2xl md:text-3xl text-foreground font-bold mb-2">
                 Qual tipo de manifestação você deseja fazer?
               </h2>
               <p className="text-lg text-muted-foreground font-light">
@@ -45,14 +45,14 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
             </div>
             
             {/* Botões de tipos de manifestação */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 max-w-5xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
               <Button 
                 size="lg" 
                 onClick={() => onOpenForm("Elogio")}
-                className="group flex flex-col h-auto py-12 px-8 text-center space-y-6 bg-white border-2 border-gray-100 hover:border-green-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
+                className="group flex flex-col h-auto py-8 px-6 text-center space-y-4 bg-white border-2 border-gray-100 hover:border-green-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
               >
-                <div className="bg-green-50 group-hover:bg-green-100 rounded-full p-6 transition-colors duration-300">
-                  <ThumbsUp className="h-10 w-10 text-green-600" />
+                <div className="bg-green-50 group-hover:bg-green-100 rounded-full p-4 transition-colors duration-300">
+                  <ThumbsUp className="h-8 w-8 text-green-600" />
                 </div>
                 <span className="text-base font-semibold text-foreground group-hover:text-green-700 transition-colors">Fazer um Elogio</span>
               </Button>
@@ -60,10 +60,10 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
               <Button 
                 size="lg" 
                 onClick={() => onOpenForm("Sugestão")}
-                className="group flex flex-col h-auto py-12 px-8 text-center space-y-6 bg-white border-2 border-gray-100 hover:border-blue-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
+                className="group flex flex-col h-auto py-8 px-6 text-center space-y-4 bg-white border-2 border-gray-100 hover:border-blue-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
               >
-                <div className="bg-blue-50 group-hover:bg-blue-100 rounded-full p-6 transition-colors duration-300">
-                  <Lightbulb className="h-10 w-10 text-blue-600" />
+                <div className="bg-blue-50 group-hover:bg-blue-100 rounded-full p-4 transition-colors duration-300">
+                  <Lightbulb className="h-8 w-8 text-blue-600" />
                 </div>
                 <span className="text-base font-semibold text-foreground group-hover:text-blue-700 transition-colors">Fazer uma Sugestão</span>
               </Button>
@@ -71,10 +71,10 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
               <Button 
                 size="lg" 
                 onClick={() => onOpenForm("Crítica")}
-                className="group flex flex-col h-auto py-12 px-8 text-center space-y-6 bg-white border-2 border-gray-100 hover:border-orange-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
+                className="group flex flex-col h-auto py-8 px-6 text-center space-y-4 bg-white border-2 border-gray-100 hover:border-orange-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
               >
-                <div className="bg-orange-50 group-hover:bg-orange-100 rounded-full p-6 transition-colors duration-300">
-                  <MessageSquare className="h-10 w-10 text-orange-600" />
+                <div className="bg-orange-50 group-hover:bg-orange-100 rounded-full p-4 transition-colors duration-300">
+                  <MessageSquare className="h-8 w-8 text-orange-600" />
                 </div>
                 <span className="text-base font-semibold text-foreground group-hover:text-orange-700 transition-colors">Fazer uma Crítica</span>
               </Button>
@@ -82,10 +82,10 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
               <Button 
                 size="lg" 
                 onClick={() => onOpenForm("Denúncia")}
-                className="group flex flex-col h-auto py-12 px-8 text-center space-y-6 bg-white border-2 border-gray-100 hover:border-red-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
+                className="group flex flex-col h-auto py-8 px-6 text-center space-y-4 bg-white border-2 border-gray-100 hover:border-red-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
               >
-                <div className="bg-red-50 group-hover:bg-red-100 rounded-full p-6 transition-colors duration-300">
-                  <Megaphone className="h-10 w-10 text-red-600" />
+                <div className="bg-red-50 group-hover:bg-red-100 rounded-full p-4 transition-colors duration-300">
+                  <Megaphone className="h-8 w-8 text-red-600" />
                 </div>
                 <span className="text-base font-semibold text-foreground group-hover:text-red-700 transition-colors">Fazer uma Denúncia</span>
               </Button>
