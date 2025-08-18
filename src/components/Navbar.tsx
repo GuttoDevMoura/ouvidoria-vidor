@@ -31,9 +31,14 @@ export const Navbar = ({ onSectionChange, currentSection }: NavbarProps) => {
           <div className="flex items-center">
             <button
               onClick={() => handleSectionClick("home")}
-              className="text-xl font-bold text-primary"
+              className="flex items-center space-x-3"
             >
-              OUVIDORIA NC
+              <img 
+                src="/lovable-uploads/127fdf71-f341-47a6-9849-5730551fe462.png" 
+                alt="Igreja Novos Começos" 
+                className="h-8 w-auto"
+              />
+              <span className="text-xl font-bold text-primary">OUVIDORIA NC</span>
             </button>
           </div>
 
