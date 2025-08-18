@@ -211,7 +211,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
                   <strong>Formulário eletrônico:</strong> Canal preferencial e mais rápido através desta página.
                 </p>
                 <p>
-                  <strong>Atendimento presencial:</strong> Mediante agendamento com a Secretaria da Lagoinha Rio, por meio do telefone, e-mail, ou diretamente na sede, na Estrada Francisco da Cruz Nunes, nº 119, Piratininga, Niterói/RJ.
+                  <strong>Atendimento presencial:</strong> Mediante agendamento com a Secretaria do Campus, por meio do telefone, e-mail, ou diretamente na sede, na Estrada Francisco da Cruz Nunes, nº 119, Piratininga, Niterói/RJ.
                 </p>
               </div>
             </Card>
