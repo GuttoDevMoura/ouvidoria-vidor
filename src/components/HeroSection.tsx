@@ -168,6 +168,27 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
         </div>
       </div>
 
+      {/* Call to Action - Abrir Manifestação */}
+      <div className="py-12">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-2xl font-bold text-foreground mb-4">
+            Pronto para fazer sua manifestação?
+          </h2>
+          <p className="text-lg text-muted-foreground mb-8">
+            Escolha o tipo de manifestação que melhor se adequa à sua situação
+          </p>
+          <Button 
+            size="lg" 
+            onClick={() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="bg-primary hover:bg-primary/90 text-white px-8 py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+          >
+            Abrir uma Manifestação
+          </Button>
+        </div>
+      </div>
+
       {/* Informações da Ouvidoria */}
       <div className="py-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
