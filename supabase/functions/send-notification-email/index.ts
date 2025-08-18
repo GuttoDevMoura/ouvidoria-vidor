@@ -88,23 +88,43 @@ const handler = async (req: Request): Promise<Response> => {
       </html>
     `;
 
-    // Por enquanto, vamos simular o envio e logar para debug
+    // Enviar email usando SMTP.js via API
     try {
-      console.log("SIMULANDO envio de email...");
+      console.log("Enviando email via SMTP.js...");
       console.log(`Para: ${to}`);
       console.log(`Assunto: ${subject}`);
       console.log(`Protocolo: ${protocolNumber}`);
-      console.log(`De: ouvidoria@igrejanovoscomecos.com.br`);
-      console.log("HTML Content preparado:", htmlContent.substring(0, 200) + "...");
       
-      // TODO: Implementar envio real usando um serviço mais robusto
-      // Opções: EmailJS, SendGrid, Mailgun, ou integração direta com API do provedor
+      const emailResponse = await fetch('https://smtpjs.com/v3/smtpjs.aspx', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          'Username': 'ouvidoria@igrejanovoscomecos.com.br',
+          'Password': 'NC#2024!ouv',
+          'Host': 'smtp.emailemnuvem.com.br',
+          'Port': '465',
+          'EnableSSL': 'true',
+          'From': 'ouvidoria@igrejanovoscomecos.com.br',
+          'To': to,
+          'Subject': subject,
+          'Body': htmlContent
+        })
+      });
       
-      console.log("Email SIMULADO enviado com sucesso!");
+      const result = await emailResponse.text();
+      console.log("Resposta do SMTP.js:", result);
+      
+      if (result.includes('OK')) {
+        console.log("Email enviado com sucesso via SMTP.js!");
+      } else {
+        throw new Error(`Erro no SMTP.js: ${result}`);
+      }
       
     } catch (emailError) {
-      console.error("Erro no processamento:", emailError);
-      throw new Error(`Falha no processamento: ${emailError.message}`);
+      console.error("Erro no envio via SMTP.js:", emailError);
+      throw new Error(`Falha no envio: ${emailError.message}`);
     }
 
     return new Response(JSON.stringify({ 
