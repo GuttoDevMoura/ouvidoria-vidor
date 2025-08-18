@@ -199,44 +199,44 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
       </div>
 
       {/* Informações da Ouvidoria */}
-      <div className="py-16">
+      <div className="py-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Atribuições */}
-            <Card className="p-8 h-full">
-              <div className="flex items-start space-x-4 mb-6">
-                <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded-full">
-                  <Shield className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+            <Card className="p-6 h-full">
+              <div className="flex items-start space-x-3 mb-4">
+                <div className="bg-blue-50 p-2 rounded-lg">
+                  <Shield className="h-5 w-5 text-blue-600" />
                 </div>
-                <h3 className="text-2xl font-bold text-foreground">Atribuições</h3>
+                <h3 className="text-xl font-bold text-foreground">Atribuições</h3>
               </div>
-              <p className="text-muted-foreground leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed text-sm">
                 Compete a Ouvidoria receber denúncias, elogios, críticas, reclamações, sugestões e outros expedientes de qualquer natureza que lhes sejam encaminhados acerca das atividades desenvolvidas pela Igreja Lagoinha Rio e/ou das condutas entre os membros, voluntários e pastores.
               </p>
             </Card>
 
             {/* Estrutura */}
-            <Card className="p-8 h-full">
-              <div className="flex items-start space-x-4 mb-6">
-                <div className="bg-green-100 dark:bg-green-900 p-3 rounded-full">
-                  <Users className="h-6 w-6 text-green-600 dark:text-green-400" />
+            <Card className="p-6 h-full">
+              <div className="flex items-start space-x-3 mb-4">
+                <div className="bg-green-50 p-2 rounded-lg">
+                  <Users className="h-5 w-5 text-green-600" />
                 </div>
-                <h3 className="text-2xl font-bold text-foreground">Estrutura</h3>
+                <h3 className="text-xl font-bold text-foreground">Estrutura</h3>
               </div>
-              <p className="text-muted-foreground leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed text-sm">
                 É composta por um pastor Ouvidor, nomeado pelo Pastor Presidente, preferencialmente, com formação em Direito.
               </p>
             </Card>
 
             {/* Como fazer */}
-            <Card className="p-8 h-full">
-              <div className="flex items-start space-x-4 mb-6">
-                <div className="bg-purple-100 dark:bg-purple-900 p-3 rounded-full">
-                  <MessageCircle className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+            <Card className="p-6 h-full">
+              <div className="flex items-start space-x-3 mb-4">
+                <div className="bg-purple-50 p-2 rounded-lg">
+                  <MessageCircle className="h-5 w-5 text-purple-600" />
                 </div>
-                <h3 className="text-2xl font-bold text-foreground">Como fazer</h3>
+                <h3 className="text-xl font-bold text-foreground">Como fazer</h3>
               </div>
-              <div className="space-y-4 text-muted-foreground leading-relaxed">
+              <div className="space-y-3 text-muted-foreground leading-relaxed text-sm">
                 <p>
                   <strong>Formulário eletrônico:</strong> Canal preferencial e mais rápido através desta página.
                 </p>
@@ -247,28 +247,28 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
             </Card>
 
             {/* Tratamento da demanda */}
-            <Card className="p-8 h-full">
-              <div className="flex items-start space-x-4 mb-6">
-                <div className="bg-orange-100 dark:bg-orange-900 p-3 rounded-full">
-                  <Clock className="h-6 w-6 text-orange-600 dark:text-orange-400" />
+            <Card className="p-6 h-full">
+              <div className="flex items-start space-x-3 mb-4">
+                <div className="bg-orange-50 p-2 rounded-lg">
+                  <Clock className="h-5 w-5 text-orange-600" />
                 </div>
-                <h3 className="text-2xl font-bold text-foreground">Tratamento da demanda</h3>
+                <h3 className="text-xl font-bold text-foreground">Tratamento da demanda</h3>
               </div>
-              <p className="text-muted-foreground leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed text-sm">
                 Com o recebimento da demanda, o Pastor iniciará a busca das informações sobre o caso, podendo se valer de todos os meios de provas disponíveis, a fim de se chegar a uma conclusão do fato. Após, discricionariamente, serão adotadas as medidas necessárias à solução da demanda, à luz da Bíblia e do Estatuto da Igreja.
               </p>
             </Card>
           </div>
 
           {/* Importante */}
-          <Card className="mt-8 p-8 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-950/30 dark:to-orange-950/30 border-yellow-200 dark:border-yellow-800">
-            <div className="flex items-start space-x-4">
-              <div className="bg-yellow-100 dark:bg-yellow-900 p-3 rounded-full">
-                <Lightbulb className="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
+          <Card className="mt-6 p-6 bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-200">
+            <div className="flex items-start space-x-3">
+              <div className="bg-yellow-100 p-2 rounded-lg">
+                <Lightbulb className="h-5 w-5 text-yellow-600" />
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-foreground mb-4">Importante</h3>
-                <p className="text-muted-foreground leading-relaxed">
+                <h3 className="text-xl font-bold text-foreground mb-3">Importante</h3>
+                <p className="text-muted-foreground leading-relaxed text-sm">
                   Ao remeter a sua comunicação forneça o maior número de informações, a fim de viabilizar a apuração dos fatos.
                 </p>
               </div>
