@@ -32,33 +32,33 @@ export const Navbar = ({ onSectionChange, currentSection }: NavbarProps) => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-20">
           <div className="flex items-center">
             <button
               onClick={() => handleSectionClick("home")}
-              className="flex items-center space-x-3"
+              className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
             >
               <img 
                 src="/lovable-uploads/127fdf71-f341-47a6-9849-5730551fe462.png" 
                 alt="Igreja Novos Começos" 
-                className="h-8 w-auto"
+                className="h-10 w-auto"
               />
-              <span className="text-xl font-bold text-primary">OUVIDORIA NC</span>
+              <span className="text-2xl font-black text-foreground tracking-tight">OUVIDORIA</span>
             </button>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
+          <div className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => handleSectionClick(item.id)}
-                className={`px-3 py-2 text-sm font-medium transition-colors ${
+                className={`px-4 py-2 text-base font-medium transition-colors rounded-lg ${
                   currentSection === item.id
-                    ? "text-primary"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "text-foreground bg-gray-100"
+                    : "text-muted-foreground hover:text-foreground hover:bg-gray-50"
                 }`}
               >
                 {item.label}
@@ -69,6 +69,7 @@ export const Navbar = ({ onSectionChange, currentSection }: NavbarProps) => {
                 variant="outline" 
                 size="sm"
                 onClick={() => window.location.href = "/admin"}
+                className="border-gray-200 hover:bg-gray-50"
               >
                 Área Administrativa
               </Button>

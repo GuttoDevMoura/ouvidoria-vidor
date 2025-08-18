@@ -14,77 +14,80 @@ interface HeroSectionProps {
 
 export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-primary/5 to-background">
+    <div className="min-h-screen bg-white">
       {/* Hero */}
-      <div className="pt-24 pb-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="pt-32 pb-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto">
-            <div className="flex justify-center mb-6">
+            <div className="flex justify-center mb-8">
               <img 
                 src="/lovable-uploads/127fdf71-f341-47a6-9849-5730551fe462.png" 
                 alt="Igreja Novos Começos" 
-                className="h-16 w-auto mb-4"
+                className="h-20 w-auto mb-6"
               />
             </div>
-            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-3">
+            
+            <h1 className="text-5xl md:text-7xl font-black text-foreground mb-4 tracking-tight">
               {content.hero_title}
             </h1>
-            <p className="text-2xl md:text-3xl text-muted-foreground mb-8 leading-relaxed font-bold">
+            <p className="text-xl md:text-2xl text-muted-foreground mb-16 font-light leading-relaxed max-w-3xl mx-auto">
               {content.hero_subtitle}
             </p>
             
             {/* Título da seção de manifestação */}
-            <h2 className="text-xl md:text-2xl text-blue-600 font-bold mb-2">
-              Qual tipo de manifestação você deseja fazer?
-            </h2>
-            <p className="text-base md:text-lg text-muted-foreground mb-8">
-              Selecione um dos tipos abaixo:
-            </p>
+            <div className="mb-16">
+              <h2 className="text-2xl md:text-3xl text-foreground font-bold mb-4">
+                Qual tipo de manifestação você deseja fazer?
+              </h2>
+              <p className="text-lg text-muted-foreground font-light">
+                Selecione um dos tipos abaixo:
+              </p>
+            </div>
             
             {/* Botões de tipos de manifestação */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
               <Button 
                 size="lg" 
                 onClick={() => onOpenForm("Elogio")}
-                className="flex flex-col h-auto py-8 px-6 text-center space-y-4 bg-green-600 hover:bg-green-700 rounded-xl shadow-lg shadow-green-600/30 hover:shadow-green-600/40 transition-all duration-300"
+                className="group flex flex-col h-auto py-12 px-8 text-center space-y-6 bg-white border-2 border-gray-100 hover:border-green-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
               >
-                <div className="bg-white/20 rounded-full p-4">
-                  <ThumbsUp className="h-8 w-8 text-white" />
+                <div className="bg-green-50 group-hover:bg-green-100 rounded-full p-6 transition-colors duration-300">
+                  <ThumbsUp className="h-10 w-10 text-green-600" />
                 </div>
-                <span className="text-sm font-medium text-white">Fazer um Elogio</span>
+                <span className="text-base font-semibold text-foreground group-hover:text-green-700 transition-colors">Fazer um Elogio</span>
               </Button>
               
               <Button 
                 size="lg" 
                 onClick={() => onOpenForm("Sugestão")}
-                className="flex flex-col h-auto py-8 px-6 text-center space-y-4 bg-blue-600 hover:bg-blue-700 rounded-xl shadow-lg shadow-blue-600/30 hover:shadow-blue-600/40 transition-all duration-300"
+                className="group flex flex-col h-auto py-12 px-8 text-center space-y-6 bg-white border-2 border-gray-100 hover:border-blue-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
               >
-                <div className="bg-white/20 rounded-full p-4">
-                  <Lightbulb className="h-8 w-8 text-white" />
+                <div className="bg-blue-50 group-hover:bg-blue-100 rounded-full p-6 transition-colors duration-300">
+                  <Lightbulb className="h-10 w-10 text-blue-600" />
                 </div>
-                <span className="text-sm font-medium text-white">Fazer uma Sugestão</span>
+                <span className="text-base font-semibold text-foreground group-hover:text-blue-700 transition-colors">Fazer uma Sugestão</span>
               </Button>
               
               <Button 
                 size="lg" 
                 onClick={() => onOpenForm("Crítica")}
-                className="flex flex-col h-auto py-8 px-6 text-center space-y-4 bg-orange-600 hover:bg-orange-700 rounded-xl shadow-lg shadow-orange-600/30 hover:shadow-orange-600/40 transition-all duration-300"
+                className="group flex flex-col h-auto py-12 px-8 text-center space-y-6 bg-white border-2 border-gray-100 hover:border-orange-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
               >
-                <div className="bg-white/20 rounded-full p-4">
-                  <MessageSquare className="h-8 w-8 text-white" />
+                <div className="bg-orange-50 group-hover:bg-orange-100 rounded-full p-6 transition-colors duration-300">
+                  <MessageSquare className="h-10 w-10 text-orange-600" />
                 </div>
-                <span className="text-sm font-medium text-white">Fazer uma Crítica</span>
+                <span className="text-base font-semibold text-foreground group-hover:text-orange-700 transition-colors">Fazer uma Crítica</span>
               </Button>
               
               <Button 
                 size="lg" 
                 onClick={() => onOpenForm("Denúncia")}
-                className="flex flex-col h-auto py-8 px-6 text-center space-y-4 bg-red-600 hover:bg-red-700 rounded-xl shadow-lg shadow-red-600/30 hover:shadow-red-600/40 transition-all duration-300"
+                className="group flex flex-col h-auto py-12 px-8 text-center space-y-6 bg-white border-2 border-gray-100 hover:border-red-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
               >
-                <div className="bg-white/20 rounded-full p-4">
-                  <Megaphone className="h-8 w-8 text-white" />
+                <div className="bg-red-50 group-hover:bg-red-100 rounded-full p-6 transition-colors duration-300">
+                  <Megaphone className="h-10 w-10 text-red-600" />
                 </div>
-                <span className="text-sm font-medium text-white">Fazer uma Denúncia</span>
+                <span className="text-base font-semibold text-foreground group-hover:text-red-700 transition-colors">Fazer uma Denúncia</span>
               </Button>
             </div>
           </div>
@@ -92,32 +95,38 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
       </div>
 
       {/* Features */}
-      <div className="py-16 bg-card">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="p-6 text-center">
-              <Shield className="h-12 w-12 text-primary mx-auto mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Seguro e Confidencial</h3>
-              <p className="text-muted-foreground">
+      <div className="py-20 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div className="text-center">
+              <div className="bg-white rounded-full p-6 w-20 h-20 mx-auto mb-6 shadow-sm">
+                <Shield className="h-8 w-8 text-primary mx-auto" />
+              </div>
+              <h3 className="text-xl font-bold text-foreground mb-4">Seguro e Confidencial</h3>
+              <p className="text-muted-foreground leading-relaxed">
                 Suas informações são tratadas com total sigilo e segurança
               </p>
-            </Card>
+            </div>
             
-            <Card className="p-6 text-center">
-              <Clock className="h-12 w-12 text-primary mx-auto mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Resposta em 15 dias</h3>
-              <p className="text-muted-foreground">
+            <div className="text-center">
+              <div className="bg-white rounded-full p-6 w-20 h-20 mx-auto mb-6 shadow-sm">
+                <Clock className="h-8 w-8 text-primary mx-auto" />
+              </div>
+              <h3 className="text-xl font-bold text-foreground mb-4">Resposta em 15 dias</h3>
+              <p className="text-muted-foreground leading-relaxed">
                 Compromisso de resposta em até 15 dias úteis
               </p>
-            </Card>
+            </div>
             
-            <Card className="p-6 text-center">
-              <Users className="h-12 w-12 text-primary mx-auto mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Equipe Dedicada</h3>
-              <p className="text-muted-foreground">
+            <div className="text-center">
+              <div className="bg-white rounded-full p-6 w-20 h-20 mx-auto mb-6 shadow-sm">
+                <Users className="h-8 w-8 text-primary mx-auto" />
+              </div>
+              <h3 className="text-xl font-bold text-foreground mb-4">Equipe Dedicada</h3>
+              <p className="text-muted-foreground leading-relaxed">
                 Profissionais capacitados para atender sua demanda
               </p>
-            </Card>
+            </div>
           </div>
         </div>
       </div>
