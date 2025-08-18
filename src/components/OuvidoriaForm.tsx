@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -55,10 +55,10 @@ export const OuvidoriaForm = ({ onBack }: OuvidoriaFormProps) => {
         nome_completo: isIdentified === "identificado" ? formData.nomeCompleto : null,
         contato_whatsapp: isIdentified === "identificado" ? formData.whatsapp : null,
         email: isIdentified === "identificado" ? formData.email : null,
-        campus: formData.campus as any,
-        tipo_solicitacao: formData.tipoSolicitacao as any,
+        campus: formData.campus,
+        tipo_solicitacao: formData.tipoSolicitacao,
         descricao: formData.descricao
-      };
+      } as any;
 
       const { data, error } = await supabase
         .from('tickets')
