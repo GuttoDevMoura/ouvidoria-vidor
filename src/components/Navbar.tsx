@@ -35,10 +35,10 @@ export const Navbar = ({ onSectionChange, currentSection, onTrackingClick }: Nav
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 sm:h-20">
-          <div className="flex items-center">
+          <div className="flex items-center mr-12">
             <button
               onClick={() => handleSectionClick("home")}
-              className="flex items-center space-x-2 sm:space-x-3 hover:opacity-80 transition-opacity"
+              className="flex items-center space-x-3 sm:space-x-4 hover:opacity-80 transition-opacity"
             >
               <img 
                 src="/lovable-uploads/127fdf71-f341-47a6-9849-5730551fe462.png" 
