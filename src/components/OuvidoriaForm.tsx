@@ -70,9 +70,17 @@ export const OuvidoriaForm = ({ onBack, selectedType }: OuvidoriaFormProps) => {
       if (error) throw error;
 
       // Enviar email de confirmação se for identificado
+      console.log("Verificando envio de email:", {
+        isIdentified,
+        hasEmail: !!formData.email,
+        email: formData.email,
+        protocolNumber: data.numero_protocolo
+      });
+      
       if (isIdentified === "identificado" && formData.email) {
+        console.log("Tentando enviar email de confirmação...");
         try {
-          await supabase.functions.invoke('send-notification-email', {
+          const emailResult = await supabase.functions.invoke('send-notification-email', {
             body: {
               to: formData.email,
               subject: 'Confirmação de Manifestação - Ouvidoria Igreja Novos Começos',
@@ -82,10 +90,13 @@ export const OuvidoriaForm = ({ onBack, selectedType }: OuvidoriaFormProps) => {
               isAnonymous: false
             }
           });
+          console.log("Resultado do envio de email:", emailResult);
         } catch (emailError) {
           console.error('Erro ao enviar email:', emailError);
           // Não bloquear o processo se o email falhar
         }
+      } else {
+        console.log("Email não enviado - usuário não identificado ou sem email");
       }
 
       toast({
