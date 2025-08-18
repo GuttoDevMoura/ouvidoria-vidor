@@ -37,19 +37,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           // Check admin status when user changes
           if (session?.user) {
             console.log('useAuth: Usuário logado, verificando status admin...');
-            setTimeout(() => {
-              checkAdminStatus(session.user.id);
-            }, 0);
+            checkAdminStatus(session.user.id);
           } else {
             console.log('useAuth: Usuário deslogado, removendo status admin');
             setIsAdmin(false);
-          }
-          
-          // Só marca como não loading depois de processar tudo
-          setTimeout(() => {
-            console.log('useAuth: Marcando loading como false');
             setLoading(false);
-          }, 100);
+          }
         }
       );
 
@@ -101,6 +94,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (error) {
         console.error('checkAdminStatus: ERRO na consulta:', error);
         setIsAdmin(false);
+        setLoading(false);
         return;
       }
       
@@ -113,6 +107,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           comparison: `${data.role} === 'admin' = ${adminStatus}`
         });
         setIsAdmin(adminStatus);
+        setLoading(false);
       } else {
         console.log('checkAdminStatus: NENHUM PROFILE encontrado, CRIANDO profile padrão...');
         
@@ -132,10 +127,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           console.log('checkAdminStatus: PROFILE ADMIN criado com SUCESSO');
           setIsAdmin(true);
         }
+        setLoading(false);
       }
     } catch (error) {
       console.error('checkAdminStatus: ERRO INESPERADO:', error);
       setIsAdmin(false);
+      setLoading(false);
     }
   };
 
