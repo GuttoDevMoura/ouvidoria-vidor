@@ -84,12 +84,29 @@ const handler = async (req: Request): Promise<Response> => {
       </html>
     `;
 
-    // Simular envio SMTP (implementação básica)
-    // Em produção, você usaria uma biblioteca SMTP adequada
-    console.log(`Enviando email para: ${to}`);
-    console.log(`Assunto: ${subject}`);
-    console.log(`Protocolo: ${protocolNumber}`);
-    console.log(`Status: ${status}`);
+    // Implementação real de envio SMTP
+    const nodemailer = await import("npm:nodemailer@6.9.7");
+    
+    const transporter = nodemailer.createTransporter({
+      host: host,
+      port: parseInt(port),
+      secure: true, // true para porta 465, false para outras portas
+      auth: {
+        user: username,
+        pass: password,
+      },
+    });
+
+    const mailOptions = {
+      from: `"Ouvidoria Igreja Novos Começos" <${username}>`,
+      to: to,
+      subject: subject,
+      html: htmlContent,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log(`Email enviado com sucesso para: ${to}`);
+    console.log(`Message ID: ${info.messageId}`);
 
     return new Response(JSON.stringify({ 
       success: true, 
