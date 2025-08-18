@@ -34,28 +34,28 @@ export const Navbar = ({ onSectionChange, currentSection }: NavbarProps) => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
+        <div className="flex justify-between items-center h-16 sm:h-20">
           <div className="flex items-center">
             <button
               onClick={() => handleSectionClick("home")}
-              className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
+              className="flex items-center space-x-2 sm:space-x-3 hover:opacity-80 transition-opacity"
             >
               <img 
                 src="/lovable-uploads/127fdf71-f341-47a6-9849-5730551fe462.png" 
                 alt="Igreja Novos Começos" 
-                className="h-10 w-auto"
+                className="h-8 sm:h-10 w-auto"
               />
-              <span className="text-2xl font-black text-foreground tracking-tight">OUVIDORIA</span>
+              <span className="text-lg sm:text-xl md:text-2xl font-black text-foreground tracking-tight">OUVIDORIA</span>
             </button>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
             {navItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => handleSectionClick(item.id)}
-                className={`px-4 py-2 text-base font-medium transition-colors rounded-lg ${
+                className={`px-3 lg:px-4 py-2 text-sm lg:text-base font-medium transition-colors rounded-lg ${
                   currentSection === item.id
                     ? "text-foreground bg-gray-100"
                     : "text-muted-foreground hover:text-foreground hover:bg-gray-50"
@@ -69,9 +69,10 @@ export const Navbar = ({ onSectionChange, currentSection }: NavbarProps) => {
                 variant="outline" 
                 size="sm"
                 onClick={() => window.location.href = "/admin"}
-                className="border-gray-200 hover:bg-gray-50"
+                className="border-gray-200 hover:bg-gray-50 text-xs lg:text-sm"
               >
-                Área Administrativa
+                <span className="hidden lg:inline">Área Administrativa</span>
+                <span className="lg:hidden">Admin</span>
               </Button>
             )}
           </div>
@@ -90,16 +91,16 @@ export const Navbar = ({ onSectionChange, currentSection }: NavbarProps) => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden bg-background border-t border-border">
+          <div className="md:hidden bg-white border-t border-gray-100">
             <div className="px-2 pt-2 pb-3 space-y-1">
               {navItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => handleSectionClick(item.id)}
-                  className={`block w-full text-left px-3 py-2 text-base font-medium transition-colors ${
+                  className={`block w-full text-left px-3 py-3 text-base font-medium transition-colors rounded-lg ${
                     currentSection === item.id
-                      ? "text-primary"
-                      : "text-muted-foreground hover:text-foreground"
+                      ? "text-foreground bg-gray-100"
+                      : "text-muted-foreground hover:text-foreground hover:bg-gray-50"
                   }`}
                 >
                   {item.label}
@@ -109,7 +110,7 @@ export const Navbar = ({ onSectionChange, currentSection }: NavbarProps) => {
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  className="w-full mt-2"
+                  className="w-full mt-3 border-gray-200 hover:bg-gray-50"
                   onClick={() => window.location.href = "/admin"}
                 >
                   Área Administrativa
