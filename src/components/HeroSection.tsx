@@ -135,6 +135,117 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
           </div>
         </div>
       </div>
+
+      {/* Base Bíblica */}
+      <div className="py-16 bg-card">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-foreground mb-4">
+              Base Bíblica
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              A base Bíblica da criação da Ouvidoria se encontra na carta escrita pelo apóstolo Paulo à igreja de Corintos.
+            </p>
+          </div>
+          
+          <Card className="max-w-4xl mx-auto p-8 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border-blue-200 dark:border-blue-800">
+            <div className="text-center mb-6">
+              <h3 className="text-2xl font-semibold text-blue-800 dark:text-blue-200 mb-2">
+                1 Coríntios 6:1-8
+              </h3>
+            </div>
+            <div className="space-y-4 text-base leading-relaxed text-gray-700 dark:text-gray-300">
+              <p><span className="font-semibold">¹</span> Se algum de vocês tem queixa contra outro irmão, como ousa apresentar a causa para ser julgada pelos ímpios, em vez de levá-la aos santos?</p>
+              <p><span className="font-semibold">²</span> Vocês não sabem que os santos hão de julgar o mundo? Se vocês hão de julgar o mundo, acaso não são capazes de julgar as causas de menor importância?</p>
+              <p><span className="font-semibold">³</span> Vocês não sabem que haveremos de julgar os anjos? Quanto mais as coisas desta vida!</p>
+              <p><span className="font-semibold">⁴</span> Portanto, se vocês têm questões relativas às coisas desta vida, designem para juízes os que são da igreja, mesmo que sejam os menos importantes.</p>
+              <p><span className="font-semibold">⁵</span> Digo isso para envergonhá-los. Acaso não há entre vocês alguém suficientemente sábio para julgar uma causa entre irmãos?</p>
+              <p><span className="font-semibold">⁶</span> Mas, ao invés disso, um irmão vai ao tribunal contra outro irmão, e isso diante de descrentes!</p>
+              <p><span className="font-semibold">⁷</span> O fato de haver litígios entre vocês já significa uma completa derrota. Por que não preferem sofrer a injustiça? Por que não preferem sofrer o prejuízo?</p>
+              <p><span className="font-semibold">⁸</span> Em vez disso vocês mesmos causam injustiças e prejuízos, e isso contra irmãos!</p>
+            </div>
+          </Card>
+        </div>
+      </div>
+
+      {/* Informações da Ouvidoria */}
+      <div className="py-16">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Atribuições */}
+            <Card className="p-8 h-full">
+              <div className="flex items-start space-x-4 mb-6">
+                <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded-full">
+                  <Shield className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                </div>
+                <h3 className="text-2xl font-bold text-foreground">Atribuições</h3>
+              </div>
+              <p className="text-muted-foreground leading-relaxed">
+                Compete a Ouvidoria receber denúncias, elogios, críticas, reclamações, sugestões e outros expedientes de qualquer natureza que lhes sejam encaminhados acerca das atividades desenvolvidas pela Igreja Lagoinha Rio e/ou das condutas entre os membros, voluntários e pastores.
+              </p>
+            </Card>
+
+            {/* Estrutura */}
+            <Card className="p-8 h-full">
+              <div className="flex items-start space-x-4 mb-6">
+                <div className="bg-green-100 dark:bg-green-900 p-3 rounded-full">
+                  <Users className="h-6 w-6 text-green-600 dark:text-green-400" />
+                </div>
+                <h3 className="text-2xl font-bold text-foreground">Estrutura</h3>
+              </div>
+              <p className="text-muted-foreground leading-relaxed">
+                É composta por um pastor Ouvidor, nomeado pelo Pastor Presidente, preferencialmente, com formação em Direito.
+              </p>
+            </Card>
+
+            {/* Como fazer */}
+            <Card className="p-8 h-full">
+              <div className="flex items-start space-x-4 mb-6">
+                <div className="bg-purple-100 dark:bg-purple-900 p-3 rounded-full">
+                  <MessageCircle className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                </div>
+                <h3 className="text-2xl font-bold text-foreground">Como fazer</h3>
+              </div>
+              <div className="space-y-4 text-muted-foreground leading-relaxed">
+                <p>
+                  <strong>Formulário eletrônico:</strong> Canal preferencial e mais rápido através desta página.
+                </p>
+                <p>
+                  <strong>Atendimento presencial:</strong> Mediante agendamento com a Secretaria da Lagoinha Rio, por meio do telefone, e-mail, ou diretamente na sede, na Estrada Francisco da Cruz Nunes, nº 119, Piratininga, Niterói/RJ.
+                </p>
+              </div>
+            </Card>
+
+            {/* Tratamento da demanda */}
+            <Card className="p-8 h-full">
+              <div className="flex items-start space-x-4 mb-6">
+                <div className="bg-orange-100 dark:bg-orange-900 p-3 rounded-full">
+                  <Clock className="h-6 w-6 text-orange-600 dark:text-orange-400" />
+                </div>
+                <h3 className="text-2xl font-bold text-foreground">Tratamento da demanda</h3>
+              </div>
+              <p className="text-muted-foreground leading-relaxed">
+                Com o recebimento da demanda, o Pastor iniciará a busca das informações sobre o caso, podendo se valer de todos os meios de provas disponíveis, a fim de se chegar a uma conclusão do fato. Após, discricionariamente, serão adotadas as medidas necessárias à solução da demanda, à luz da Bíblia e do Estatuto da Igreja.
+              </p>
+            </Card>
+          </div>
+
+          {/* Importante */}
+          <Card className="mt-8 p-8 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-950/30 dark:to-orange-950/30 border-yellow-200 dark:border-yellow-800">
+            <div className="flex items-start space-x-4">
+              <div className="bg-yellow-100 dark:bg-yellow-900 p-3 rounded-full">
+                <Lightbulb className="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-foreground mb-4">Importante</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Ao remeter a sua comunicação forneça o maior número de informações, a fim de viabilizar a apuração dos fatos.
+                </p>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 };
