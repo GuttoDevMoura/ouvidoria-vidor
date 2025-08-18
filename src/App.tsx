@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Admin from "./pages/Admin";
 import Auth from "./pages/Auth";
@@ -29,10 +30,26 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/acompanhar" element={<UserTracking />} />
               <Route path="/auth" element={<Auth />} />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/emails-pendentes" element={<EmailsPendentes />} />
-              <Route path="/gerenciar-equipe" element={<GerenciarEquipe />} />
+              <Route path="/admin" element={
+                <ProtectedRoute requireAgent>
+                  <Admin />
+                </ProtectedRoute>
+              } />
+              <Route path="/dashboard" element={
+                <ProtectedRoute requireAdmin>
+                  <Dashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/emails-pendentes" element={
+                <ProtectedRoute requireAdmin>
+                  <EmailsPendentes />
+                </ProtectedRoute>
+              } />
+              <Route path="/gerenciar-equipe" element={
+                <ProtectedRoute requireAdmin>
+                  <GerenciarEquipe />
+                </ProtectedRoute>
+              } />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
