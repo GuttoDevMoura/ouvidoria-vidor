@@ -85,28 +85,42 @@ const handler = async (req: Request): Promise<Response> => {
     `;
 
     // Implementação real de envio SMTP
-    const nodemailer = await import("npm:nodemailer@6.9.7");
+    console.log("Iniciando configuração do nodemailer...");
     
-    const transporter = nodemailer.createTransporter({
-      host: host,
-      port: parseInt(port),
-      secure: true, // true para porta 465, false para outras portas
-      auth: {
-        user: username,
-        pass: password,
-      },
-    });
+    try {
+      const nodemailer = await import("npm:nodemailer@6.9.7");
+      console.log("Nodemailer importado com sucesso");
+      
+      const transporter = nodemailer.createTransporter({
+        host: host,
+        port: parseInt(port),
+        secure: true, // true para porta 465, false para outras portas
+        auth: {
+          user: username,
+          pass: password,
+        },
+        debug: true,
+        logger: true
+      });
 
-    const mailOptions = {
-      from: `"Ouvidoria Igreja Novos Começos" <${username}>`,
-      to: to,
-      subject: subject,
-      html: htmlContent,
-    };
+      console.log(`Configurando email para: ${to}`);
+      
+      const mailOptions = {
+        from: `"Ouvidoria Igreja Novos Começos" <${username}>`,
+        to: to,
+        subject: subject,
+        html: htmlContent,
+      };
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log(`Email enviado com sucesso para: ${to}`);
-    console.log(`Message ID: ${info.messageId}`);
+      console.log("Enviando email...");
+      const info = await transporter.sendMail(mailOptions);
+      console.log(`Email enviado com sucesso para: ${to}`);
+      console.log(`Message ID: ${info.messageId}`);
+      
+    } catch (smtpError) {
+      console.error("Erro detalhado no SMTP:", smtpError);
+      throw new Error(`Erro ao enviar email via SMTP: ${smtpError.message}`);
+    }
 
     return new Response(JSON.stringify({ 
       success: true, 
