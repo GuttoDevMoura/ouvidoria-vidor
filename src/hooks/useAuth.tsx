@@ -96,11 +96,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    return { error };
+    console.log("useAuth.signIn chamado para:", email);
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      console.log("supabase.auth.signInWithPassword resultado:", { error });
+      return { error };
+    } catch (err) {
+      console.error("Erro capturado em signIn:", err);
+      return { error: err };
+    }
   };
 
   const signOut = async () => {

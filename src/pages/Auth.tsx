@@ -34,21 +34,31 @@ const Auth = () => {
 
     setLoading(true);
     try {
+      console.log("Tentando fazer login com:", email);
+      
       const { error } = await signIn(email, password);
+      
+      console.log("Resultado do login:", { error });
+      
       if (error) {
+        console.error("Erro detalhado:", error);
         if (error.message.includes('Invalid login credentials')) {
           toast.error("Email ou senha incorretos");
         } else if (error.message.includes('Email not confirmed')) {
           toast.error("Por favor, confirme seu email antes de fazer login");
+        } else if (error.message.includes('Database error')) {
+          toast.error("Erro no banco de dados. Tente novamente em alguns instantes.");
+          console.error("Database error details:", error);
         } else {
           toast.error(error.message || "Erro ao fazer login");
         }
       } else {
+        console.log("Login realizado com sucesso!");
         toast.success("Login realizado com sucesso!");
         navigate(redirect);
       }
     } catch (error) {
-      console.error('Erro no login:', error);
+      console.error('Erro inesperado no login:', error);
       toast.error("Erro inesperado ao fazer login");
     } finally {
       setLoading(false);
