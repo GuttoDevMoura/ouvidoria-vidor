@@ -23,6 +23,7 @@ const Auth = () => {
   // Redirect if already authenticated
   useEffect(() => {
     if (user && !authLoading) {
+      console.log('Usuário logado, redirecionando para:', redirect);
       navigate(redirect);
     }
   }, [user, authLoading, navigate, redirect]);
