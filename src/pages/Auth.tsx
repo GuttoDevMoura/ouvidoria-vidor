@@ -108,6 +108,7 @@ const Auth = () => {
 
 
   if (authLoading) {
+    console.log('Auth.tsx: Ainda carregando autenticação...', { authLoading, hasUser: !!user });
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="text-center">

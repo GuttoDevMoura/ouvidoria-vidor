@@ -77,7 +77,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const checkAdminStatus = async (userId: string) => {
-    console.log('checkAdminStatus: Iniciando verificação para userId:', userId);
+    console.log('checkAdminStatus: INICIANDO verificação para userId:', userId);
     
     try {
       const { data, error } = await supabase
@@ -86,24 +86,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         .eq('user_id', userId)
         .maybeSingle();
       
-      console.log('checkAdminStatus: Resultado da consulta:', { data, error });
+      console.log('checkAdminStatus: RESULTADO da consulta:', { data, error, userId });
       
       if (error) {
-        console.error('checkAdminStatus: Erro na consulta:', error);
+        console.error('checkAdminStatus: ERRO na consulta:', error);
         setIsAdmin(false);
         return;
       }
       
       if (data) {
         const adminStatus = data.role === 'admin';
-        console.log('checkAdminStatus: Profile encontrado:', { 
+        console.log('checkAdminStatus: PROFILE ENCONTRADO:', { 
           role: data.role, 
           isAdmin: adminStatus,
-          roleType: typeof data.role 
+          roleType: typeof data.role,
+          comparison: `${data.role} === 'admin' = ${adminStatus}`
         });
         setIsAdmin(adminStatus);
       } else {
-        console.log('checkAdminStatus: Nenhum profile encontrado, criando profile padrão...');
+        console.log('checkAdminStatus: NENHUM PROFILE encontrado, CRIANDO profile padrão...');
         
         // Tentar criar um profile padrão se não existir
         const { error: insertError } = await supabase
@@ -115,15 +116,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           });
           
         if (insertError) {
-          console.error('checkAdminStatus: Erro ao criar profile:', insertError);
+          console.error('checkAdminStatus: ERRO ao criar profile:', insertError);
           setIsAdmin(false);
         } else {
-          console.log('checkAdminStatus: Profile admin criado com sucesso');
+          console.log('checkAdminStatus: PROFILE ADMIN criado com SUCESSO');
           setIsAdmin(true);
         }
       }
     } catch (error) {
-      console.error('checkAdminStatus: Erro inesperado:', error);
+      console.error('checkAdminStatus: ERRO INESPERADO:', error);
       setIsAdmin(false);
     }
   };
