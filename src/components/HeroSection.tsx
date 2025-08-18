@@ -40,7 +40,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
                 onClick={() => onOpenForm("Elogio")}
                 className="flex flex-col h-auto py-6 px-4 text-center space-y-2 bg-green-600 hover:bg-green-700"
               >
-                <ThumbsUp className="h-8 w-8" />
+                <ThumbsUp className="h-10 w-10" />
                 <span className="text-sm font-medium">Fazer um Elogio</span>
               </Button>
               
@@ -49,7 +49,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
                 onClick={() => onOpenForm("Sugestão")}
                 className="flex flex-col h-auto py-6 px-4 text-center space-y-2 bg-blue-600 hover:bg-blue-700"
               >
-                <Lightbulb className="h-8 w-8" />
+                <Lightbulb className="h-10 w-10" />
                 <span className="text-sm font-medium">Fazer uma Sugestão</span>
               </Button>
               
@@ -58,7 +58,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
                 onClick={() => onOpenForm("Crítica")}
                 className="flex flex-col h-auto py-6 px-4 text-center space-y-2 bg-orange-600 hover:bg-orange-700"
               >
-                <MessageSquare className="h-8 w-8" />
+                <MessageSquare className="h-10 w-10" />
                 <span className="text-sm font-medium">Fazer uma Crítica</span>
               </Button>
               
@@ -67,7 +67,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
                 onClick={() => onOpenForm("Denúncia")}
                 className="flex flex-col h-auto py-6 px-4 text-center space-y-2 bg-red-600 hover:bg-red-700"
               >
-                <AlertTriangle className="h-8 w-8" />
+                <AlertTriangle className="h-10 w-10" />
                 <span className="text-sm font-medium">Fazer uma Denúncia</span>
               </Button>
             </div>
