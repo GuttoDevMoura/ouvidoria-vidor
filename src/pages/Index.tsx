@@ -32,7 +32,7 @@ const Index = () => {
         }, {} as Record<string, string>);
         
         setContent({
-          hero_title: contentMap.hero_title || "OUVIDORIA NC",
+          hero_title: contentMap.hero_title || "OUVIDORIA",
           hero_subtitle: contentMap.hero_subtitle || "Ouvindo por algo maior...", 
           about_text: contentMap.about_text || "A Ouvidoria da Igreja Novos Começos é um canal direto de comunicação entre nossa comunidade e a liderança."
         });
