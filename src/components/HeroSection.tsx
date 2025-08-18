@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { MessageCircle, Shield, Clock, Users, ThumbsUp, MessageSquare, AlertTriangle, Lightbulb } from "lucide-react";
+import { MessageCircle, Shield, Clock, Users, ThumbsUp, MessageSquare, Megaphone, Lightbulb } from "lucide-react";
 
 interface HeroSectionProps {
   onOpenForm: (type?: string) => void;
@@ -74,7 +74,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
                 className="flex flex-col h-auto py-8 px-6 text-center space-y-4 bg-red-600 hover:bg-red-700 rounded-xl"
               >
                 <div className="bg-white/20 rounded-full p-4">
-                  <AlertTriangle className="h-8 w-8 text-white" />
+                  <Megaphone className="h-8 w-8 text-white" />
                 </div>
                 <span className="text-sm font-medium text-white">Fazer uma Denúncia</span>
               </Button>
