@@ -46,7 +46,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
               <Button 
                 size="lg" 
                 onClick={() => onOpenForm("Elogio")}
-                className="flex flex-col h-auto py-8 px-6 text-center space-y-4 bg-green-600 hover:bg-green-700 rounded-xl"
+                className="flex flex-col h-auto py-8 px-6 text-center space-y-4 bg-green-600 hover:bg-green-700 rounded-xl shadow-lg shadow-green-600/30 hover:shadow-green-600/40 transition-all duration-300"
               >
                 <div className="bg-white/20 rounded-full p-4">
                   <ThumbsUp className="h-8 w-8 text-white" />
@@ -57,7 +57,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
               <Button 
                 size="lg" 
                 onClick={() => onOpenForm("Sugestão")}
-                className="flex flex-col h-auto py-8 px-6 text-center space-y-4 bg-blue-600 hover:bg-blue-700 rounded-xl"
+                className="flex flex-col h-auto py-8 px-6 text-center space-y-4 bg-blue-600 hover:bg-blue-700 rounded-xl shadow-lg shadow-blue-600/30 hover:shadow-blue-600/40 transition-all duration-300"
               >
                 <div className="bg-white/20 rounded-full p-4">
                   <Lightbulb className="h-8 w-8 text-white" />
@@ -68,7 +68,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
               <Button 
                 size="lg" 
                 onClick={() => onOpenForm("Crítica")}
-                className="flex flex-col h-auto py-8 px-6 text-center space-y-4 bg-orange-600 hover:bg-orange-700 rounded-xl"
+                className="flex flex-col h-auto py-8 px-6 text-center space-y-4 bg-orange-600 hover:bg-orange-700 rounded-xl shadow-lg shadow-orange-600/30 hover:shadow-orange-600/40 transition-all duration-300"
               >
                 <div className="bg-white/20 rounded-full p-4">
                   <MessageSquare className="h-8 w-8 text-white" />
@@ -79,7 +79,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
               <Button 
                 size="lg" 
                 onClick={() => onOpenForm("Denúncia")}
-                className="flex flex-col h-auto py-8 px-6 text-center space-y-4 bg-red-600 hover:bg-red-700 rounded-xl"
+                className="flex flex-col h-auto py-8 px-6 text-center space-y-4 bg-red-600 hover:bg-red-700 rounded-xl shadow-lg shadow-red-600/30 hover:shadow-red-600/40 transition-all duration-300"
               >
                 <div className="bg-white/20 rounded-full p-4">
                   <Megaphone className="h-8 w-8 text-white" />
