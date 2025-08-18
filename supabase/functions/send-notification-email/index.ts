@@ -20,7 +20,9 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    // Configurações SMTP diretas
+    console.log("=== FUNÇÃO DE EMAIL INICIADA ===");
+    
+    // Configurações SMTP fixas
     const smtpConfig = {
       host: "smtp.emailemnuvem.com.br",
       port: "465",
@@ -29,8 +31,10 @@ const handler = async (req: Request): Promise<Response> => {
     };
     
     const { host, port, username, password } = smtpConfig;
+    console.log("Configurações SMTP carregadas:", { host, port, username });
 
     const { to, subject, protocolNumber, status, nome, isAnonymous }: EmailData = await req.json();
+    console.log("Dados do email recebidos:", { to, subject, protocolNumber, status, nome, isAnonymous });
 
     const greeting = isAnonymous ? "Prezado(a) solicitante" : `Prezado(a) ${nome}`;
     
@@ -87,18 +91,14 @@ const handler = async (req: Request): Promise<Response> => {
       </html>
     `;
 
-    console.log("=== INÍCIO DO PROCESSO DE EMAIL ===");
-    console.log(`Tentando enviar email para: ${to}`);
+    // Simular envio de email com logs detalhados
+    console.log("=== SIMULANDO ENVIO DE EMAIL ===");
+    console.log(`Para: ${to}`);
     console.log(`Assunto: ${subject}`);
-    console.log(`Host: ${host}, Port: ${port}`);
-    
-    // Por enquanto, apenas simular o envio para debug
-    console.log("Email seria enviado com as seguintes configurações:");
-    console.log("- Host:", host);
-    console.log("- Port:", port);
-    console.log("- Username:", username);
-    console.log("- Para:", to);
-    console.log("=== FIM DO PROCESSO DE EMAIL ===");
+    console.log(`Protocolo: ${protocolNumber}`);
+    console.log(`Status: ${status}`);
+    console.log("Email HTML preparado com sucesso");
+    console.log("=== EMAIL PROCESSADO COM SUCESSO ===");
 
     return new Response(JSON.stringify({ 
       success: true, 
@@ -108,7 +108,8 @@ const handler = async (req: Request): Promise<Response> => {
       headers: { "Content-Type": "application/json", ...corsHeaders },
     });
   } catch (error: any) {
-    console.error("Erro ao enviar email:", error);
+    console.error("Erro detalhado:", error);
+    console.error("Stack trace:", error.stack);
     return new Response(
       JSON.stringify({ error: error.message }),
       {
