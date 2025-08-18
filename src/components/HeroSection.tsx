@@ -14,7 +14,7 @@ interface HeroSectionProps {
 
 export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       {/* Hero */}
       <div className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
@@ -49,7 +49,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
               <Button 
                 size="lg" 
                 onClick={() => onOpenForm("Elogio")}
-                className="group flex flex-col h-auto py-6 sm:py-8 px-4 sm:px-6 text-center space-y-3 sm:space-y-4 bg-white border-2 border-gray-100 hover:border-green-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 w-full"
+                className="group flex flex-col h-auto py-6 sm:py-8 px-4 sm:px-6 text-center space-y-3 sm:space-y-4 bg-card border-2 border-border hover:border-green-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 w-full"
               >
                 <div className="bg-green-50 group-hover:bg-green-100 rounded-full p-3 sm:p-4 transition-colors duration-300 mx-auto">
                   <ThumbsUp className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" />
@@ -60,7 +60,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
               <Button 
                 size="lg" 
                 onClick={() => onOpenForm("Sugestão")}
-                className="group flex flex-col h-auto py-6 sm:py-8 px-4 sm:px-6 text-center space-y-3 sm:space-y-4 bg-white border-2 border-gray-100 hover:border-blue-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 w-full"
+                className="group flex flex-col h-auto py-6 sm:py-8 px-4 sm:px-6 text-center space-y-3 sm:space-y-4 bg-card border-2 border-border hover:border-blue-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 w-full"
               >
                 <div className="bg-blue-50 group-hover:bg-blue-100 rounded-full p-3 sm:p-4 transition-colors duration-300 mx-auto">
                   <Lightbulb className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
@@ -71,7 +71,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
               <Button 
                 size="lg" 
                 onClick={() => onOpenForm("Crítica")}
-                className="group flex flex-col h-auto py-6 sm:py-8 px-4 sm:px-6 text-center space-y-3 sm:space-y-4 bg-white border-2 border-gray-100 hover:border-orange-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 w-full"
+                className="group flex flex-col h-auto py-6 sm:py-8 px-4 sm:px-6 text-center space-y-3 sm:space-y-4 bg-card border-2 border-border hover:border-orange-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 w-full"
               >
                 <div className="bg-orange-50 group-hover:bg-orange-100 rounded-full p-3 sm:p-4 transition-colors duration-300 mx-auto">
                   <MessageSquare className="h-6 w-6 sm:h-8 sm:w-8 text-orange-600" />
@@ -82,7 +82,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
               <Button 
                 size="lg" 
                 onClick={() => onOpenForm("Denúncia")}
-                className="group flex flex-col h-auto py-6 sm:py-8 px-4 sm:px-6 text-center space-y-3 sm:space-y-4 bg-white border-2 border-gray-100 hover:border-red-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 w-full"
+                className="group flex flex-col h-auto py-6 sm:py-8 px-4 sm:px-6 text-center space-y-3 sm:space-y-4 bg-card border-2 border-border hover:border-red-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 w-full"
               >
                 <div className="bg-red-50 group-hover:bg-red-100 rounded-full p-3 sm:p-4 transition-colors duration-300 mx-auto">
                   <Megaphone className="h-6 w-6 sm:h-8 sm:w-8 text-red-600" />
@@ -95,11 +95,11 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
       </div>
 
       {/* Features */}
-      <div className="py-12 sm:py-16 bg-gray-50 px-4 sm:px-6 lg:px-8">
+      <div className="py-12 sm:py-16 bg-muted px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12">
             <div className="text-center">
-              <div className="bg-white rounded-full p-4 sm:p-6 w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 shadow-sm">
+              <div className="bg-card rounded-full p-4 sm:p-6 w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 shadow-sm">
                 <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-primary mx-auto" />
               </div>
               <h3 className="text-lg sm:text-xl font-bold text-foreground mb-3 sm:mb-4 px-2">Seguro e Confidencial</h3>
@@ -109,7 +109,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
             </div>
             
             <div className="text-center">
-              <div className="bg-white rounded-full p-4 sm:p-6 w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 shadow-sm">
+              <div className="bg-card rounded-full p-4 sm:p-6 w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 shadow-sm">
                 <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-primary mx-auto" />
               </div>
               <h3 className="text-lg sm:text-xl font-bold text-foreground mb-3 sm:mb-4 px-2">Resposta em 15 dias</h3>
@@ -119,7 +119,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
             </div>
             
             <div className="text-center">
-              <div className="bg-white rounded-full p-4 sm:p-6 w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 shadow-sm">
+              <div className="bg-card rounded-full p-4 sm:p-6 w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 shadow-sm">
                 <Users className="h-6 w-6 sm:h-8 sm:w-8 text-primary mx-auto" />
               </div>
               <h3 className="text-lg sm:text-xl font-bold text-foreground mb-3 sm:mb-4 px-2">Equipe Dedicada</h3>
@@ -191,7 +191,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
             onClick={() => {
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className="bg-primary hover:bg-primary/90 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto"
           >
             Abrir uma Manifestação
           </Button>
