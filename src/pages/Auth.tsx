@@ -20,7 +20,7 @@ const Auth = () => {
   const { user, signIn, signOut, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
-  // Log do estado sem redirecionar automaticamente
+  // Redirecionamento automático quando o usuário já está logado
   useEffect(() => {
     console.log('Auth.tsx: useEffect executado:', { 
       hasUser: !!user, 
@@ -28,7 +28,13 @@ const Auth = () => {
       redirect,
       userEmail: user?.email 
     });
-  }, [user, authLoading, redirect]);
+    
+    // Se o usuário já está logado e não está carregando, redirecionar automaticamente
+    if (user && !authLoading) {
+      console.log('Auth.tsx: Usuário já logado, redirecionando para:', redirect);
+      navigate(redirect, { replace: true });
+    }
+  }, [user, authLoading, redirect, navigate]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
