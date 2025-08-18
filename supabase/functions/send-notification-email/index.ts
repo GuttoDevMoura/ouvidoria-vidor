@@ -20,12 +20,15 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const smtpConfig = JSON.parse(Deno.env.get("SMTP_CONFIG") || "{}");
+    // Configurações SMTP diretas
+    const smtpConfig = {
+      host: "smtp.emailemnuvem.com.br",
+      port: "465",
+      username: "ouvidoria@igrejanovoscomecos.com.br",
+      password: "NC#2024!ouv"
+    };
+    
     const { host, port, username, password } = smtpConfig;
-
-    if (!host || !port || !username || !password) {
-      throw new Error("Configurações SMTP não encontradas");
-    }
 
     const { to, subject, protocolNumber, status, nome, isAnonymous }: EmailData = await req.json();
 
