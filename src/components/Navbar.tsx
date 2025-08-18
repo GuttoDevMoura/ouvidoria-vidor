@@ -12,6 +12,9 @@ interface NavbarProps {
 export const Navbar = ({ onSectionChange, currentSection, onTrackingClick }: NavbarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, isAdmin } = useAuth();
+  
+  // Debug: log do status do usuário
+  console.log('Navbar - User:', user?.email, 'IsAdmin:', isAdmin);
 
   const navItems = [
     { id: "home", label: "Início" },

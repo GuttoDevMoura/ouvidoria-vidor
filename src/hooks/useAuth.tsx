@@ -74,7 +74,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       if (data) {
         const adminStatus = data.role === 'admin';
-        console.log('Status admin definido como:', adminStatus);
+        console.log('Status admin definido como:', adminStatus, 'role encontrado:', data.role, 'tipo:', typeof data.role);
         setIsAdmin(adminStatus);
       } else {
         console.log('Perfil não encontrado para o usuário:', userId);
