@@ -59,13 +59,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         .from('profiles')
         .select('role')
         .eq('user_id', userId)
-        .single();
+        .maybeSingle();
       
-      if (!error && data) {
+      if (error) {
+        console.error('Erro ao verificar status de admin:', error);
+        setIsAdmin(false);
+        return;
+      }
+      
+      if (data) {
         setIsAdmin(data.role === 'admin');
+      } else {
+        console.log('Perfil não encontrado para o usuário:', userId);
+        setIsAdmin(false);
       }
     } catch (error) {
       console.error('Erro ao verificar status de admin:', error);
+      setIsAdmin(false);
     }
   };
 

@@ -78,11 +78,25 @@ export const TicketDetails = ({ ticket, onBack, onTicketUpdate }: TicketDetailsP
 
     try {
       setLoading(true);
+      
+      // Get current user
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Usuário não autenticado');
+      
+      // Get profile ID
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      
+      if (!profile) throw new Error('Perfil não encontrado');
+      
       const { error } = await supabase
         .from('ticket_notes')
         .insert([{
           ticket_id: ticket.id,
-          agente_id: (await supabase.from('profiles').select('id').eq('user_id', (await supabase.auth.getUser()).data.user?.id).single()).data?.id,
+          agente_id: profile.id,
           nota: newNote
         }]);
 
