@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Search } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
 interface NavbarProps {
   onSectionChange: (section: string) => void;
   currentSection: string;
+  onTrackingClick?: () => void;
 }
 
-export const Navbar = ({ onSectionChange, currentSection }: NavbarProps) => {
+export const Navbar = ({ onSectionChange, currentSection, onTrackingClick }: NavbarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, isAdmin } = useAuth();
 
@@ -64,6 +65,16 @@ export const Navbar = ({ onSectionChange, currentSection }: NavbarProps) => {
                 {item.label}
               </button>
             ))}
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={onTrackingClick}
+              className="border-gray-200 hover:bg-gray-50 text-xs lg:text-sm flex items-center gap-2"
+            >
+              <Search className="h-4 w-4" />
+              <span className="hidden lg:inline">Acompanhar</span>
+              <span className="lg:hidden">Track</span>
+            </Button>
             {isAdmin && (
               <Button 
                 variant="outline" 
@@ -106,6 +117,15 @@ export const Navbar = ({ onSectionChange, currentSection }: NavbarProps) => {
                   {item.label}
                 </button>
               ))}
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="w-full mt-3 border-gray-200 hover:bg-gray-50 flex items-center gap-2"
+                onClick={onTrackingClick}
+              >
+                <Search className="h-4 w-4" />
+                Acompanhar Manifestação
+              </Button>
               {isAdmin && (
                 <Button 
                   variant="outline" 

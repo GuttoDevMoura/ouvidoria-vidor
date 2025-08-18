@@ -1,1 +1,11 @@
 project_id = "qkuocpywdymmvojkiwzg"
+
+[api]
+enabled = true
+port = 54321
+
+[db]
+port = 54322
+
+[functions.send-notification-email]
+verify_jwt = false

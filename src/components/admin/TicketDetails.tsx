@@ -109,6 +109,8 @@ export const TicketDetails = ({ ticket, onBack, onTicketUpdate }: TicketDetailsP
   const updateTicket = async () => {
     try {
       setLoading(true);
+      const oldStatus = ticket.status;
+      
       const { error } = await supabase
         .from('tickets')
         .update({
@@ -118,6 +120,25 @@ export const TicketDetails = ({ ticket, onBack, onTicketUpdate }: TicketDetailsP
         .eq('id', ticket.id);
 
       if (error) throw error;
+
+      // Enviar email se o status mudou e há email
+      if (oldStatus !== status && ticket.email) {
+        try {
+          await supabase.functions.invoke('send-notification-email', {
+            body: {
+              to: ticket.email,
+              subject: `Atualização da Manifestação ${ticket.numero_protocolo}`,
+              protocolNumber: ticket.numero_protocolo,
+              status,
+              nome: ticket.nome_completo,
+              isAnonymous: ticket.eh_anonimo
+            }
+          });
+        } catch (emailError) {
+          console.error("Erro ao enviar email:", emailError);
+          // Não bloquear a atualização se o email falhar
+        }
+      }
 
       toast({
         title: "Ticket atualizado",

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
 import { HeroSection } from "@/components/HeroSection";
 import { OuvidoriaForm } from "@/components/OuvidoriaForm";
+import { TrackingForm } from "@/components/TrackingForm";
 import { AuthProvider } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -51,6 +52,10 @@ const Index = () => {
     setCurrentSection("form");
   };
 
+  const handleTrackingClick = () => {
+    setCurrentSection("tracking");
+  };
+
   const handleBackToHome = () => {
     setCurrentSection("home");
   };
@@ -61,10 +66,13 @@ const Index = () => {
         <Navbar 
           onSectionChange={handleSectionChange} 
           currentSection={currentSection}
+          onTrackingClick={handleTrackingClick}
         />
         
         {currentSection === "form" ? (
           <OuvidoriaForm onBack={handleBackToHome} selectedType={selectedType} />
+        ) : currentSection === "tracking" ? (
+          <TrackingForm onBack={handleBackToHome} />
         ) : (
           <HeroSection 
             onOpenForm={handleOpenForm}
