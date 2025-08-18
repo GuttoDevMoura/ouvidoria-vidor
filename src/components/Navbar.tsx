@@ -15,7 +15,6 @@ export const Navbar = ({ onSectionChange, currentSection, onTrackingClick }: Nav
   const navItems = [
     { id: "home", label: "Início" },
     { id: "about", label: "Sobre a Ouvidoria" },
-    { id: "contact", label: "Contato" },
   ];
 
   const handleSectionClick = (sectionId: string) => {
@@ -43,9 +42,9 @@ export const Navbar = ({ onSectionChange, currentSection, onTrackingClick }: Nav
               <img 
                 src="/lovable-uploads/127fdf71-f341-47a6-9849-5730551fe462.png" 
                 alt="Igreja Novos Começos" 
-                className="h-6 w-auto opacity-70"
+                className="h-10 w-auto opacity-70"
               />
-              <span className="text-lg font-light text-foreground tracking-wider">OUVIDORIA</span>
+              <span className="text-lg font-bold text-foreground tracking-wider">OUVIDORIA</span>
             </button>
           </div>
 

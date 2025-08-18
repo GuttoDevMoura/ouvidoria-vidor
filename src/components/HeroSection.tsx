@@ -16,7 +16,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
-      <div className="pt-20 pb-32 px-4 sm:px-6 lg:px-8">
+      <div className="pt-28 pb-32 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <div className="text-center">
             <div className="flex justify-center mb-8">
