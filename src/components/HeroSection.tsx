@@ -33,6 +33,14 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
               {content.hero_subtitle}
             </p>
             
+            {/* Título da seção de manifestação */}
+            <h2 className="text-xl md:text-2xl text-blue-600 font-bold mb-2">
+              Qual tipo de manifestação você deseja fazer?
+            </h2>
+            <p className="text-base md:text-lg text-muted-foreground mb-8">
+              Selecione um dos tipos de manifestação abaixo:
+            </p>
+            
             {/* Botões de tipos de manifestação */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
               <Button 
