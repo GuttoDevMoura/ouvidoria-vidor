@@ -46,6 +46,7 @@ const handler = async (req: Request): Promise<Response> => {
           .status.andamento { background: #dbeafe; color: #1e40af; }
           .status.concluido { background: #d1fae5; color: #065f46; }
           .footer { background: #f8fafc; padding: 20px; text-align: center; color: #64748b; font-size: 14px; }
+          .contact-info { background: #f1f5f9; padding: 15px; border-radius: 6px; margin: 20px 0; }
         </style>
       </head>
       <body>
@@ -69,6 +70,12 @@ const handler = async (req: Request): Promise<Response> => {
             
             <p>Para acompanhar o andamento completo de sua manifestação, acesse nosso portal e informe o código acima.</p>
             
+            <div class="contact-info">
+              <p><strong>Contato da Ouvidoria:</strong></p>
+              <p>📧 Email: ouvidoria@igrejanovoscomecos.com.br</p>
+              <p>🏢 Igreja Novos Começos</p>
+            </div>
+            
             <p>Agradecemos por utilizar nossos serviços.</p>
             
             <p>Atenciosamente,<br>
@@ -77,6 +84,7 @@ const handler = async (req: Request): Promise<Response> => {
           </div>
           <div class="footer">
             <p>Este é um email automático. Não responda a esta mensagem.</p>
+            <p>Para dúvidas, entre em contato: ouvidoria@igrejanovoscomecos.com.br</p>
           </div>
         </div>
       </body>
