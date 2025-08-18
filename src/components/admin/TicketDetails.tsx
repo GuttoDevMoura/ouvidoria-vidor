@@ -84,22 +84,38 @@ export const TicketDetails = ({ ticket, onBack, onTicketUpdate }: TicketDetailsP
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Usuário não autenticado');
       
+      console.log('Usuário autenticado:', user.id);
+      
       // Verify user has profile
-      const { data: profile } = await supabase
+      const { data: profile, error: profileError } = await supabase
         .from('profiles')
-        .select('user_id')
+        .select('user_id, nome_completo')
         .eq('user_id', user.id)
         .maybeSingle();
       
-      if (!profile) throw new Error('Perfil não encontrado');
+      console.log('Profile encontrado:', profile);
+      console.log('Profile error:', profileError);
       
-      const { error } = await supabase
+      if (!profile) {
+        throw new Error('Perfil não encontrado para o usuário');
+      }
+      
+      console.log('Tentando inserir nota com:', {
+        ticket_id: ticket.id,
+        agente_id: user.id,
+        nota: newNote
+      });
+      
+      const { data: noteData, error } = await supabase
         .from('ticket_notes')
         .insert([{
           ticket_id: ticket.id,
-          agente_id: user.id, // Use user.id directly since foreign key references profiles.user_id
+          agente_id: user.id,
           nota: newNote
-        }]);
+        }])
+        .select();
+
+      console.log('Resultado da inserção:', { noteData, error });
 
       if (error) throw error;
 
@@ -110,10 +126,10 @@ export const TicketDetails = ({ ticket, onBack, onTicketUpdate }: TicketDetailsP
         description: "A nota foi adicionada com sucesso.",
       });
     } catch (error) {
-      console.error('Erro ao adicionar nota:', error);
+      console.error('Erro detalhado ao adicionar nota:', error);
       toast({
         title: "Erro",
-        description: "Não foi possível adicionar a nota.",
+        description: `Não foi possível adicionar a nota: ${error.message}`,
         variant: "destructive"
       });
     } finally {
