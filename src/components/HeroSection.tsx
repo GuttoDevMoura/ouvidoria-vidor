@@ -16,27 +16,27 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero */}
-      <div className="pt-32 pb-20">
+      <div className="pt-28 pb-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto">
-            <div className="flex justify-center mb-8">
+            <div className="flex justify-center mb-6">
               <img 
                 src="/lovable-uploads/127fdf71-f341-47a6-9849-5730551fe462.png" 
                 alt="Igreja Novos Começos" 
-                className="h-20 w-auto mb-6"
+                className="h-16 w-auto mb-3"
               />
             </div>
             
-            <h1 className="text-5xl md:text-7xl font-black text-foreground mb-4 tracking-tight">
+            <h1 className="text-5xl md:text-7xl font-black text-foreground mb-3 tracking-tight">
               {content.hero_title}
             </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground mb-16 font-light leading-relaxed max-w-3xl mx-auto">
+            <p className="text-xl md:text-2xl text-muted-foreground mb-12 font-light leading-relaxed max-w-3xl mx-auto">
               {content.hero_subtitle}
             </p>
             
             {/* Título da seção de manifestação */}
-            <div className="mb-16">
-              <h2 className="text-2xl md:text-3xl text-foreground font-bold mb-4">
+            <div className="mb-10">
+              <h2 className="text-2xl md:text-3xl text-foreground font-bold mb-3">
                 Qual tipo de manifestação você deseja fazer?
               </h2>
               <p className="text-lg text-muted-foreground font-light">
@@ -45,7 +45,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
             </div>
             
             {/* Botões de tipos de manifestação */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 max-w-5xl mx-auto">
               <Button 
                 size="lg" 
                 onClick={() => onOpenForm("Elogio")}
@@ -95,7 +95,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
       </div>
 
       {/* Features */}
-      <div className="py-20 bg-gray-50">
+      <div className="py-16 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             <div className="text-center">
