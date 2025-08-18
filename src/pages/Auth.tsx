@@ -276,77 +276,9 @@ const Auth = () => {
                 </div>
 
                 <div className="mt-6 pt-6 border-t border-gray-200">
-                  <p className="text-sm text-gray-600 text-center mb-4">
+                  <p className="text-sm text-gray-600 text-center">
                     Esta área é restrita à equipe da Ouvidoria da Igreja Novos Começos.
                   </p>
-                  
-                  {/* Credenciais de teste */}
-                  <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                    <p className="text-sm text-blue-800 mb-2 font-medium">
-                      🚀 Credenciais de Teste:
-                    </p>
-                    <p className="text-xs text-blue-700 mb-2">
-                      Use as credenciais abaixo para acessar o sistema:
-                    </p>
-                    <div className="bg-white p-3 rounded border text-xs mb-3">
-                      <p><strong>Email:</strong> admin@ouvidoria.com</p>
-                      <p><strong>Senha:</strong> admin123</p>
-                    </div>
-                    <Button
-                      onClick={async () => {
-                        const testEmail = "admin@ouvidoria.com";
-                        const testPassword = "admin123";
-                        const testNome = "Administrador Sistema";
-                        
-                        setLoading(true);
-                        
-                        try {
-                          console.log('Criando usuário admin automaticamente...');
-                          
-                          // Primeiro tentar criar a conta
-                          const { error: signUpError } = await signUp(testEmail, testPassword, testNome);
-                          
-                          if (signUpError && !signUpError.message.includes('already registered')) {
-                            console.error('Erro ao criar usuário:', signUpError);
-                            toast.error(`Erro ao criar conta: ${signUpError.message}`);
-                            return;
-                          }
-                          
-                          // Aguardar um pouco para o usuário ser criado
-                          await new Promise(resolve => setTimeout(resolve, 2000));
-                          
-                          // Tentar fazer login
-                          console.log('Tentando fazer login...');
-                          const { error: signInError } = await signIn(testEmail, testPassword);
-                          
-                          if (signInError) {
-                            console.error('Erro no login:', signInError);
-                            // Se falhar, apenas preencher credenciais
-                            setEmail(testEmail);
-                            setPassword(testPassword);
-                            toast.info("Conta criada. Use o botão 'Entrar' abaixo.");
-                          } else {
-                            toast.success("Login realizado com sucesso!");
-                            navigate(redirect);
-                          }
-                          
-                        } catch (error) {
-                          console.error('Erro inesperado:', error);
-                          setEmail(testEmail);
-                          setPassword(testPassword);
-                          toast.info("Credenciais preenchidas. Use o botão 'Entrar'.");
-                        } finally {
-                          setLoading(false);
-                        }
-                      }}
-                      variant="outline"
-                      size="sm"
-                      className="w-full text-xs bg-blue-100 hover:bg-blue-200 border-blue-300"
-                      disabled={loading}
-                    >
-                      {loading ? "Criando conta..." : "Criar & Acessar Admin"}
-                    </Button>
-                  </div>
                 </div>
               </>
             )}
