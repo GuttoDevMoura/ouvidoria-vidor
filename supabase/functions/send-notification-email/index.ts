@@ -91,33 +91,35 @@ const handler = async (req: Request): Promise<Response> => {
       </html>
     `;
 
-    // Implementar envio real via SMTP
+    // Implementar envio real via SMTP usando biblioteca nativa do Deno
     try {
-      console.log("Importando nodemailer...");
-      const nodemailer = await import("npm:nodemailer@6.9.7");
-      console.log("Nodemailer importado com sucesso");
+      console.log("Importando biblioteca SMTP para Deno...");
+      const { SmtpClient } = await import("https://deno.land/x/smtp@v0.7.0/mod.ts");
+      console.log("Biblioteca SMTP importada com sucesso");
       
-      // Usar a exportação default do nodemailer
-      const transporter = nodemailer.default.createTransporter({
-        host: host,
+      const client = new SmtpClient();
+      
+      console.log(`Conectando ao servidor SMTP: ${host}:${port}`);
+      await client.connectTLS({
+        hostname: host,
         port: parseInt(port),
-        secure: true, // SSL para porta 465
-        auth: {
-          user: username,
-          pass: password,
-        },
+        username: username,
+        password: password,
       });
-
-      const mailOptions = {
-        from: `"Ouvidoria Igreja Novos Começos" <${username}>`,
+      
+      console.log("Conexão SMTP estabelecida, enviando email...");
+      
+      await client.send({
+        from: username,
         to: to,
         subject: subject,
+        content: htmlContent,
         html: htmlContent,
-      };
-
-      console.log("Enviando email real...");
-      const info = await transporter.sendMail(mailOptions);
-      console.log(`Email enviado com sucesso! Message ID: ${info.messageId}`);
+      });
+      
+      console.log("Email enviado com sucesso!");
+      await client.close();
+      console.log("Conexão SMTP fechada");
       
     } catch (smtpError) {
       console.error("Erro no envio SMTP:", smtpError);
