@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -31,6 +32,7 @@ const Admin = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
+  const [statusFilter, setStatusFilter] = useState<string>("all");
   const [userRole, setUserRole] = useState<string | null>(null);
   const [stats, setStats] = useState({
     total: 0,
@@ -133,9 +135,10 @@ const Admin = () => {
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
       case 'Aberto': return 'destructive';
-      case 'Em andamento': return 'default';
+      case 'Em andamento': return 'default'; // Will be styled as orange with custom CSS
       case 'Aguardando': return 'secondary';
-      case 'Fechado': return 'outline';
+      case 'Fechado': 
+      case 'Concluído': return 'outline'; // Will be styled as green with custom CSS
       case 'Reaberto': return 'destructive';
       default: return 'default';
     }
@@ -175,6 +178,11 @@ const Admin = () => {
       return 'ok'; // No prazo
     }
   };
+
+  const filteredTickets = tickets.filter((ticket) => {
+    if (statusFilter === "all") return true;
+    return ticket.status === statusFilter;
+  });
 
   const getSLAIcon = (slaStatus: string | null, ticketStatus: string) => {
     if (!slaStatus) return null;
@@ -332,11 +340,24 @@ const Admin = () => {
         {/* Tickets List */}
         <Card>
           <CardHeader>
-            <CardTitle>Tickets da Ouvidoria</CardTitle>
+            <div className="flex justify-between items-center">
+              <CardTitle>Tickets da Ouvidoria</CardTitle>
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-48">
+                  <SelectValue placeholder="Filtrar por status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos</SelectItem>
+                  <SelectItem value="Aberto">Aberto</SelectItem>
+                  <SelectItem value="Em andamento">Em Andamento</SelectItem>
+                  <SelectItem value="Fechado">Fechados</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {tickets.map((ticket) => (
+              {filteredTickets.map((ticket) => (
                 <div
                   key={ticket.id}
                   className="flex items-center justify-between p-4 border border-border rounded-lg cursor-pointer hover:bg-muted/50"
@@ -345,7 +366,16 @@ const Admin = () => {
                   <div className="flex-1">
                     <div className="flex items-center space-x-4">
                       {getSLAIcon(getSLAStatus(ticket.created_at, ticket.status), ticket.status)}
-                      <Badge variant={getStatusBadgeVariant(ticket.status)}>
+                      <Badge 
+                        variant={getStatusBadgeVariant(ticket.status)}
+                        className={
+                          ticket.status === 'Em andamento' 
+                            ? 'bg-orange-500 hover:bg-orange-600 text-white' 
+                            : (ticket.status === 'Fechado' || ticket.status === 'Concluído')
+                            ? 'bg-green-500 hover:bg-green-600 text-white border-green-500'
+                            : ''
+                        }
+                      >
                         {ticket.status}
                       </Badge>
                       <span className="font-medium">{ticket.numero_protocolo}</span>
@@ -369,9 +399,11 @@ const Admin = () => {
                 </div>
               ))}
 
-              {tickets.length === 0 && (
+              {filteredTickets.length === 0 && (
                 <div className="text-center py-8">
-                  <p className="text-muted-foreground">Nenhum ticket encontrado.</p>
+                  <p className="text-muted-foreground">
+                    {statusFilter === "all" ? "Nenhum ticket encontrado." : `Nenhum ticket com status "${statusFilter}" encontrado.`}
+                  </p>
                 </div>
               )}
             </div>
