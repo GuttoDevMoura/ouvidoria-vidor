@@ -46,8 +46,17 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
               
               <Button 
                 size="lg" 
+                onClick={() => onOpenForm("Sugestão")}
+                className="flex flex-col h-auto py-6 px-4 text-center space-y-2 bg-blue-600 hover:bg-blue-700"
+              >
+                <Lightbulb className="h-8 w-8" />
+                <span className="text-sm font-medium">Fazer uma Sugestão</span>
+              </Button>
+              
+              <Button 
+                size="lg" 
                 onClick={() => onOpenForm("Crítica")}
-                className="flex flex-col h-auto py-6 px-4 text-center space-y-2 bg-red-600 hover:bg-red-700"
+                className="flex flex-col h-auto py-6 px-4 text-center space-y-2 bg-orange-600 hover:bg-orange-700"
               >
                 <MessageSquare className="h-8 w-8" />
                 <span className="text-sm font-medium">Fazer uma Crítica</span>
@@ -56,19 +65,10 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
               <Button 
                 size="lg" 
                 onClick={() => onOpenForm("Denúncia")}
-                className="flex flex-col h-auto py-6 px-4 text-center space-y-2 bg-orange-600 hover:bg-orange-700"
+                className="flex flex-col h-auto py-6 px-4 text-center space-y-2 bg-red-600 hover:bg-red-700"
               >
                 <AlertTriangle className="h-8 w-8" />
                 <span className="text-sm font-medium">Fazer uma Denúncia</span>
-              </Button>
-              
-              <Button 
-                size="lg" 
-                onClick={() => onOpenForm("Sugestão")}
-                className="flex flex-col h-auto py-6 px-4 text-center space-y-2 bg-blue-600 hover:bg-blue-700"
-              >
-                <Lightbulb className="h-8 w-8" />
-                <span className="text-sm font-medium">Fazer uma Sugestão</span>
               </Button>
             </div>
           </div>
