@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
-import { Calendar, Users, FileText, TrendingUp, Award, MapPin } from "lucide-react";
+import { Calendar, Users, FileText, TrendingUp, Award, MapPin, ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 interface DashboardData {
   totalTickets: number;
@@ -21,6 +22,7 @@ const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
 
 export default function Dashboard() {
   const { user, session } = useAuth();
+  const navigate = useNavigate();
   const [data, setData] = useState<DashboardData>({
     totalTickets: 0,
     openTickets: 0,
@@ -154,7 +156,19 @@ export default function Dashboard() {
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header minimalista */}
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold">Dashboard</h1>
+          <div className="flex items-center gap-4">
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => navigate('/admin')}
+              className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Voltar para Painel de Fila
+            </Button>
+            <div className="h-6 w-px bg-border" />
+            <h1 className="text-2xl font-semibold">Dashboard</h1>
+          </div>
           <div className="text-sm text-muted-foreground">
             Última atualização: {new Date().toLocaleString('pt-BR')}
           </div>
@@ -174,38 +188,38 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-none">
+          <Card className="border-0 shadow-none bg-blue-50 dark:bg-blue-950/20">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Abertos</p>
-                  <p className="text-3xl font-bold">{data.openTickets}</p>
+                  <p className="text-sm font-medium text-blue-600 dark:text-blue-400">Abertos</p>
+                  <p className="text-3xl font-bold text-blue-700 dark:text-blue-300">{data.openTickets}</p>
                 </div>
-                <Calendar className="h-8 w-8 text-muted-foreground" />
+                <Calendar className="h-8 w-8 text-blue-500" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-none">
+          <Card className="border-0 shadow-none bg-orange-50 dark:bg-orange-950/20">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Em Andamento</p>
-                  <p className="text-3xl font-bold">{data.inProgressTickets}</p>
+                  <p className="text-sm font-medium text-orange-600 dark:text-orange-400">Em Andamento</p>
+                  <p className="text-3xl font-bold text-orange-700 dark:text-orange-300">{data.inProgressTickets}</p>
                 </div>
-                <TrendingUp className="h-8 w-8 text-muted-foreground" />
+                <TrendingUp className="h-8 w-8 text-orange-500" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-none">
+          <Card className="border-0 shadow-none bg-green-50 dark:bg-green-950/20">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Concluídos</p>
-                  <p className="text-3xl font-bold">{data.closedTickets}</p>
+                  <p className="text-sm font-medium text-green-600 dark:text-green-400">Concluídos</p>
+                  <p className="text-3xl font-bold text-green-700 dark:text-green-300">{data.closedTickets}</p>
                 </div>
-                <Award className="h-8 w-8 text-muted-foreground" />
+                <Award className="h-8 w-8 text-green-500" />
               </div>
             </CardContent>
           </Card>
