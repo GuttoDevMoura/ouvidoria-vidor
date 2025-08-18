@@ -131,18 +131,29 @@ export default function GerenciarEquipe() {
     }
   };
 
-  const handleDeleteMember = async (memberId: string) => {
+  const handleDeleteMember = async (member: TeamMember) => {
     if (!confirm("Tem certeza que deseja remover este membro da equipe?")) {
       return;
     }
 
     try {
-      const { error } = await supabase
+      console.log('Tentando remover membro:', member);
+      
+      // Primeiro, remover o perfil
+      const { error: profileError } = await supabase
         .from('profiles')
         .delete()
-        .eq('id', memberId);
+        .eq('user_id', member.user_id);
 
-      if (error) throw error;
+      if (profileError) {
+        console.error('Erro ao remover perfil:', profileError);
+        throw profileError;
+      }
+
+      // Depois, remover o usuário do auth (precisa de service role)
+      // Como não temos acesso direto ao service role no frontend,
+      // vamos apenas remover o perfil e deixar o usuário do auth intocado
+      // O usuário ainda existirá mas não terá permissões
 
       toast({
         title: "Sucesso",
@@ -150,11 +161,11 @@ export default function GerenciarEquipe() {
       });
 
       loadTeamMembers();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erro ao remover membro:', error);
       toast({
         title: "Erro",
-        description: "Não foi possível remover o membro da equipe.",
+        description: error.message || "Não foi possível remover o membro da equipe.",
         variant: "destructive",
       });
     }
@@ -363,7 +374,7 @@ export default function GerenciarEquipe() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => handleDeleteMember(member.id)}
+                              onClick={() => handleDeleteMember(member)}
                               className="text-destructive hover:text-destructive"
                             >
                               <Trash2 className="h-4 w-4" />
