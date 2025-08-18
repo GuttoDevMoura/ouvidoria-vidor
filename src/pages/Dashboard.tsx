@@ -179,63 +179,48 @@ export default function Dashboard() {
         </div>
 
         {/* Cards de Estatísticas */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="border-0 shadow-none">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Total de Tickets</p>
-                  <p className="text-3xl font-bold">{data.totalTickets}</p>
-                </div>
-                <FileText className="h-8 w-8 text-muted-foreground" />
+        <div className="grid grid-cols-5 gap-3 mb-6">
+          <Card className="border-0 shadow-none bg-muted/50">
+            <CardContent className="p-3">
+              <div className="text-center">
+                <p className="text-xs font-medium text-muted-foreground">Total</p>
+                <p className="text-lg font-bold">{data.totalTickets}</p>
               </div>
             </CardContent>
           </Card>
 
           <Card className="border-0 shadow-none bg-blue-50 dark:bg-blue-950/20">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-blue-600 dark:text-blue-400">Abertos</p>
-                  <p className="text-3xl font-bold text-blue-700 dark:text-blue-300">{data.openTickets}</p>
-                </div>
-                <Calendar className="h-8 w-8 text-blue-500" />
+            <CardContent className="p-3">
+              <div className="text-center">
+                <p className="text-xs font-medium text-blue-600 dark:text-blue-400">Abertos</p>
+                <p className="text-lg font-bold text-blue-700 dark:text-blue-300">{data.openTickets}</p>
               </div>
             </CardContent>
           </Card>
 
           <Card className="border-0 shadow-none bg-orange-50 dark:bg-orange-950/20">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-orange-600 dark:text-orange-400">Em Andamento</p>
-                  <p className="text-3xl font-bold text-orange-700 dark:text-orange-300">{data.inProgressTickets}</p>
-                </div>
-                <TrendingUp className="h-8 w-8 text-orange-500" />
+            <CardContent className="p-3">
+              <div className="text-center">
+                <p className="text-xs font-medium text-orange-600 dark:text-orange-400">Em Andamento</p>
+                <p className="text-lg font-bold text-orange-700 dark:text-orange-300">{data.inProgressTickets}</p>
               </div>
             </CardContent>
           </Card>
 
           <Card className="border-0 shadow-none bg-yellow-egg dark:bg-yellow-500/20">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-yellow-700 dark:text-yellow-400">Aguardando</p>
-                  <p className="text-3xl font-bold text-yellow-800 dark:text-yellow-300">{data.waitingTickets}</p>
-                </div>
-                <Clock className="h-8 w-8 text-yellow-600" />
+            <CardContent className="p-3">
+              <div className="text-center">
+                <p className="text-xs font-medium text-yellow-700 dark:text-yellow-400">Aguardando</p>
+                <p className="text-lg font-bold text-yellow-800 dark:text-yellow-300">{data.waitingTickets}</p>
               </div>
             </CardContent>
           </Card>
 
           <Card className="border-0 shadow-none bg-green-50 dark:bg-green-950/20">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-green-600 dark:text-green-400">Concluídos</p>
-                  <p className="text-3xl font-bold text-green-700 dark:text-green-300">{data.closedTickets}</p>
-                </div>
-                <Award className="h-8 w-8 text-green-500" />
+            <CardContent className="p-3">
+              <div className="text-center">
+                <p className="text-xs font-medium text-green-600 dark:text-green-400">Concluídos</p>
+                <p className="text-lg font-bold text-green-700 dark:text-green-300">{data.closedTickets}</p>
               </div>
             </CardContent>
           </Card>

@@ -289,63 +289,48 @@ const Admin = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="border-0 shadow-none">
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <FileText className="h-8 w-8 text-muted-foreground" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-muted-foreground">Total</p>
-                  <p className="text-2xl font-bold">{stats.total}</p>
-                </div>
+        <div className="grid grid-cols-5 gap-3 mb-6">
+          <Card className="border-0 shadow-none bg-muted/50">
+            <CardContent className="p-3">
+              <div className="text-center">
+                <p className="text-xs font-medium text-muted-foreground">Total</p>
+                <p className="text-lg font-bold">{stats.total}</p>
               </div>
             </CardContent>
           </Card>
 
           <Card className="border-0 shadow-none bg-blue-50 dark:bg-blue-950/20">
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <TrendingUp className="h-8 w-8 text-blue-500" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-blue-600 dark:text-blue-400">Abertos</p>
-                  <p className="text-2xl font-bold text-blue-700 dark:text-blue-300">{stats.abertos}</p>
-                </div>
+            <CardContent className="p-3">
+              <div className="text-center">
+                <p className="text-xs font-medium text-blue-600 dark:text-blue-400">Abertos</p>
+                <p className="text-lg font-bold text-blue-700 dark:text-blue-300">{stats.abertos}</p>
               </div>
             </CardContent>
           </Card>
 
           <Card className="border-0 shadow-none bg-orange-50 dark:bg-orange-950/20">
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <Users className="h-8 w-8 text-orange-500" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-orange-600 dark:text-orange-400">Em Andamento</p>
-                  <p className="text-2xl font-bold text-orange-700 dark:text-orange-300">{stats.em_andamento}</p>
-                </div>
+            <CardContent className="p-3">
+              <div className="text-center">
+                <p className="text-xs font-medium text-orange-600 dark:text-orange-400">Em Andamento</p>
+                <p className="text-lg font-bold text-orange-700 dark:text-orange-300">{stats.em_andamento}</p>
               </div>
             </CardContent>
           </Card>
 
           <Card className="border-0 shadow-none bg-yellow-egg dark:bg-yellow-500/20">
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <Clock className="h-8 w-8 text-yellow-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-yellow-700 dark:text-yellow-400">Aguardando</p>
-                  <p className="text-2xl font-bold text-yellow-800 dark:text-yellow-300">{stats.aguardando}</p>
-                </div>
+            <CardContent className="p-3">
+              <div className="text-center">
+                <p className="text-xs font-medium text-yellow-700 dark:text-yellow-400">Aguardando</p>
+                <p className="text-lg font-bold text-yellow-800 dark:text-yellow-300">{stats.aguardando}</p>
               </div>
             </CardContent>
           </Card>
 
           <Card className="border-0 shadow-none bg-green-50 dark:bg-green-950/20">
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <FileText className="h-8 w-8 text-green-500" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-green-600 dark:text-green-400">Fechados</p>
-                  <p className="text-2xl font-bold text-green-700 dark:text-green-300">{stats.fechados}</p>
-                </div>
+            <CardContent className="p-3">
+              <div className="text-center">
+                <p className="text-xs font-medium text-green-600 dark:text-green-400">Fechados</p>
+                <p className="text-lg font-bold text-green-700 dark:text-green-300">{stats.fechados}</p>
               </div>
             </CardContent>
           </Card>
