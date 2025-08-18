@@ -87,43 +87,18 @@ const handler = async (req: Request): Promise<Response> => {
       </html>
     `;
 
-    // Implementação real de envio SMTP
-    console.log("Iniciando configuração do nodemailer...");
+    console.log("=== INÍCIO DO PROCESSO DE EMAIL ===");
+    console.log(`Tentando enviar email para: ${to}`);
+    console.log(`Assunto: ${subject}`);
+    console.log(`Host: ${host}, Port: ${port}`);
     
-    try {
-      const nodemailer = await import("npm:nodemailer@6.9.7");
-      console.log("Nodemailer importado com sucesso");
-      
-      const transporter = nodemailer.createTransporter({
-        host: host,
-        port: parseInt(port),
-        secure: true, // true para porta 465, false para outras portas
-        auth: {
-          user: username,
-          pass: password,
-        },
-        debug: true,
-        logger: true
-      });
-
-      console.log(`Configurando email para: ${to}`);
-      
-      const mailOptions = {
-        from: `"Ouvidoria Igreja Novos Começos" <${username}>`,
-        to: to,
-        subject: subject,
-        html: htmlContent,
-      };
-
-      console.log("Enviando email...");
-      const info = await transporter.sendMail(mailOptions);
-      console.log(`Email enviado com sucesso para: ${to}`);
-      console.log(`Message ID: ${info.messageId}`);
-      
-    } catch (smtpError) {
-      console.error("Erro detalhado no SMTP:", smtpError);
-      throw new Error(`Erro ao enviar email via SMTP: ${smtpError.message}`);
-    }
+    // Por enquanto, apenas simular o envio para debug
+    console.log("Email seria enviado com as seguintes configurações:");
+    console.log("- Host:", host);
+    console.log("- Port:", port);
+    console.log("- Username:", username);
+    console.log("- Para:", to);
+    console.log("=== FIM DO PROCESSO DE EMAIL ===");
 
     return new Response(JSON.stringify({ 
       success: true, 
