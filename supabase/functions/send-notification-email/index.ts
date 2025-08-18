@@ -97,7 +97,8 @@ const handler = async (req: Request): Promise<Response> => {
       const nodemailer = await import("npm:nodemailer@6.9.7");
       console.log("Nodemailer importado com sucesso");
       
-      const transporter = nodemailer.createTransporter({
+      // Usar a exportação default do nodemailer
+      const transporter = nodemailer.default.createTransporter({
         host: host,
         port: parseInt(port),
         secure: true, // SSL para porta 465
