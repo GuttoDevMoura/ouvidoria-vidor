@@ -10,7 +10,7 @@ const Index = () => {
   const [selectedType, setSelectedType] = useState<string>("");
   const [content, setContent] = useState({
     hero_title: "OUVIDORIA NC",
-    hero_subtitle: "Canal direto de diálogo com a Igreja Novos Começos. Uma porta aberta para participação através da escuta atenta, visando transparência, ética e melhorias em nossos ministérios e atividades.",
+    hero_subtitle: "Ouvindo por algo maior...",
     about_text: "A Ouvidoria da Igreja Novos Começos é um canal direto de comunicação entre nossa comunidade e a liderança."
   });
 
