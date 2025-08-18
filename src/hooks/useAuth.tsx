@@ -99,14 +99,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
       
       if (data) {
-        const adminStatus = data.role === 'admin';
+        const adminOrAgentStatus = data.role === 'admin' || data.role === 'agent';
         console.log('checkAdminStatus: PROFILE ENCONTRADO:', { 
           role: data.role, 
-          isAdmin: adminStatus,
+          isAdminOrAgent: adminOrAgentStatus,
           roleType: typeof data.role,
-          comparison: `${data.role} === 'admin' = ${adminStatus}`
+          comparison: `${data.role} === 'admin' || 'agent' = ${adminOrAgentStatus}`
         });
-        setIsAdmin(adminStatus);
+        setIsAdmin(adminOrAgentStatus);
         setLoading(false);
       } else {
         console.log('checkAdminStatus: NENHUM PROFILE encontrado, CRIANDO profile padrão...');

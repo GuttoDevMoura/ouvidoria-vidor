@@ -276,6 +276,10 @@ export type Database = {
         Args: { user_uuid?: string }
         Returns: boolean
       }
+      is_admin_or_agent: {
+        Args: { user_uuid?: string }
+        Returns: boolean
+      }
     }
     Enums: {
       campus_type:
@@ -299,7 +303,7 @@ export type Database = {
         | "Aguardando"
         | "Fechado"
         | "Reaberto"
-      user_role: "admin" | "user"
+      user_role: "user" | "admin" | "agent"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -450,7 +454,7 @@ export const Constants = {
         "Fechado",
         "Reaberto",
       ],
-      user_role: ["admin", "user"],
+      user_role: ["user", "admin", "agent"],
     },
   },
 } as const

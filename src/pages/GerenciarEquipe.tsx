@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, Edit, Trash2, User, Mail, Key, ArrowLeft } from "lucide-react";
@@ -31,7 +32,8 @@ export default function GerenciarEquipe() {
   const [formData, setFormData] = useState({
     nome_completo: "",
     email: "",
-    senha: ""
+    senha: "",
+    role: "agent" as "admin" | "agent"
   });
 
   useEffect(() => {
@@ -45,7 +47,7 @@ export default function GerenciarEquipe() {
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('role', 'admin')
+        .in('role', ['admin', 'agent'])
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -97,7 +99,7 @@ export default function GerenciarEquipe() {
           .from('profiles')
           .update({ 
             nome_completo: formData.nome_completo,
-            role: 'admin'
+            role: formData.role
           })
           .eq('user_id', authData.user.id);
 
@@ -111,7 +113,7 @@ export default function GerenciarEquipe() {
         });
 
         setIsDialogOpen(false);
-        setFormData({ nome_completo: "", email: "", senha: "" });
+        setFormData({ nome_completo: "", email: "", senha: "", role: "agent" });
         loadTeamMembers();
       }
     } catch (error: any) {
@@ -249,6 +251,21 @@ export default function GerenciarEquipe() {
                   />
                 </div>
               </div>
+              <div>
+                <Label htmlFor="role">Tipo de Perfil</Label>
+                <Select 
+                  value={formData.role} 
+                  onValueChange={(value: "admin" | "agent") => setFormData(prev => ({ ...prev, role: value }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione o tipo de perfil" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="agent">Agente</SelectItem>
+                    <SelectItem value="admin">Administrador</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
               <div className="flex gap-2 pt-4">
                 <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700">
                   {editingMember ? "Atualizar" : "Criar Membro"}
@@ -259,7 +276,7 @@ export default function GerenciarEquipe() {
                   onClick={() => {
                     setIsDialogOpen(false);
                     setEditingMember(null);
-                    setFormData({ nome_completo: "", email: "", senha: "" });
+                    setFormData({ nome_completo: "", email: "", senha: "", role: "agent" });
                   }}
                 >
                   Cancelar
@@ -314,7 +331,7 @@ export default function GerenciarEquipe() {
                         </TableCell>
                         <TableCell>
                           <Badge variant="secondary" className="text-xs">
-                            {member.role === 'admin' ? 'Administrador' : member.role}
+                            {member.role === 'admin' ? 'Administrador' : 'Agente'}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-muted-foreground text-sm">
@@ -330,7 +347,8 @@ export default function GerenciarEquipe() {
                                 setFormData({
                                   nome_completo: member.nome_completo || "",
                                   email: "",
-                                  senha: ""
+                                  senha: "",
+                                  role: member.role as "admin" | "agent"
                                 });
                                 setIsDialogOpen(true);
                               }}

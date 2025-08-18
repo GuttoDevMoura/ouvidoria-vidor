@@ -6,7 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, LogOut, Users, FileText, TrendingUp, Mail, User } from "lucide-react";
+import { ArrowLeft, LogOut, Users, FileText, TrendingUp, Mail, User, BarChart3 } from "lucide-react";
 import { TicketDetails } from "@/components/admin/TicketDetails";
 
 interface Ticket {
@@ -31,6 +31,7 @@ const Admin = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
   const [stats, setStats] = useState({
     total: 0,
     abertos: 0,
@@ -44,13 +45,12 @@ const Admin = () => {
     
     if (!authLoading && !user) {
       console.log('Admin.tsx - Usuário não logado, redirecionando para auth');
-      // Redirect to auth page if not logged in
       navigate('/auth?redirect=/admin');
       return;
     }
 
     if (user && !isAdmin) {
-      console.log('Admin.tsx - Usuário logado mas não é admin, redirecionando para home');
+      console.log('Admin.tsx - Usuário logado mas não é admin/agent, redirecionando para home');
       toast({
         title: "Acesso negado",
         description: "Você não tem permissão para acessar esta área.",
@@ -61,11 +61,29 @@ const Admin = () => {
     }
 
     if (user && isAdmin) {
-      console.log('Admin.tsx - Usuário logado e é admin, carregando dados');
+      console.log('Admin.tsx - Usuário logado e tem permissão, carregando dados');
+      loadUserRole();
       loadTickets();
       loadStats();
     }
   }, [user, isAdmin, authLoading, navigate]);
+
+  const loadUserRole = async () => {
+    if (!user) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('user_id', user.id)
+        .single();
+
+      if (error) throw error;
+      setUserRole(data?.role || null);
+    } catch (error) {
+      console.error('Erro ao carregar role do usuário:', error);
+    }
+  };
 
   const loadTickets = async () => {
     try {
@@ -165,6 +183,7 @@ const Admin = () => {
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Voltar ao Site
               </Button>
+              
               <Button 
                 variant="ghost" 
                 onClick={() => window.location.href = "/emails-pendentes"}
@@ -172,14 +191,30 @@ const Admin = () => {
                 <Mail className="mr-2 h-4 w-4" />
                 Emails Pendentes
               </Button>
-              <Button 
-                variant="ghost" 
-                onClick={() => navigate('/gerenciar-equipe')}
-              >
-                <User className="mr-2 h-4 w-4" />
-                Gerenciar Equipe
-              </Button>
-              <h1 className="text-xl font-bold">Painel Administrativo - Ouvidoria</h1>
+              
+              {/* Dashboard - apenas para admins */}
+              {userRole === 'admin' && (
+                <Button 
+                  variant="ghost" 
+                  onClick={() => navigate('/dashboard')}
+                >
+                  <BarChart3 className="mr-2 h-4 w-4" />
+                  Dashboard
+                </Button>
+              )}
+              
+              {/* Gerenciar Equipe - apenas para admins */}
+              {userRole === 'admin' && (
+                <Button 
+                  variant="ghost" 
+                  onClick={() => navigate('/gerenciar-equipe')}
+                >
+                  <User className="mr-2 h-4 w-4" />
+                  Gerenciar Equipe
+                </Button>
+              )}
+              
+              <h1 className="text-lg font-semibold">Painel Administrativo - Ouvidoria</h1>
             </div>
             <Button variant="outline" onClick={signOut}>
               <LogOut className="mr-2 h-4 w-4" />
@@ -192,10 +227,10 @@ const Admin = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card>
+          <Card className="border-0 shadow-none">
             <CardContent className="p-6">
               <div className="flex items-center">
-                <FileText className="h-8 w-8 text-primary" />
+                <FileText className="h-8 w-8 text-muted-foreground" />
                 <div className="ml-4">
                   <p className="text-sm font-medium text-muted-foreground">Total</p>
                   <p className="text-2xl font-bold">{stats.total}</p>
@@ -204,37 +239,37 @@ const Admin = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-0 shadow-none bg-blue-50 dark:bg-blue-950/20">
             <CardContent className="p-6">
               <div className="flex items-center">
-                <TrendingUp className="h-8 w-8 text-destructive" />
+                <TrendingUp className="h-8 w-8 text-blue-500" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-muted-foreground">Abertos</p>
-                  <p className="text-2xl font-bold">{stats.abertos}</p>
+                  <p className="text-sm font-medium text-blue-600 dark:text-blue-400">Abertos</p>
+                  <p className="text-2xl font-bold text-blue-700 dark:text-blue-300">{stats.abertos}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-0 shadow-none bg-orange-50 dark:bg-orange-950/20">
             <CardContent className="p-6">
               <div className="flex items-center">
-                <Users className="h-8 w-8 text-primary" />
+                <Users className="h-8 w-8 text-orange-500" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-muted-foreground">Em Andamento</p>
-                  <p className="text-2xl font-bold">{stats.em_andamento}</p>
+                  <p className="text-sm font-medium text-orange-600 dark:text-orange-400">Em Andamento</p>
+                  <p className="text-2xl font-bold text-orange-700 dark:text-orange-300">{stats.em_andamento}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-0 shadow-none bg-green-50 dark:bg-green-950/20">
             <CardContent className="p-6">
               <div className="flex items-center">
-                <FileText className="h-8 w-8 text-green-600" />
+                <FileText className="h-8 w-8 text-green-500" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-muted-foreground">Fechados</p>
-                  <p className="text-2xl font-bold">{stats.fechados}</p>
+                  <p className="text-sm font-medium text-green-600 dark:text-green-400">Fechados</p>
+                  <p className="text-2xl font-bold text-green-700 dark:text-green-300">{stats.fechados}</p>
                 </div>
               </div>
             </CardContent>
