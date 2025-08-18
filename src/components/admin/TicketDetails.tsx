@@ -182,6 +182,9 @@ export const TicketDetails = ({ ticket, onBack, onTicketUpdate }: TicketDetailsP
     if (status === 'Em andamento') {
       return 'bg-orange hover:bg-orange text-orange-foreground border-orange';
     }
+    if (status === 'Aguardando') {
+      return 'bg-yellow-egg hover:bg-yellow-egg text-yellow-egg-foreground border-yellow-egg';
+    }
     if (status === 'Fechado') {
       return 'bg-success hover:bg-success text-success-foreground border-success';
     }

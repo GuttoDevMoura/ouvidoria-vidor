@@ -71,6 +71,10 @@ export default {
 					DEFAULT: 'hsl(var(--orange))',
 					foreground: 'hsl(var(--orange-foreground))'
 				},
+				'yellow-egg': {
+					DEFAULT: 'hsl(var(--yellow-egg))',
+					foreground: 'hsl(var(--yellow-egg-foreground))'
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',

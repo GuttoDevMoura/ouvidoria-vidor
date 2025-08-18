@@ -371,6 +371,8 @@ const Admin = () => {
                          className={
                            ticket.status === 'Em andamento' 
                              ? 'bg-orange hover:bg-orange text-orange-foreground border-orange' 
+                             : ticket.status === 'Aguardando'
+                             ? 'bg-yellow-egg hover:bg-yellow-egg text-yellow-egg-foreground border-yellow-egg'
                              : (ticket.status === 'Fechado' || ticket.status === 'Concluído')
                              ? 'bg-success hover:bg-success text-success-foreground border-success'
                              : ''
