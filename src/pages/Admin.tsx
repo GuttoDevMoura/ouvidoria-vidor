@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 import { ArrowLeft, LogOut, Users, FileText, TrendingUp, Mail } from "lucide-react";
 import { TicketDetails } from "@/components/admin/TicketDetails";
 
@@ -25,7 +26,8 @@ interface Ticket {
 }
 
 const Admin = () => {
-  const { user, isAdmin, signOut } = useAuth();
+  const { user, isAdmin, signOut, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
@@ -38,24 +40,27 @@ const Admin = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    if (!user) {
-      window.location.href = "/";
+    if (!authLoading && !user) {
+      // Redirect to auth page if not logged in
+      navigate('/auth?redirect=/admin');
       return;
     }
 
-    if (!isAdmin) {
+    if (user && !isAdmin) {
       toast({
         title: "Acesso negado",
         description: "Você não tem permissão para acessar esta área.",
         variant: "destructive"
       });
-      window.location.href = "/";
+      navigate("/");
       return;
     }
 
-    loadTickets();
-    loadStats();
-  }, [user, isAdmin]);
+    if (user && isAdmin) {
+      loadTickets();
+      loadStats();
+    }
+  }, [user, isAdmin, authLoading, navigate]);
 
   const loadTickets = async () => {
     try {
@@ -117,16 +122,19 @@ const Admin = () => {
     return new Date(dateString).toLocaleDateString('pt-BR');
   };
 
-  if (loading) {
+  if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-          <p className="mt-4 text-muted-foreground">Carregando...</p>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">
+            {authLoading ? "Verificando autenticação..." : "Carregando dados..."}
+          </p>
         </div>
       </div>
     );
   }
+
 
   if (selectedTicket) {
     return (

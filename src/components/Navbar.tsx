@@ -75,15 +75,27 @@ export const Navbar = ({ onSectionChange, currentSection, onTrackingClick }: Nav
               <span className="hidden lg:inline">Acompanhar</span>
               <span className="lg:hidden">Track</span>
             </Button>
-            {isAdmin && (
+            {user ? (
+              isAdmin && (
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => window.location.href = "/admin"}
+                  className="border-gray-200 hover:bg-gray-50 text-xs lg:text-sm"
+                >
+                  <span className="hidden lg:inline">Área Administrativa</span>
+                  <span className="lg:hidden">Admin</span>
+                </Button>
+              )
+            ) : (
               <Button 
                 variant="outline" 
                 size="sm"
-                onClick={() => window.location.href = "/admin"}
+                onClick={() => window.location.href = "/auth"}
                 className="border-gray-200 hover:bg-gray-50 text-xs lg:text-sm"
               >
-                <span className="hidden lg:inline">Área Administrativa</span>
-                <span className="lg:hidden">Admin</span>
+                <span className="hidden lg:inline">Login da Equipe</span>
+                <span className="lg:hidden">Login</span>
               </Button>
             )}
           </div>
@@ -126,14 +138,25 @@ export const Navbar = ({ onSectionChange, currentSection, onTrackingClick }: Nav
                 <Search className="h-4 w-4" />
                 Acompanhar Manifestação
               </Button>
-              {isAdmin && (
+              {user ? (
+                isAdmin && (
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full mt-3 border-gray-200 hover:bg-gray-50"
+                    onClick={() => window.location.href = "/admin"}
+                  >
+                    Área Administrativa
+                  </Button>
+                )
+              ) : (
                 <Button 
                   variant="outline" 
                   size="sm" 
                   className="w-full mt-3 border-gray-200 hover:bg-gray-50"
-                  onClick={() => window.location.href = "/admin"}
+                  onClick={() => window.location.href = "/auth"}
                 >
-                  Área Administrativa
+                  Login da Equipe
                 </Button>
               )}
             </div>

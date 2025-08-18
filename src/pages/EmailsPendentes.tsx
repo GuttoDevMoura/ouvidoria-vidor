@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { ArrowLeft, Mail, CheckCircle, Copy, ExternalLink } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -26,11 +27,25 @@ const EmailsPendentes = () => {
   const [emails, setEmails] = useState<EmailPendente[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedEmail, setSelectedEmail] = useState<EmailPendente | null>(null);
+  const { user, isAdmin, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    loadEmails();
-  }, []);
+    if (!authLoading && !user) {
+      navigate('/auth?redirect=/emails-pendentes');
+      return;
+    }
+
+    if (user && !isAdmin) {
+      toast.error("Acesso negado. Você não tem permissão para acessar esta área.");
+      navigate("/");
+      return;
+    }
+
+    if (user && isAdmin) {
+      loadEmails();
+    }
+  }, [user, isAdmin, authLoading, navigate]);
 
   const loadEmails = async () => {
     try {
