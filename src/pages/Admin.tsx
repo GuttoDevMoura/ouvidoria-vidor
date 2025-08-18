@@ -6,7 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, LogOut, Users, FileText, TrendingUp, Mail, User, BarChart3, AlertTriangle } from "lucide-react";
+import { ArrowLeft, LogOut, Users, FileText, TrendingUp, Mail, User, BarChart3, Circle } from "lucide-react";
 import { TicketDetails } from "@/components/admin/TicketDetails";
 
 interface Ticket {
@@ -176,18 +176,23 @@ const Admin = () => {
     }
   };
 
-  const getSLAIcon = (slaStatus: string | null) => {
+  const getSLAIcon = (slaStatus: string | null, ticketStatus: string) => {
     if (!slaStatus) return null;
     
-    const baseClasses = "h-4 w-4 ml-2";
+    const baseClasses = "h-3 w-3 mr-2 fill-current";
+    
+    // Se o status for "Em andamento", sempre laranja
+    if (ticketStatus === 'Em andamento') {
+      return <Circle className={`${baseClasses} text-orange-500 animate-pulse`} />;
+    }
     
     switch (slaStatus) {
       case 'overdue':
-        return <AlertTriangle className={`${baseClasses} text-destructive animate-pulse`} />;
+        return <Circle className={`${baseClasses} text-destructive animate-pulse`} />;
       case 'warning':
-        return <AlertTriangle className={`${baseClasses} text-orange-500 animate-pulse`} />;
+        return <Circle className={`${baseClasses} text-orange-500 animate-pulse`} />;
       case 'ok':
-        return <AlertTriangle className={`${baseClasses} text-green-500 animate-pulse opacity-50`} />;
+        return <Circle className={`${baseClasses} text-green-500 animate-pulse`} />;
       default:
         return null;
     }
@@ -339,6 +344,7 @@ const Admin = () => {
                 >
                   <div className="flex-1">
                     <div className="flex items-center space-x-4">
+                      {getSLAIcon(getSLAStatus(ticket.created_at, ticket.status), ticket.status)}
                       <Badge variant={getStatusBadgeVariant(ticket.status)}>
                         {ticket.status}
                       </Badge>
@@ -346,7 +352,6 @@ const Admin = () => {
                       <span className="text-sm text-muted-foreground">
                         {ticket.eh_anonimo ? "Anônimo" : ticket.nome_completo}
                       </span>
-                      {getSLAIcon(getSLAStatus(ticket.created_at, ticket.status))}
                     </div>
                     <div className="mt-2">
                       <p className="text-sm text-muted-foreground">
