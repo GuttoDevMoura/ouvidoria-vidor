@@ -284,7 +284,6 @@ export default function GerenciarEquipe() {
                     onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                     className="pl-10"
                     required={!editingMember}
-                    disabled={!!editingMember}
                   />
                 </div>
               </div>
