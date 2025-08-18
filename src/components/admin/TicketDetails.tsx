@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, Plus, Save } from "lucide-react";
+import { TicketHistory } from "./TicketHistory";
 
 interface Ticket {
   id: string;
@@ -297,8 +298,12 @@ export const TicketDetails = ({ ticket, onBack, onTicketUpdate }: TicketDetailsP
             </Card>
           </div>
 
-          {/* Ações */}
+          {/* Sidebar direita */}
           <div className="space-y-6">
+            {/* Histórico */}
+            <TicketHistory ticketId={ticket.id} />
+
+            {/* Ações */}
             <Card>
               <CardHeader>
                 <CardTitle>Atualizar Status</CardTitle>
