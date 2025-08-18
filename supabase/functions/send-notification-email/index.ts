@@ -1,7 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Resend } from "npm:resend@2.0.0";
-
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+import { SmtpClient } from "https://deno.land/x/smtp@v0.7.0/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -91,32 +89,41 @@ const handler = async (req: Request): Promise<Response> => {
       </html>
     `;
 
-    // Enviar email usando Resend
+    // Enviar email usando SMTP direto
     try {
-      console.log("Enviando email com Resend...");
+      console.log("Enviando email via SMTP...");
       console.log(`Para: ${to}`);
       console.log(`Assunto: ${subject}`);
       console.log(`Protocolo: ${protocolNumber}`);
       
-      const emailResponse = await resend.emails.send({
-        from: "Ouvidoria <onboarding@resend.dev>",
-        to: [to],
+      // Configuração SMTP para SKYMAIL
+      const smtpClient = new SmtpClient();
+      
+      await smtpClient.connect({
+        hostname: "smtp.emailemnuvem.com.br",
+        port: 465,
+        username: "ouvidoria@igrejanovoscomecos.com.br",
+        password: "NC#2024!ouv",
+        tls: true,
+      });
+      
+      console.log("Conectado ao servidor SMTP");
+      
+      await smtpClient.send({
+        from: "ouvidoria@igrejanovoscomecos.com.br",
+        to: to,
         subject: subject,
+        content: htmlContent,
         html: htmlContent,
       });
-
-      console.log("Resposta completa do Resend:", JSON.stringify(emailResponse, null, 2));
       
-      if (emailResponse.error) {
-        console.error("ERRO DO RESEND:", emailResponse.error);
-        throw new Error(`Erro do Resend: ${emailResponse.error.message || JSON.stringify(emailResponse.error)}`);
-      }
+      await smtpClient.close();
       
-      console.log("Email enviado com sucesso - ID:", emailResponse.data?.id);
+      console.log("Email enviado com sucesso via SMTP!");
       
     } catch (emailError) {
-      console.error("Erro no envio com Resend:", emailError);
-      throw new Error(`Falha no envio: ${emailError.message}`);
+      console.error("Erro no envio SMTP:", emailError);
+      throw new Error(`Falha no envio SMTP: ${emailError.message}`);
     }
 
     return new Response(JSON.stringify({ 
