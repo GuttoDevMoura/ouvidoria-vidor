@@ -6,16 +6,18 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Mail, Lock, Building2 } from "lucide-react";
+import { ArrowLeft, Mail, Lock, Building2, UserPlus } from "lucide-react";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [nomeCompleto, setNomeCompleto] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(false);
   const [searchParams] = useSearchParams();
   const redirect = searchParams.get('redirect') || '/admin';
   
-  const { user, signIn, loading: authLoading } = useAuth();
+  const { user, signIn, signUp, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
   // Redirect if already authenticated
@@ -65,6 +67,37 @@ const Auth = () => {
     }
   };
 
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !password || !nomeCompleto) {
+      toast.error("Por favor, preencha todos os campos");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      console.log("Tentando criar conta para:", email);
+      
+      const { error } = await signUp(email, password, nomeCompleto);
+      
+      if (error) {
+        console.error("Erro no cadastro:", error);
+        if (error.message.includes('already registered')) {
+          toast.error("Este email já está cadastrado");
+        } else {
+          toast.error(error.message || "Erro ao criar conta");
+        }
+      } else {
+        toast.success("Conta criada com sucesso! Verificando autenticação...");
+      }
+    } catch (error) {
+      console.error('Erro inesperado no cadastro:', error);
+      toast.error("Erro inesperado ao criar conta");
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   if (authLoading) {
     return (
@@ -104,45 +137,113 @@ const Auth = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSignIn} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="signin-email" className="flex items-center gap-2">
-                  <Mail className="h-4 w-4" />
-                  Email
-                </Label>
-                <Input
-                  id="signin-email"
-                  type="email"
-                  placeholder="seu.email@exemplo.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
+            {!isSignUp ? (
+              <form onSubmit={handleSignIn} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="signin-email" className="flex items-center gap-2">
+                    <Mail className="h-4 w-4" />
+                    Email
+                  </Label>
+                  <Input
+                    id="signin-email"
+                    type="email"
+                    placeholder="seu.email@exemplo.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    disabled={loading}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="signin-password" className="flex items-center gap-2">
+                    <Lock className="h-4 w-4" />
+                    Senha
+                  </Label>
+                  <Input
+                    id="signin-password"
+                    type="password"
+                    placeholder="Digite sua senha"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    disabled={loading}
+                  />
+                </div>
+                <Button 
+                  type="submit" 
+                  className="w-full" 
                   disabled={loading}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="signin-password" className="flex items-center gap-2">
-                  <Lock className="h-4 w-4" />
-                  Senha
-                </Label>
-                <Input
-                  id="signin-password"
-                  type="password"
-                  placeholder="Digite sua senha"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
+                >
+                  {loading ? "Entrando..." : "Entrar"}
+                </Button>
+              </form>
+            ) : (
+              <form onSubmit={handleSignUp} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="signup-name" className="flex items-center gap-2">
+                    <UserPlus className="h-4 w-4" />
+                    Nome Completo
+                  </Label>
+                  <Input
+                    id="signup-name"
+                    type="text"
+                    placeholder="Seu nome completo"
+                    value={nomeCompleto}
+                    onChange={(e) => setNomeCompleto(e.target.value)}
+                    required
+                    disabled={loading}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="signup-email" className="flex items-center gap-2">
+                    <Mail className="h-4 w-4" />
+                    Email
+                  </Label>
+                  <Input
+                    id="signup-email"
+                    type="email"
+                    placeholder="seu.email@exemplo.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    disabled={loading}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="signup-password" className="flex items-center gap-2">
+                    <Lock className="h-4 w-4" />
+                    Senha
+                  </Label>
+                  <Input
+                    id="signup-password"
+                    type="password"
+                    placeholder="Digite sua senha"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    disabled={loading}
+                  />
+                </div>
+                <Button 
+                  type="submit" 
+                  className="w-full" 
                   disabled={loading}
-                />
-              </div>
-              <Button 
-                type="submit" 
-                className="w-full" 
+                >
+                  {loading ? "Criando conta..." : "Criar Conta"}
+                </Button>
+              </form>
+            )}
+
+            <div className="mt-4 text-center">
+              <Button
+                variant="link"
+                onClick={() => setIsSignUp(!isSignUp)}
                 disabled={loading}
+                className="text-sm"
               >
-                {loading ? "Entrando..." : "Entrar"}
+                {isSignUp ? "Já tem conta? Faça login" : "Precisa criar uma conta?"}
               </Button>
-            </form>
+            </div>
 
             <div className="mt-6 pt-6 border-t border-gray-200">
               <p className="text-sm text-gray-600 text-center">
