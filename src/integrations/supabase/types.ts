@@ -14,16 +14,195 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      content_settings: {
+        Row: {
+          chave: string
+          descricao: string | null
+          id: string
+          updated_at: string
+          valor: string
+        }
+        Insert: {
+          chave: string
+          descricao?: string | null
+          id?: string
+          updated_at?: string
+          valor: string
+        }
+        Update: {
+          chave?: string
+          descricao?: string | null
+          id?: string
+          updated_at?: string
+          valor?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          id: string
+          nome_completo: string | null
+          role: Database["public"]["Enums"]["user_role"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          nome_completo?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          nome_completo?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      ticket_notes: {
+        Row: {
+          agente_id: string
+          created_at: string
+          id: string
+          nota: string
+          ticket_id: string
+        }
+        Insert: {
+          agente_id: string
+          created_at?: string
+          id?: string
+          nota: string
+          ticket_id: string
+        }
+        Update: {
+          agente_id?: string
+          created_at?: string
+          id?: string
+          nota?: string
+          ticket_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ticket_notes_agente_id_fkey"
+            columns: ["agente_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ticket_notes_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tickets: {
+        Row: {
+          agente_responsavel: string | null
+          campus: Database["public"]["Enums"]["campus_type"]
+          contato_whatsapp: string | null
+          created_at: string
+          data_vencimento: string
+          descricao: string
+          eh_anonimo: boolean
+          email: string | null
+          id: string
+          nome_completo: string | null
+          numero_protocolo: string
+          resumo_tratativa: string | null
+          status: Database["public"]["Enums"]["ticket_status"]
+          tipo_solicitacao: Database["public"]["Enums"]["solicitacao_type"]
+          updated_at: string
+        }
+        Insert: {
+          agente_responsavel?: string | null
+          campus: Database["public"]["Enums"]["campus_type"]
+          contato_whatsapp?: string | null
+          created_at?: string
+          data_vencimento: string
+          descricao: string
+          eh_anonimo?: boolean
+          email?: string | null
+          id?: string
+          nome_completo?: string | null
+          numero_protocolo: string
+          resumo_tratativa?: string | null
+          status?: Database["public"]["Enums"]["ticket_status"]
+          tipo_solicitacao: Database["public"]["Enums"]["solicitacao_type"]
+          updated_at?: string
+        }
+        Update: {
+          agente_responsavel?: string | null
+          campus?: Database["public"]["Enums"]["campus_type"]
+          contato_whatsapp?: string | null
+          created_at?: string
+          data_vencimento?: string
+          descricao?: string
+          eh_anonimo?: boolean
+          email?: string | null
+          id?: string
+          nome_completo?: string | null
+          numero_protocolo?: string
+          resumo_tratativa?: string | null
+          status?: Database["public"]["Enums"]["ticket_status"]
+          tipo_solicitacao?: Database["public"]["Enums"]["solicitacao_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tickets_agente_responsavel_fkey"
+            columns: ["agente_responsavel"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      calculate_due_date: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      generate_protocol_number: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
     }
     Enums: {
-      [_ in never]: never
+      campus_type:
+        | "Niterói"
+        | "Barra"
+        | "Búzios"
+        | "Zona Sul"
+        | "Caxias"
+        | "Itaboraí"
+        | "Petrópolis"
+        | "Friburgo"
+        | "Teresópolis"
+        | "Cabo Frio"
+        | "Macaé"
+        | "Maricá"
+        | "Online"
+      solicitacao_type: "Elogio" | "Crítica" | "Denúncia" | "Sugestão"
+      ticket_status:
+        | "Aberto"
+        | "Em andamento"
+        | "Aguardando"
+        | "Fechado"
+        | "Reaberto"
+      user_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +329,31 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      campus_type: [
+        "Niterói",
+        "Barra",
+        "Búzios",
+        "Zona Sul",
+        "Caxias",
+        "Itaboraí",
+        "Petrópolis",
+        "Friburgo",
+        "Teresópolis",
+        "Cabo Frio",
+        "Macaé",
+        "Maricá",
+        "Online",
+      ],
+      solicitacao_type: ["Elogio", "Crítica", "Denúncia", "Sugestão"],
+      ticket_status: [
+        "Aberto",
+        "Em andamento",
+        "Aguardando",
+        "Fechado",
+        "Reaberto",
+      ],
+      user_role: ["admin", "user"],
+    },
   },
 } as const
