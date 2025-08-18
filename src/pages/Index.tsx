@@ -3,7 +3,6 @@ import { Navbar } from "@/components/Navbar";
 import { HeroSection } from "@/components/HeroSection";
 import { OuvidoriaForm } from "@/components/OuvidoriaForm";
 import { TrackingForm } from "@/components/TrackingForm";
-import { AuthProvider } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
@@ -61,26 +60,24 @@ const Index = () => {
   };
 
   return (
-    <AuthProvider>
-      <div className="min-h-screen bg-background">
-        <Navbar 
-          onSectionChange={handleSectionChange} 
-          currentSection={currentSection}
-          onTrackingClick={handleTrackingClick}
+    <div className="min-h-screen bg-background">
+      <Navbar 
+        onSectionChange={handleSectionChange} 
+        currentSection={currentSection}
+        onTrackingClick={handleTrackingClick}
+      />
+      
+      {currentSection === "form" ? (
+        <OuvidoriaForm onBack={handleBackToHome} selectedType={selectedType} />
+      ) : currentSection === "tracking" ? (
+        <TrackingForm onBack={handleBackToHome} />
+      ) : (
+        <HeroSection 
+          onOpenForm={handleOpenForm}
+          content={content}
         />
-        
-        {currentSection === "form" ? (
-          <OuvidoriaForm onBack={handleBackToHome} selectedType={selectedType} />
-        ) : currentSection === "tracking" ? (
-          <TrackingForm onBack={handleBackToHome} />
-        ) : (
-          <HeroSection 
-            onOpenForm={handleOpenForm}
-            content={content}
-          />
-        )}
-      </div>
-    </AuthProvider>
+      )}
+    </div>
   );
 };
 

@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Search } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
-import { useNavigate } from "react-router-dom";
 
 interface NavbarProps {
   onSectionChange: (section: string) => void;
@@ -12,11 +10,6 @@ interface NavbarProps {
 
 export const Navbar = ({ onSectionChange, currentSection, onTrackingClick }: NavbarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user, isAdmin } = useAuth();
-  const navigate = useNavigate();
-  
-  // Debug: log do status do usuário
-  console.log('Navbar - User:', user?.email, 'IsAdmin:', isAdmin);
 
   const navItems = [
     { id: "home", label: "Início" },
@@ -80,20 +73,6 @@ export const Navbar = ({ onSectionChange, currentSection, onTrackingClick }: Nav
               <span className="hidden lg:inline">Acompanhar</span>
               <span className="lg:hidden">Track</span>
             </Button>
-            {user && isAdmin && (
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => {
-                  console.log('Clicando em Área Administrativa - User:', user?.email, 'IsAdmin:', isAdmin);
-                  navigate("/admin");
-                }}
-                className="border-gray-200 hover:bg-gray-50 text-xs lg:text-sm"
-              >
-                <span className="hidden lg:inline">Área Administrativa</span>
-                <span className="lg:hidden">Admin</span>
-              </Button>
-            )}
           </div>
 
           {/* Mobile menu button */}
@@ -134,19 +113,6 @@ export const Navbar = ({ onSectionChange, currentSection, onTrackingClick }: Nav
                 <Search className="h-4 w-4" />
                 Acompanhar Manifestação
               </Button>
-              {user && isAdmin && (
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="w-full mt-3 border-gray-200 hover:bg-gray-50"
-                  onClick={() => {
-                    console.log('Clicando em Área Administrativa (Mobile) - User:', user?.email, 'IsAdmin:', isAdmin);
-                    navigate("/admin");
-                  }}
-                >
-                  Área Administrativa
-                </Button>
-              )}
             </div>
           </div>
         )}
