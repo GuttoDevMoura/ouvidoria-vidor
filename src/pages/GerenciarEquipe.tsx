@@ -22,7 +22,7 @@ interface TeamMember {
 }
 
 export default function GerenciarEquipe() {
-  const { user, session } = useAuth();
+  const { user, session, isAdmin } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [members, setMembers] = useState<TeamMember[]>([]);
@@ -38,9 +38,14 @@ export default function GerenciarEquipe() {
 
   useEffect(() => {
     if (session) {
+      // Verificar se é admin antes de carregar dados
+      if (!isAdmin) {
+        navigate('/admin');
+        return;
+      }
       loadTeamMembers();
     }
-  }, [session]);
+  }, [session, isAdmin, navigate]);
 
   const loadTeamMembers = async () => {
     try {

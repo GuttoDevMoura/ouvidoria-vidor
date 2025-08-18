@@ -22,7 +22,7 @@ interface DashboardData {
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
 
 export default function Dashboard() {
-  const { user, session } = useAuth();
+  const { user, session, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [data, setData] = useState<DashboardData>({
     totalTickets: 0,
@@ -39,9 +39,14 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (session) {
+      // Verificar se é admin antes de carregar dados
+      if (!isAdmin) {
+        navigate('/admin');
+        return;
+      }
       loadDashboardData();
     }
-  }, [session]);
+  }, [session, isAdmin, navigate]);
 
   const loadDashboardData = async () => {
     try {

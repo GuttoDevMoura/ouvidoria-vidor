@@ -7,6 +7,8 @@ interface AuthContextType {
   session: Session | null;
   loading: boolean;
   isAdmin: boolean;
+  isAgent: boolean;
+  userRole: string | null;
   signUp: (email: string, password: string, nomeCompleto: string) => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
@@ -19,8 +21,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isAgent, setIsAgent] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
 
-  console.log('AuthProvider: Estado atual:', { hasUser: !!user, isAdmin, loading });
+  console.log('AuthProvider: Estado atual:', { hasUser: !!user, isAdmin, isAgent, userRole, loading });
 
   useEffect(() => {
     console.log('useAuth: Iniciando configuração de autenticação...');
@@ -39,8 +43,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             console.log('useAuth: Usuário logado, verificando status admin...');
             checkAdminStatus(session.user.id);
           } else {
-            console.log('useAuth: Usuário deslogado, removendo status admin');
+            console.log('useAuth: Usuário deslogado, removendo status admin e agent');
             setIsAdmin(false);
+            setIsAgent(false);
+            setUserRole(null);
             setLoading(false);
           }
         }
@@ -99,14 +105,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
       
       if (data) {
-        const adminOrAgentStatus = data.role === 'admin' || data.role === 'agent';
+        const role = data.role;
+        setUserRole(role);
+        setIsAdmin(role === 'admin');
+        setIsAgent(role === 'agent');
+        
         console.log('checkAdminStatus: PROFILE ENCONTRADO:', { 
-          role: data.role, 
-          isAdminOrAgent: adminOrAgentStatus,
-          roleType: typeof data.role,
-          comparison: `${data.role} === 'admin' || 'agent' = ${adminOrAgentStatus}`
+          role: role, 
+          isAdmin: role === 'admin',
+          isAgent: role === 'agent'
         });
-        setIsAdmin(adminOrAgentStatus);
         setLoading(false);
       } else {
         console.log('checkAdminStatus: NENHUM PROFILE encontrado, CRIANDO profile padrão...');
@@ -123,15 +131,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         if (insertError) {
           console.error('checkAdminStatus: ERRO ao criar profile:', insertError);
           setIsAdmin(false);
+          setIsAgent(false);
+          setUserRole(null);
         } else {
           console.log('checkAdminStatus: PROFILE ADMIN criado com SUCESSO');
           setIsAdmin(true);
+          setIsAgent(false);
+          setUserRole('admin');
         }
         setLoading(false);
       }
     } catch (error) {
       console.error('checkAdminStatus: ERRO INESPERADO:', error);
       setIsAdmin(false);
+      setIsAgent(false);
+      setUserRole(null);
       setLoading(false);
     }
   };
@@ -170,6 +184,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const signOut = async () => {
     await supabase.auth.signOut();
     setIsAdmin(false);
+    setIsAgent(false);
+    setUserRole(null);
   };
 
   return (
@@ -178,6 +194,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       session,
       loading,
       isAdmin,
+      isAgent,
+      userRole,
       signUp,
       signIn,
       signOut,

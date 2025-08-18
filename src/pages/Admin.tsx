@@ -27,13 +27,12 @@ interface Ticket {
 }
 
 const Admin = () => {
-  const { user, isAdmin, signOut, loading: authLoading } = useAuth();
+  const { user, isAdmin, isAgent, userRole, signOut, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [userRole, setUserRole] = useState<string | null>(null);
   const [stats, setStats] = useState({
     total: 0,
     abertos: 0,
@@ -44,49 +43,26 @@ const Admin = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    console.log('Admin.tsx - useEffect executado:', { user: user?.email, isAdmin, authLoading });
+    console.log('Admin.tsx - useEffect executado:', { user: user?.email, isAdmin, isAgent, userRole, authLoading });
     
     if (!authLoading && !user) {
       console.log('Admin.tsx - Usuário não logado, redirecionando para auth');
       navigate('/auth?redirect=/admin');
       return;
     }
-
-    if (user && !isAdmin) {
-      console.log('Admin.tsx - Usuário logado mas não é admin/agent, redirecionando para home');
-      toast({
-        title: "Acesso negado",
-        description: "Você não tem permissão para acessar esta área.",
-        variant: "destructive"
-      });
-      navigate("/");
+    
+    if (!authLoading && user && !isAdmin && !isAgent) {
+      console.log('Admin.tsx - Usuário sem permissão, redirecionando para home');
+      navigate('/');
       return;
     }
-
-    if (user && isAdmin) {
+    
+    if (!authLoading && (isAdmin || isAgent)) {
       console.log('Admin.tsx - Usuário logado e tem permissão, carregando dados');
-      loadUserRole();
       loadTickets();
       loadStats();
     }
-  }, [user, isAdmin, authLoading, navigate]);
-
-  const loadUserRole = async () => {
-    if (!user) return;
-    
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('user_id', user.id)
-        .single();
-
-      if (error) throw error;
-      setUserRole(data?.role || null);
-    } catch (error) {
-      console.error('Erro ao carregar role do usuário:', error);
-    }
-  };
+  }, [user, isAdmin, isAgent, authLoading, navigate]);
 
   const loadTickets = async () => {
     try {
@@ -256,7 +232,7 @@ const Admin = () => {
               </Button>
               
               {/* Dashboard - apenas para admins */}
-              {userRole === 'admin' && (
+              {isAdmin && (
                 <Button 
                   variant="ghost" 
                   onClick={() => navigate('/dashboard')}
@@ -267,7 +243,7 @@ const Admin = () => {
               )}
               
               {/* Gerenciar Equipe - apenas para admins */}
-              {userRole === 'admin' && (
+              {isAdmin && (
                 <Button 
                   variant="ghost" 
                   onClick={() => navigate('/gerenciar-equipe')}
