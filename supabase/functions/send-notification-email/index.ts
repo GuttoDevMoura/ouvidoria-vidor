@@ -1,4 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { Resend } from "npm:resend@2.0.0";
+
+const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -21,17 +24,6 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     console.log("=== FUNÇÃO DE EMAIL INICIADA ===");
-    
-    // Configurações SMTP fixas
-    const smtpConfig = {
-      host: "smtp.emailemnuvem.com.br",
-      port: "465",
-      username: "ouvidoria@igrejanovoscomecos.com.br",
-      password: "NC#2024!ouv"
-    };
-    
-    const { host, port, username, password } = smtpConfig;
-    console.log("Configurações SMTP carregadas:", { host, port, username });
 
     const { to, subject, protocolNumber, status, nome, isAnonymous }: EmailData = await req.json();
     console.log("Dados do email recebidos:", { to, subject, protocolNumber, status, nome, isAnonymous });
@@ -91,27 +83,25 @@ const handler = async (req: Request): Promise<Response> => {
       </html>
     `;
 
-    // Implementar envio usando uma abordagem mais simples com fetch
+    // Enviar email usando Resend
     try {
-      console.log("Usando abordagem de envio simplificada...");
-      
-      // Por enquanto, apenas logar que o email seria enviado
-      // Em ambiente de produção, você pode integrar com um serviço como SendGrid, Mailgun, etc.
-      console.log("=== EMAIL QUE SERIA ENVIADO ===");
-      console.log(`De: ${username}`);
+      console.log("Enviando email com Resend...");
       console.log(`Para: ${to}`);
       console.log(`Assunto: ${subject}`);
       console.log(`Protocolo: ${protocolNumber}`);
-      console.log(`Status: ${status}`);
-      console.log("HTML do email preparado com sucesso");
-      console.log("=== ENVIO SIMULADO COM SUCESSO ===");
       
-      // TODO: Implementar integração com serviço de email (SendGrid, Mailgun, etc.)
-      // Por ora, apenas simular o envio bem-sucedido
+      const emailResponse = await resend.emails.send({
+        from: "Ouvidoria <onboarding@resend.dev>",
+        to: [to],
+        subject: subject,
+        html: htmlContent,
+      });
+
+      console.log("Email enviado com sucesso:", emailResponse);
       
-    } catch (smtpError) {
-      console.error("Erro no envio:", smtpError);
-      throw new Error(`Falha no envio: ${smtpError.message}`);
+    } catch (emailError) {
+      console.error("Erro no envio com Resend:", emailError);
+      throw new Error(`Falha no envio: ${emailError.message}`);
     }
 
     return new Response(JSON.stringify({ 
