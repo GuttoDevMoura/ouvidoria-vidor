@@ -150,160 +150,163 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-gray-800">Dashboard de Relatórios</h1>
-        <div className="text-sm text-gray-500">
-          Última atualização: {new Date().toLocaleString('pt-BR')}
+    <div className="min-h-screen bg-background p-6">
+      <div className="max-w-7xl mx-auto space-y-8">
+        {/* Header minimalista */}
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-semibold">Dashboard</h1>
+          <div className="text-sm text-muted-foreground">
+            Última atualização: {new Date().toLocaleString('pt-BR')}
+          </div>
         </div>
-      </div>
 
-      {/* Cards de Estatísticas */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="shadow-lg border-l-4 border-l-blue-500">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Total de Tickets</p>
-                <p className="text-3xl font-bold text-gray-800">{data.totalTickets}</p>
+        {/* Cards de Estatísticas */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <Card className="border-0 shadow-none">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Total de Tickets</p>
+                  <p className="text-3xl font-bold">{data.totalTickets}</p>
+                </div>
+                <FileText className="h-8 w-8 text-muted-foreground" />
               </div>
-              <FileText className="h-12 w-12 text-blue-500 opacity-80" />
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        <Card className="shadow-lg border-l-4 border-l-yellow-500">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Abertos</p>
-                <p className="text-3xl font-bold text-gray-800">{data.openTickets}</p>
+          <Card className="border-0 shadow-none">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Abertos</p>
+                  <p className="text-3xl font-bold">{data.openTickets}</p>
+                </div>
+                <Calendar className="h-8 w-8 text-muted-foreground" />
               </div>
-              <Calendar className="h-12 w-12 text-yellow-500 opacity-80" />
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        <Card className="shadow-lg border-l-4 border-l-orange-500">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Em Andamento</p>
-                <p className="text-3xl font-bold text-gray-800">{data.inProgressTickets}</p>
+          <Card className="border-0 shadow-none">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Em Andamento</p>
+                  <p className="text-3xl font-bold">{data.inProgressTickets}</p>
+                </div>
+                <TrendingUp className="h-8 w-8 text-muted-foreground" />
               </div>
-              <TrendingUp className="h-12 w-12 text-orange-500 opacity-80" />
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        <Card className="shadow-lg border-l-4 border-l-green-500">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Concluídos</p>
-                <p className="text-3xl font-bold text-gray-800">{data.closedTickets}</p>
+          <Card className="border-0 shadow-none">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Concluídos</p>
+                  <p className="text-3xl font-bold">{data.closedTickets}</p>
+                </div>
+                <Award className="h-8 w-8 text-muted-foreground" />
               </div>
-              <Award className="h-12 w-12 text-green-500 opacity-80" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+            </CardContent>
+          </Card>
+        </div>
 
-      {/* Gráficos */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Tickets por Tipo */}
-        <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <FileText className="h-5 w-5 text-blue-600" />
-              Tickets por Tipo de Solicitação
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={data.ticketsByType}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {data.ticketsByType.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+        {/* Gráficos */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Tickets por Tipo */}
+          <Card className="border-0 shadow-none">
+            <CardHeader className="px-6 pb-4">
+              <CardTitle className="flex items-center gap-2 text-lg font-medium">
+                <FileText className="h-5 w-5 text-muted-foreground" />
+                Tickets por Tipo de Solicitação
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="px-6">
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={data.ticketsByType}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {data.ticketsByType.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
 
-        {/* Tickets por Campus */}
-        <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <MapPin className="h-5 w-5 text-green-600" />
-              Tickets por Campus
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={data.ticketsByCampus}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="value" fill="#00C49F" />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+          {/* Tickets por Campus */}
+          <Card className="border-0 shadow-none">
+            <CardHeader className="px-6 pb-4">
+              <CardTitle className="flex items-center gap-2 text-lg font-medium">
+                <MapPin className="h-5 w-5 text-muted-foreground" />
+                Tickets por Campus
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="px-6">
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={data.ticketsByCampus}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="value" fill="hsl(var(--primary))" />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
 
-        {/* Performance dos Agentes */}
-        <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Users className="h-5 w-5 text-purple-600" />
-              Tickets Fechados por Agente
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={data.agentStats} layout="horizontal">
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis type="number" />
-                <YAxis type="category" dataKey="name" width={100} />
-                <Tooltip />
-                <Bar dataKey="closed" fill="#8884D8" />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+          {/* Performance dos Agentes */}
+          <Card className="border-0 shadow-none">
+            <CardHeader className="px-6 pb-4">
+              <CardTitle className="flex items-center gap-2 text-lg font-medium">
+                <Users className="h-5 w-5 text-muted-foreground" />
+                Tickets Fechados por Agente
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="px-6">
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={data.agentStats} layout="horizontal">
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis type="number" />
+                  <YAxis type="category" dataKey="name" width={100} />
+                  <Tooltip />
+                  <Bar dataKey="closed" fill="hsl(var(--primary))" />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
 
-        {/* Evolução Mensal */}
-        <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-red-600" />
-              Evolução Mensal
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={data.monthlyStats}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="tickets" fill="#FF8042" />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+          {/* Evolução Mensal */}
+          <Card className="border-0 shadow-none">
+            <CardHeader className="px-6 pb-4">
+              <CardTitle className="flex items-center gap-2 text-lg font-medium">
+                <TrendingUp className="h-5 w-5 text-muted-foreground" />
+                Evolução Mensal
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="px-6">
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={data.monthlyStats}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="tickets" fill="hsl(var(--primary))" />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
