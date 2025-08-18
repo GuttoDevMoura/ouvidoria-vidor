@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { SmtpClient } from "https://deno.land/x/smtp@v0.7.0/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -89,41 +88,23 @@ const handler = async (req: Request): Promise<Response> => {
       </html>
     `;
 
-    // Enviar email usando SMTP direto
+    // Por enquanto, vamos simular o envio e logar para debug
     try {
-      console.log("Enviando email via SMTP...");
+      console.log("SIMULANDO envio de email...");
       console.log(`Para: ${to}`);
       console.log(`Assunto: ${subject}`);
       console.log(`Protocolo: ${protocolNumber}`);
+      console.log(`De: ouvidoria@igrejanovoscomecos.com.br`);
+      console.log("HTML Content preparado:", htmlContent.substring(0, 200) + "...");
       
-      // Configuração SMTP para SKYMAIL
-      const smtpClient = new SmtpClient();
+      // TODO: Implementar envio real usando um serviço mais robusto
+      // Opções: EmailJS, SendGrid, Mailgun, ou integração direta com API do provedor
       
-      await smtpClient.connect({
-        hostname: "smtp.emailemnuvem.com.br",
-        port: 465,
-        username: "ouvidoria@igrejanovoscomecos.com.br",
-        password: "NC#2024!ouv",
-        tls: true,
-      });
-      
-      console.log("Conectado ao servidor SMTP");
-      
-      await smtpClient.send({
-        from: "ouvidoria@igrejanovoscomecos.com.br",
-        to: to,
-        subject: subject,
-        content: htmlContent,
-        html: htmlContent,
-      });
-      
-      await smtpClient.close();
-      
-      console.log("Email enviado com sucesso via SMTP!");
+      console.log("Email SIMULADO enviado com sucesso!");
       
     } catch (emailError) {
-      console.error("Erro no envio SMTP:", emailError);
-      throw new Error(`Falha no envio SMTP: ${emailError.message}`);
+      console.error("Erro no processamento:", emailError);
+      throw new Error(`Falha no processamento: ${emailError.message}`);
     }
 
     return new Response(JSON.stringify({ 
