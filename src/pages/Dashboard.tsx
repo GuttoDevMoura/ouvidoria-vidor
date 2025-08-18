@@ -1,0 +1,310 @@
+import React, { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { Calendar, Users, FileText, TrendingUp, Award, MapPin } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { Navigate } from "react-router-dom";
+
+interface DashboardData {
+  totalTickets: number;
+  openTickets: number;
+  inProgressTickets: number;
+  closedTickets: number;
+  ticketsByType: { name: string; value: number }[];
+  ticketsByCampus: { name: string; value: number }[];
+  agentStats: { name: string; closed: number }[];
+  monthlyStats: { month: string; tickets: number }[];
+}
+
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
+
+export default function Dashboard() {
+  const { user, session } = useAuth();
+  const [data, setData] = useState<DashboardData>({
+    totalTickets: 0,
+    openTickets: 0,
+    inProgressTickets: 0,
+    closedTickets: 0,
+    ticketsByType: [],
+    ticketsByCampus: [],
+    agentStats: [],
+    monthlyStats: []
+  });
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (session) {
+      loadDashboardData();
+    }
+  }, [session]);
+
+  const loadDashboardData = async () => {
+    try {
+      // Buscar todos os tickets
+      const { data: tickets } = await supabase
+        .from('tickets')
+        .select('*');
+
+      if (!tickets) return;
+
+      // Estatísticas gerais
+      const totalTickets = tickets.length;
+      const openTickets = tickets.filter(t => t.status === 'Aberto').length;
+      const inProgressTickets = tickets.filter(t => t.status === 'Em andamento').length;
+      const closedTickets = tickets.filter(t => t.status === 'Fechado').length;
+
+      // Tickets por tipo
+      const typeStats = tickets.reduce((acc, ticket) => {
+        acc[ticket.tipo_solicitacao] = (acc[ticket.tipo_solicitacao] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>);
+
+      const ticketsByType = Object.entries(typeStats).map(([name, value]) => ({
+        name,
+        value
+      }));
+
+      // Tickets por campus
+      const campusStats = tickets.reduce((acc, ticket) => {
+        acc[ticket.campus] = (acc[ticket.campus] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>);
+
+      const ticketsByCampus = Object.entries(campusStats).map(([name, value]) => ({
+        name,
+        value
+      }));
+
+      // Buscar estatísticas dos agentes
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, nome_completo')
+        .eq('role', 'admin');
+
+      const agentStats = [];
+      if (profiles) {
+        for (const profile of profiles) {
+          const closedByAgent = tickets.filter(
+            t => t.agente_responsavel === profile.id && t.status === 'Fechado'
+          ).length;
+          
+          if (closedByAgent > 0) {
+            agentStats.push({
+              name: profile.nome_completo || 'Agente',
+              closed: closedByAgent
+            });
+          }
+        }
+      }
+
+      // Estatísticas mensais (últimos 6 meses)
+      const monthlyStats = [];
+      for (let i = 5; i >= 0; i--) {
+        const date = new Date();
+        date.setMonth(date.getMonth() - i);
+        const monthName = date.toLocaleDateString('pt-BR', { month: 'short', year: '2-digit' });
+        
+        const monthTickets = tickets.filter(ticket => {
+          const ticketDate = new Date(ticket.created_at);
+          return ticketDate.getMonth() === date.getMonth() && 
+                 ticketDate.getFullYear() === date.getFullYear();
+        }).length;
+
+        monthlyStats.push({
+          month: monthName,
+          tickets: monthTickets
+        });
+      }
+
+      setData({
+        totalTickets,
+        openTickets,
+        inProgressTickets,
+        closedTickets,
+        ticketsByType,
+        ticketsByCampus,
+        agentStats,
+        monthlyStats
+      });
+    } catch (error) {
+      console.error('Erro ao carregar dados do dashboard:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (!user || !session) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Carregando dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold text-gray-800">Dashboard de Relatórios</h1>
+        <div className="text-sm text-gray-500">
+          Última atualização: {new Date().toLocaleString('pt-BR')}
+        </div>
+      </div>
+
+      {/* Cards de Estatísticas */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card className="shadow-lg border-l-4 border-l-blue-500">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Total de Tickets</p>
+                <p className="text-3xl font-bold text-gray-800">{data.totalTickets}</p>
+              </div>
+              <FileText className="h-12 w-12 text-blue-500 opacity-80" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-lg border-l-4 border-l-yellow-500">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Abertos</p>
+                <p className="text-3xl font-bold text-gray-800">{data.openTickets}</p>
+              </div>
+              <Calendar className="h-12 w-12 text-yellow-500 opacity-80" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-lg border-l-4 border-l-orange-500">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Em Andamento</p>
+                <p className="text-3xl font-bold text-gray-800">{data.inProgressTickets}</p>
+              </div>
+              <TrendingUp className="h-12 w-12 text-orange-500 opacity-80" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-lg border-l-4 border-l-green-500">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Concluídos</p>
+                <p className="text-3xl font-bold text-gray-800">{data.closedTickets}</p>
+              </div>
+              <Award className="h-12 w-12 text-green-500 opacity-80" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Gráficos */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Tickets por Tipo */}
+        <Card className="shadow-lg">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5 text-blue-600" />
+              Tickets por Tipo de Solicitação
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={data.ticketsByType}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {data.ticketsByType.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        {/* Tickets por Campus */}
+        <Card className="shadow-lg">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <MapPin className="h-5 w-5 text-green-600" />
+              Tickets por Campus
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={data.ticketsByCampus}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="value" fill="#00C49F" />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        {/* Performance dos Agentes */}
+        <Card className="shadow-lg">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5 text-purple-600" />
+              Tickets Fechados por Agente
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={data.agentStats} layout="horizontal">
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis type="number" />
+                <YAxis type="category" dataKey="name" width={100} />
+                <Tooltip />
+                <Bar dataKey="closed" fill="#8884D8" />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        {/* Evolução Mensal */}
+        <Card className="shadow-lg">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-red-600" />
+              Evolução Mensal
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={data.monthlyStats}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="tickets" fill="#FF8042" />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}

@@ -10,6 +10,8 @@ import Admin from "./pages/Admin";
 import Auth from "./pages/Auth";
 import EmailsPendentes from "./pages/EmailsPendentes";
 import GerenciarEquipe from "./pages/GerenciarEquipe";
+import UserTracking from "./pages/UserTracking";
+import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,8 +25,10 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/acompanhar" element={<UserTracking />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/emails-pendentes" element={<EmailsPendentes />} />
             <Route path="/gerenciar-equipe" element={<GerenciarEquipe />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

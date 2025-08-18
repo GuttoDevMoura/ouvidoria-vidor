@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { toast } from "sonner";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Plus, Edit, Trash2, User, Mail, Key } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { useNavigate } from "react-router-dom";
-import { ArrowLeft, UserPlus, Mail, User, Shield, Copy } from "lucide-react";
+import { Navigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 interface TeamMember {
   id: string;
@@ -20,311 +20,321 @@ interface TeamMember {
   created_at: string;
 }
 
-const GerenciarEquipe = () => {
+export default function GerenciarEquipe() {
+  const { user, session } = useAuth();
+  const { toast } = useToast();
   const [members, setMembers] = useState<TeamMember[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [inviteLoading, setInviteLoading] = useState(false);
-  const [inviteEmail, setInviteEmail] = useState("");
-  const [inviteName, setInviteName] = useState("");
-  const [inviteRole, setInviteRole] = useState("user");
-  const [dialogOpen, setDialogOpen] = useState(false);
-  
-  const { user, isAdmin, loading: authLoading } = useAuth();
-  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingMember, setEditingMember] = useState<TeamMember | null>(null);
+  const [formData, setFormData] = useState({
+    nome_completo: "",
+    email: "",
+    senha: ""
+  });
 
   useEffect(() => {
-    if (!authLoading && !user) {
-      navigate('/auth?redirect=/gerenciar-equipe');
-      return;
-    }
-
-    if (user && !isAdmin) {
-      toast.error("Acesso negado. Apenas admins podem gerenciar a equipe.");
-      navigate("/admin");
-      return;
-    }
-
-    if (user && isAdmin) {
+    if (session) {
       loadTeamMembers();
     }
-  }, [user, isAdmin, authLoading, navigate]);
+  }, [session]);
 
   const loadTeamMembers = async () => {
     try {
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
+        .eq('role', 'admin')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
+
       setMembers(data || []);
     } catch (error) {
-      console.error('Erro ao carregar membros:', error);
-      toast.error("Erro ao carregar membros da equipe");
+      console.error('Erro ao carregar membros da equipe:', error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível carregar os membros da equipe.",
+        variant: "destructive",
+      });
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
-  const generateRandomPassword = () => {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let password = '';
-    for (let i = 0; i < 8; i++) {
-      password += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return password;
-  };
-
-  const handleInviteMember = async (e: React.FormEvent) => {
+  const handleSaveMember = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inviteEmail || !inviteName) {
-      toast.error("Por favor, preencha todos os campos");
+
+    if (!formData.nome_completo || !formData.email || !formData.senha) {
+      toast({
+        title: "Campos obrigatórios",
+        description: "Preencha todos os campos.",
+        variant: "destructive",
+      });
       return;
     }
 
-    setInviteLoading(true);
     try {
-      // Gerar senha temporária
-      const tempPassword = generateRandomPassword();
-      
-      // Criar usuário no auth
-      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
-        email: inviteEmail,
-        password: tempPassword,
-        email_confirm: true,
-        user_metadata: {
-          nome_completo: inviteName
+      // Criar usuário no Supabase Auth
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.senha,
+        options: {
+          data: {
+            nome_completo: formData.nome_completo
+          }
         }
       });
 
       if (authError) {
-        if (authError.message.includes('User already registered')) {
-          toast.error("Este email já está cadastrado");
-        } else {
-          toast.error(authError.message || "Erro ao criar usuário");
-        }
-        return;
+        throw authError;
       }
 
-        // Atualizar profile com role
-        if (authData.user) {
-          const { error: profileError } = await supabase
-            .from('profiles')
-            .update({ role: inviteRole as any })
-            .eq('user_id', authData.user.id);
+      if (authData.user) {
+        // Atualizar o perfil para admin
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .update({ 
+            nome_completo: formData.nome_completo,
+            role: 'admin'
+          })
+          .eq('user_id', authData.user.id);
 
         if (profileError) {
-          console.error('Erro ao definir role:', profileError);
+          throw profileError;
         }
+
+        toast({
+          title: "Sucesso",
+          description: "Membro da equipe criado com sucesso.",
+        });
+
+        setIsDialogOpen(false);
+        setFormData({ nome_completo: "", email: "", senha: "" });
+        loadTeamMembers();
       }
+    } catch (error: any) {
+      console.error('Erro ao criar membro:', error);
+      toast({
+        title: "Erro",
+        description: error.message || "Não foi possível criar o membro da equipe.",
+        variant: "destructive",
+      });
+    }
+  };
 
-      // Enviar email com credenciais (simulado por enquanto)
-      toast.success(
-        `Usuário criado com sucesso! Credenciais temporárias:\nEmail: ${inviteEmail}\nSenha: ${tempPassword}\n\nCompartilhe essas credenciais com o novo membro.`,
-        { duration: 10000 }
-      );
+  const handleDeleteMember = async (memberId: string) => {
+    if (!confirm("Tem certeza que deseja remover este membro da equipe?")) {
+      return;
+    }
 
-      // Copiar credenciais para clipboard
-      navigator.clipboard.writeText(`Email: ${inviteEmail}\nSenha: ${tempPassword}\nLink: ${window.location.origin}/auth`);
-      
-      // Reset form
-      setInviteEmail("");
-      setInviteName("");
-      setInviteRole("user");
-      setDialogOpen(false);
-      
-      // Reload members
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .delete()
+        .eq('id', memberId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Sucesso",
+        description: "Membro removido da equipe.",
+      });
+
       loadTeamMembers();
     } catch (error) {
-      console.error('Erro ao convidar membro:', error);
-      toast.error("Erro inesperado ao convidar membro");
-    } finally {
-      setInviteLoading(false);
+      console.error('Erro ao remover membro:', error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível remover o membro da equipe.",
+        variant: "destructive",
+      });
     }
   };
 
-  const getRoleBadgeVariant = (role: string) => {
-    switch (role) {
-      case 'admin':
-        return 'default' as const;
-      case 'moderator':
-        return 'secondary' as const;
-      default:
-        return 'outline' as const;
-    }
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('pt-BR');
   };
 
-  const getRoleLabel = (role: string) => {
-    switch (role) {
-      case 'admin':
-        return 'Administrador';
-      case 'moderator':
-        return 'Moderador';
-      default:
-        return 'Usuário';
-    }
-  };
+  if (!user || !session) {
+    return <Navigate to="/auth" replace />;
+  }
 
-  if (authLoading || loading) {
+  if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">
-            {authLoading ? "Verificando autenticação..." : "Carregando equipe..."}
-          </p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Carregando equipe...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <div className="container mx-auto max-w-4xl">
-        <div className="flex items-center gap-4 mb-6">
-          <Button 
-            variant="outline" 
-            onClick={() => navigate('/admin')}
-            className="flex items-center gap-2"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Voltar
-          </Button>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Gerenciar Equipe</h1>
-            <p className="text-gray-600">Adicione e gerencie membros da equipe da ouvidoria</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 gap-6">
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="flex items-center gap-2">
-                    <User className="h-5 w-5" />
-                    Membros da Equipe ({members.length})
-                  </CardTitle>
-                  <CardDescription>
-                    Gerencie acesso e permissões da equipe da ouvidoria
-                  </CardDescription>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold text-gray-800">Gerenciar Equipe</h1>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="bg-blue-600 hover:bg-blue-700">
+              <Plus className="h-4 w-4 mr-2" />
+              Adicionar Membro
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>
+                {editingMember ? "Editar Membro" : "Adicionar Novo Membro"}
+              </DialogTitle>
+            </DialogHeader>
+            <form onSubmit={handleSaveMember} className="space-y-4">
+              <div>
+                <Label htmlFor="nome_completo">Nome Completo</Label>
+                <div className="relative">
+                  <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Input
+                    id="nome_completo"
+                    placeholder="Nome do agente"
+                    value={formData.nome_completo}
+                    onChange={(e) => setFormData(prev => ({ ...prev, nome_completo: e.target.value }))}
+                    className="pl-10"
+                    required
+                  />
                 </div>
-                <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                  <DialogTrigger asChild>
-                    <Button className="flex items-center gap-2">
-                      <UserPlus className="h-4 w-4" />
-                      Convidar Membro
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Convidar Novo Membro</DialogTitle>
-                      <DialogDescription>
-                        Crie uma conta para um novo membro da equipe da ouvidoria
-                      </DialogDescription>
-                    </DialogHeader>
-                    <form onSubmit={handleInviteMember} className="space-y-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="invite-name">Nome Completo</Label>
-                        <Input
-                          id="invite-name"
-                          type="text"
-                          placeholder="João Silva"
-                          value={inviteName}
-                          onChange={(e) => setInviteName(e.target.value)}
-                          required
-                          disabled={inviteLoading}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="invite-email">Email</Label>
-                        <Input
-                          id="invite-email"
-                          type="email"
-                          placeholder="joao@exemplo.com"
-                          value={inviteEmail}
-                          onChange={(e) => setInviteEmail(e.target.value)}
-                          required
-                          disabled={inviteLoading}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="invite-role">Nível de Acesso</Label>
-                        <Select value={inviteRole} onValueChange={setInviteRole}>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="user">Usuário - Acesso básico</SelectItem>
-                            <SelectItem value="moderator">Moderador - Pode gerenciar tickets</SelectItem>
-                            <SelectItem value="admin">Administrador - Acesso completo</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="flex gap-2 pt-4">
-                        <Button 
-                          type="submit" 
-                          disabled={inviteLoading} 
-                          className="flex-1"
-                        >
-                          {inviteLoading ? "Criando..." : "Criar Conta"}
-                        </Button>
-                        <Button 
-                          type="button" 
-                          variant="outline" 
-                          onClick={() => setDialogOpen(false)}
-                          disabled={inviteLoading}
-                        >
-                          Cancelar
-                        </Button>
-                      </div>
-                    </form>
-                  </DialogContent>
-                </Dialog>
               </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {members.map((member) => (
-                  <div key={member.id} className="flex items-center justify-between p-4 border rounded-lg bg-white">
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100">
-                        <User className="h-5 w-5 text-blue-600" />
-                      </div>
-                      <div>
-                        <p className="font-medium text-gray-900">
-                          {member.nome_completo || "Nome não informado"}
-                        </p>
-                        <p className="text-sm text-gray-600">ID: {member.user_id}</p>
-                        <p className="text-xs text-gray-500">
-                          Criado em: {new Date(member.created_at).toLocaleDateString('pt-BR')}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Badge variant={getRoleBadgeVariant(member.role)}>
-                        {getRoleLabel(member.role)}
-                      </Badge>
-                      {member.role === 'admin' && (
-                        <Shield className="h-4 w-4 text-blue-600" />
-                      )}
-                    </div>
-                  </div>
-                ))}
-
-                {members.length === 0 && (
-                  <div className="text-center py-8 text-gray-500">
-                    <User className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p>Nenhum membro da equipe encontrado</p>
-                  </div>
-                )}
+              <div>
+                <Label htmlFor="email">E-mail</Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="email@exemplo.com"
+                    value={formData.email}
+                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                    className="pl-10"
+                    required
+                  />
+                </div>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+              <div>
+                <Label htmlFor="senha">Senha</Label>
+                <div className="relative">
+                  <Key className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Input
+                    id="senha"
+                    type="password"
+                    placeholder="Senha do usuário"
+                    value={formData.senha}
+                    onChange={(e) => setFormData(prev => ({ ...prev, senha: e.target.value }))}
+                    className="pl-10"
+                    required
+                  />
+                </div>
+              </div>
+              <div className="flex gap-2 pt-4">
+                <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700">
+                  {editingMember ? "Atualizar" : "Criar Membro"}
+                </Button>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => {
+                    setIsDialogOpen(false);
+                    setEditingMember(null);
+                    setFormData({ nome_completo: "", email: "", senha: "" });
+                  }}
+                >
+                  Cancelar
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
+
+      <Card className="shadow-lg">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <User className="h-5 w-5 text-blue-600" />
+            Membros da Equipe ({members.length})
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {members.length === 0 ? (
+            <div className="text-center py-8">
+              <User className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <p className="text-gray-500 mb-4">Nenhum membro da equipe encontrado</p>
+              <Button 
+                onClick={() => setIsDialogOpen(true)}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Adicionar Primeiro Membro
+              </Button>
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Nome</TableHead>
+                  <TableHead>Função</TableHead>
+                  <TableHead>Data de Criação</TableHead>
+                  <TableHead className="text-right">Ações</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {members.map((member) => (
+                  <TableRow key={member.id}>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-2">
+                        <div className="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center">
+                          <User className="h-4 w-4 text-blue-600" />
+                        </div>
+                        {member.nome_completo || 'Nome não informado'}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="secondary">
+                        {member.role === 'admin' ? 'Administrador' : member.role}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>{formatDate(member.created_at)}</TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setEditingMember(member);
+                            setFormData({
+                              nome_completo: member.nome_completo || "",
+                              email: "",
+                              senha: ""
+                            });
+                            setIsDialogOpen(true);
+                          }}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDeleteMember(member.id)}
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
-};
-
-export default GerenciarEquipe;
+}
