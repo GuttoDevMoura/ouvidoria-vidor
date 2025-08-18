@@ -20,7 +20,15 @@ export const Navbar = ({ onSectionChange, currentSection }: NavbarProps) => {
   ];
 
   const handleSectionClick = (sectionId: string) => {
-    onSectionChange(sectionId);
+    if (sectionId === "about") {
+      // Scroll para a seção sobre a ouvidoria
+      const aboutSection = document.getElementById("sobre-ouvidoria");
+      if (aboutSection) {
+        aboutSection.scrollIntoView({ behavior: "smooth" });
+      }
+    } else {
+      onSectionChange(sectionId);
+    }
     setIsMenuOpen(false);
   };
 
