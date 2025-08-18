@@ -4,6 +4,7 @@ import { HeroSection } from "@/components/HeroSection";
 import { OuvidoriaForm } from "@/components/OuvidoriaForm";
 import { TrackingForm } from "@/components/TrackingForm";
 import { supabase } from "@/integrations/supabase/client";
+import { LoadingFallback } from "@/components/ui/fallback";
 
 const Index = () => {
   console.log('Index.tsx: Componente renderizando...');
@@ -15,6 +16,7 @@ const Index = () => {
     hero_subtitle: "",
     about_text: ""
   });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadContent();
@@ -41,6 +43,8 @@ const Index = () => {
       }
     } catch (error) {
       console.error('Erro ao carregar conteúdo:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -62,6 +66,10 @@ const Index = () => {
   };
 
   console.log('Index.tsx: Renderizando com seção:', currentSection);
+
+  if (loading) {
+    return <LoadingFallback message="Carregando conteúdo..." />;
+  }
 
   return (
     <div className="min-h-screen bg-background">
