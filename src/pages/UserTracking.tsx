@@ -180,10 +180,15 @@ export default function UserTracking() {
   const canReopen = (ticket: TicketInfo) => {
     const allowedTypes = ["Critica", "Denuncia"];
     return (
-      ticket.status === "Fechado" &&
+      ticket.status === "Concluído" &&
       allowedTypes.includes(ticket.tipo_solicitacao) &&
       (ticket.reaberto_count || 0) < 1
     );
+  };
+
+  const canShowContestButton = (ticket: TicketInfo) => {
+    const allowedTypes = ["Critica", "Denuncia"];
+    return allowedTypes.includes(ticket.tipo_solicitacao);
   };
 
   const formatDate = (dateString: string) => {
@@ -306,6 +311,19 @@ export default function UserTracking() {
                           <span className="font-medium text-xs">Tipo:</span>
                           <span className="text-xs">{ticketInfo.tipo_solicitacao}</span>
                         </div>
+                        <div className="flex items-center gap-1.5 text-sm">
+                          <User className="h-3 w-3 text-primary" />
+                          <span className="font-medium text-xs">Manifestante:</span>
+                          {ticketInfo.eh_anonimo ? (
+                            <Badge variant="secondary" className="text-xs px-1.5 py-0.5 bg-gray-100 text-gray-700">
+                              Anônima
+                            </Badge>
+                          ) : (
+                            <Badge variant="default" className="text-xs px-1.5 py-0.5 bg-blue-100 text-blue-700">
+                              Identificado
+                            </Badge>
+                          )}
+                        </div>
                       </div>
 
                       <div className="space-y-1.5">
@@ -378,27 +396,46 @@ export default function UserTracking() {
                       </div>
                     ) : null}
 
-                    {canReopen(ticketInfo) && (
+                    {canShowContestButton(ticketInfo) && (
                       <div className="pt-3 border-t">
-                        <p className="text-xs text-muted-foreground mb-2">
-                          Você pode contestar esta tratativa
-                        </p>
-                        <Button
-                          onClick={handleReopen}
-                          disabled={isReopening}
-                          variant="destructive"
-                          size="sm"
-                          className="h-7 px-2 text-xs"
-                        >
-                          {isReopening ? (
-                            "..."
-                          ) : (
-                            <>
+                        {canReopen(ticketInfo) ? (
+                          <>
+                            <p className="text-xs text-muted-foreground mb-2">
+                              Você pode contestar esta tratativa
+                            </p>
+                            <Button
+                              onClick={handleReopen}
+                              disabled={isReopening}
+                              variant="destructive"
+                              size="sm"
+                              className="h-7 px-2 text-xs"
+                            >
+                              {isReopening ? (
+                                "..."
+                              ) : (
+                                <>
+                                  <RotateCcw className="mr-1 h-3 w-3" />
+                                  Contestar
+                                </>
+                              )}
+                            </Button>
+                          </>
+                        ) : (
+                          <>
+                            <p className="text-xs text-muted-foreground mb-2">
+                              Contestação disponível após encerramento
+                            </p>
+                            <Button
+                              disabled
+                              variant="outline"
+                              size="sm"
+                              className="h-7 px-2 text-xs opacity-50"
+                            >
                               <RotateCcw className="mr-1 h-3 w-3" />
-                              Reabrir
-                            </>
-                          )}
-                        </Button>
+                              Contestar
+                            </Button>
+                          </>
+                        )}
                       </div>
                     )}
                   </CardContent>

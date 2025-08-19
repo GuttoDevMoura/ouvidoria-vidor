@@ -196,6 +196,19 @@ export const TrackingForm = ({ onBack }: TrackingFormProps) => {
                               <span className="font-medium">Tipo:</span>
                               <span>{ticketInfo.tipo_solicitacao}</span>
                             </div>
+                            <div className="flex items-center gap-2">
+                              <User className="h-4 w-4 text-blue-600" />
+                              <span className="font-medium">Manifestante:</span>
+                              {ticketInfo.eh_anonimo ? (
+                                <Badge variant="secondary" className="bg-gray-100 text-gray-700 text-xs">
+                                  Anônima
+                                </Badge>
+                              ) : (
+                                <Badge variant="default" className="bg-blue-100 text-blue-700 text-xs">
+                                  Identificado
+                                </Badge>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>
