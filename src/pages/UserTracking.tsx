@@ -396,56 +396,67 @@ export default function UserTracking() {
                       </div>
                     ) : null}
 
-                    {canShowContestButton(ticketInfo) && (
+                    {canShowContestButton(ticketInfo) && !canReopen(ticketInfo) && (
                       <div className="pt-3 border-t">
-                        {canReopen(ticketInfo) ? (
-                          <>
-                            <p className="text-xs text-muted-foreground mb-2">
-                              Você pode contestar esta tratativa
-                            </p>
-                            <Button
-                              onClick={handleReopen}
-                              disabled={isReopening}
-                              variant="destructive"
-                              size="sm"
-                              className="h-7 px-2 text-xs"
-                            >
-                              {isReopening ? (
-                                "..."
-                              ) : (
-                                <>
-                                  <RotateCcw className="mr-1 h-3 w-3" />
-                                  Contestar
-                                </>
-                              )}
-                            </Button>
-                          </>
-                        ) : (
-                          <>
-                            <p className="text-xs text-muted-foreground mb-2">
-                              Contestação disponível após encerramento
-                            </p>
-                            <Button
-                              disabled
-                              variant="outline"
-                              size="sm"
-                              className="h-7 px-2 text-xs opacity-50"
-                            >
-                              <RotateCcw className="mr-1 h-3 w-3" />
-                              Contestar
-                            </Button>
-                          </>
-                        )}
+                        <p className="text-xs text-muted-foreground mb-2 text-center">
+                          Botão de contestação aparecerá após encerramento
+                        </p>
                       </div>
                     )}
                   </CardContent>
                 </Card>
+
+                {/* Botão de Contestação - separado para ficar embaixo do Status */}
+                {ticketInfo && canShowContestButton(ticketInfo) && (
+                  <Card className="hover-scale mt-4">
+                    <CardContent className="p-4 text-center">
+                      {canReopen(ticketInfo) ? (
+                        <>
+                          <p className="text-xs text-muted-foreground mb-2">
+                            Você pode contestar esta tratativa
+                          </p>
+                          <Button
+                            onClick={handleReopen}
+                            disabled={isReopening}
+                            variant="destructive"
+                            size="sm"
+                            className="h-7 px-2 text-xs"
+                          >
+                            {isReopening ? (
+                              "..."
+                            ) : (
+                              <>
+                                <RotateCcw className="mr-1 h-3 w-3" />
+                                Contestar
+                              </>
+                            )}
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <p className="text-xs text-muted-foreground mb-2">
+                            Contestação disponível após encerramento
+                          </p>
+                          <Button
+                            disabled
+                            variant="outline"
+                            size="sm"
+                            className="h-7 px-2 text-xs opacity-50"
+                          >
+                            <RotateCcw className="mr-1 h-3 w-3" />
+                            Contestar
+                          </Button>
+                        </>
+                      )}
+                    </CardContent>
+                  </Card>
+                )}
               </div>
             </div>
             
-            {/* Histórico */}
+            {/* Histórico - sempre embaixo dos cards principais */}
             {history.length > 0 && (
-              <div className="animate-fade-in">
+              <div className="animate-fade-in mt-6">
                 <Card className="hover-scale">
                   <CardHeader className="py-3">
                     <CardTitle className="text-base">Histórico</CardTitle>
