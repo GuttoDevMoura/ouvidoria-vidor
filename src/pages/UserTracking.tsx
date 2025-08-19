@@ -96,7 +96,7 @@ export default function UserTracking() {
         reaberto_count: reopenHistory?.length || 0
       });
 
-      // Buscar histórico público (apenas mudanças de status visíveis ao usuário)
+      // Buscar histórico público
       const { data: historyData, error: historyError } = await supabase
         .from("ticket_history")
         .select("*")
@@ -202,6 +202,15 @@ export default function UserTracking() {
 
   const canReopen = (ticket: TicketInfo) => {
     const allowedTypes = ["Critica", "Denuncia"];
+    console.log("Verificando canReopen:", {
+      status: ticket.status,
+      tipo: ticket.tipo_solicitacao,
+      allowedTypes,
+      reaberto_count: ticket.reaberto_count,
+      canReopen: (ticket.status === "Encerrado" || ticket.status === "Fechado") &&
+                 allowedTypes.includes(ticket.tipo_solicitacao) &&
+                 (ticket.reaberto_count || 0) < 1
+    });
     return (
       (ticket.status === "Encerrado" || ticket.status === "Fechado") &&
       allowedTypes.includes(ticket.tipo_solicitacao) &&
@@ -211,6 +220,11 @@ export default function UserTracking() {
 
   const canShowContestButton = (ticket: TicketInfo) => {
     const allowedTypes = ["Critica", "Denuncia"];
+    console.log("Verificando canShowContestButton:", {
+      tipo: ticket.tipo_solicitacao,
+      allowedTypes,
+      includes: allowedTypes.includes(ticket.tipo_solicitacao)
+    });
     return allowedTypes.includes(ticket.tipo_solicitacao);
   };
 
@@ -421,11 +435,14 @@ export default function UserTracking() {
                   </CardContent>
                 </Card>
 
-                {/* Botão de Contestação - separado para ficar embaixo do Status */}
-                {canShowContestButton(ticketInfo) && (
-                  <Card className="hover-scale mt-4">
-                    <CardContent className="p-4 text-center">
-                      {canReopen(ticketInfo) ? (
+                {/* Botão de Contestação - SEMPRE MOSTRAR PARA DEBUG */}
+                <Card className="hover-scale mt-4">
+                  <CardContent className="p-4 text-center">
+                    <div className="mb-2 text-xs text-gray-500">
+                      Debug: Tipo = {ticketInfo.tipo_solicitacao} | Status = {ticketInfo.status}
+                    </div>
+                    {canShowContestButton(ticketInfo) ? (
+                      canReopen(ticketInfo) ? (
                         <>
                           <p className="text-xs text-muted-foreground mb-2">
                             Você pode contestar esta tratativa
@@ -462,10 +479,14 @@ export default function UserTracking() {
                             Contestar
                           </Button>
                         </>
-                      )}
-                    </CardContent>
-                  </Card>
-                )}
+                      )
+                    ) : (
+                      <p className="text-xs text-gray-500">
+                        Contestação não disponível para este tipo de manifestação
+                      </p>
+                    )}
+                  </CardContent>
+                </Card>
               </div>
             </div>
             
@@ -520,14 +541,12 @@ export default function UserTracking() {
               </Card>
             </div>
 
-            {/* Debug - mostrar sempre histórico se ticket existe */}
-            {history.length === 0 && (
-              <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded">
-                <p className="text-sm text-yellow-700">
-                  Debug: Ticket encontrado mas histórico vazio. ID: {ticketInfo.id}
-                </p>
-              </div>
-            )}
+            {/* Debug - mostrar informações sobre histórico */}
+            <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded">
+              <p className="text-sm text-yellow-700">
+                Debug: Ticket ID: {ticketInfo.id} | Histórico encontrado: {history.length} eventos
+              </p>
+            </div>
           </div>
         )}
       </div>
