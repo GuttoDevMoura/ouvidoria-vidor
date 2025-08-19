@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Search, Calendar, User, MapPin, FileText, Clock, CheckCircle } from "lucide-react";
+import { Search, Calendar, User, MapPin, FileText, RotateCcw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
@@ -21,6 +21,8 @@ interface TicketInfo {
   created_at: string;
   data_vencimento: string;
   resumo_tratativa?: string;
+  updated_at: string;
+  reaberto_count?: number;
 }
 
 interface HistoryItem {
@@ -36,8 +38,8 @@ interface HistoryItem {
 export default function UserTracking() {
   const [protocolCode, setProtocolCode] = useState("");
   const [ticketInfo, setTicketInfo] = useState<TicketInfo | null>(null);
-  const [history, setHistory] = useState<HistoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isReopening, setIsReopening] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const { toast } = useToast();
 
@@ -54,12 +56,14 @@ export default function UserTracking() {
     setIsLoading(true);
     setNotFound(false);
     setTicketInfo(null);
-    setHistory([]);
 
     try {
       const { data: ticketData, error: ticketError } = await supabase
         .from("tickets")
-        .select("*")
+        .select(`
+          *,
+          ticket_history!inner(action_type)
+        `)
         .eq("numero_protocolo", protocolCode.trim().toUpperCase())
         .maybeSingle();
 
@@ -78,19 +82,19 @@ export default function UserTracking() {
         return;
       }
 
-      setTicketInfo(ticketData);
-
-      // Buscar histórico público (apenas mudanças de status visíveis ao usuário)
-      const { data: historyData } = await supabase
+      // Contar quantas vezes foi reaberto
+      const { data: reopenHistory } = await supabase
         .from("ticket_history")
-        .select("*")
+        .select("id")
         .eq("ticket_id", ticketData.id)
-        .in("action_type", ["created", "status_change"])
-        .order("created_at", { ascending: true });
+        .eq("action_type", "status_change")
+        .eq("new_value", "Reaberto");
 
-      if (historyData) {
-        setHistory(historyData);
-      }
+      setTicketInfo({
+        ...ticketData,
+        reaberto_count: reopenHistory?.length || 0
+      });
+
     } catch (error) {
       console.error("Erro:", error);
       toast({
@@ -103,35 +107,78 @@ export default function UserTracking() {
     }
   };
 
+  const handleReopen = async () => {
+    if (!ticketInfo) return;
+
+    setIsReopening(true);
+    try {
+      const { error } = await supabase
+        .from("tickets")
+        .update({ 
+          status: "Reaberto",
+          updated_at: new Date().toISOString()
+        })
+        .eq("id", ticketInfo.id);
+
+      if (error) {
+        console.error("Erro ao reabrir manifestação:", error);
+        toast({
+          title: "Erro",
+          description: "Ocorreu um erro ao reabrir a manifestação.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Manifestação reaberta",
+        description: "Sua manifestação foi reaberta e retornou para análise.",
+      });
+
+      // Recarregar os dados
+      handleSearch();
+    } catch (error) {
+      console.error("Erro:", error);
+      toast({
+        title: "Erro",
+        description: "Ocorreu um erro inesperado.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsReopening(false);
+    }
+  };
+
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
       case "Aberto":
         return "secondary";
       case "Em Andamento":
         return "default";
-      case "Concluído":
-        return "success";
+      case "Reaberto":
+        return "destructive";
+      case "Fechado":
+        return "outline";
       default:
         return "secondary";
     }
   };
 
-  const getTimelineIcon = (actionType: string, status?: string) => {
-    switch (actionType) {
-      case "created":
-        return <FileText className="h-4 w-4 text-blue-600" />;
-      case "status_change":
-        if (status === "Concluído") {
-          return <CheckCircle className="h-4 w-4 text-green-600" />;
-        }
-        return <Clock className="h-4 w-4 text-orange-600" />;
-      default:
-        return <Clock className="h-4 w-4 text-gray-600" />;
-    }
+  const canReopen = (ticket: TicketInfo) => {
+    const allowedTypes = ["Critica", "Denuncia"];
+    return (
+      ticket.status === "Fechado" &&
+      allowedTypes.includes(ticket.tipo_solicitacao) &&
+      (ticket.reaberto_count || 0) < 1
+    );
   };
 
   const formatDate = (dateString: string) => {
     return format(new Date(dateString), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR });
+  };
+
+  const formatDateOnly = (dateString: string) => {
+    return format(new Date(dateString), "dd/MM/yyyy", { locale: ptBR });
   };
 
   const getDaysRemaining = (dueDate: string) => {
@@ -142,39 +189,39 @@ export default function UserTracking() {
     return diffDays;
   };
 
+  const shouldShowDaysRemaining = (status: string) => {
+    return ["Aberto", "Em Andamento", "Reaberto"].includes(status);
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
-            Acompanhar Solicitação
+          <h1 className="text-3xl font-bold text-foreground mb-2">
+            Acompanhar Manifestação
           </h1>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             Digite o código da sua manifestação para ver o andamento
           </p>
         </div>
 
-        <Card className="max-w-4xl mx-auto shadow-xl border-0 mb-8">
-          <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-t-lg">
-            <CardTitle className="text-xl text-center">
+        <Card className="max-w-2xl mx-auto mb-8">
+          <CardHeader className="bg-primary text-primary-foreground">
+            <CardTitle className="text-center">
               Buscar Manifestação
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6">
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="flex-1">
-                <Input
-                  placeholder="Ex: OUV2024000001"
-                  value={protocolCode}
-                  onChange={(e) => setProtocolCode(e.target.value.toUpperCase())}
-                  className="h-12 text-lg"
-                  onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-                />
-              </div>
+            <div className="flex gap-4">
+              <Input
+                placeholder="Ex: OUV2025000001"
+                value={protocolCode}
+                onChange={(e) => setProtocolCode(e.target.value.toUpperCase())}
+                onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+              />
               <Button
                 onClick={handleSearch}
                 disabled={isLoading}
-                className="h-12 px-8 bg-blue-600 hover:bg-blue-700"
               >
                 {isLoading ? (
                   "Buscando..."
@@ -188,13 +235,11 @@ export default function UserTracking() {
             </div>
 
             {notFound && (
-              <Card className="border-red-200 bg-red-50 mt-4">
-                <CardContent className="p-4">
-                  <p className="text-red-600 text-center">
-                    Manifestação não encontrada. Verifique se o código foi digitado corretamente.
-                  </p>
-                </CardContent>
-              </Card>
+              <div className="mt-4 p-4 bg-destructive/10 border border-destructive/20 rounded-md">
+                <p className="text-destructive text-center">
+                  Manifestação não encontrada. Verifique se o código foi digitado corretamente.
+                </p>
+              </div>
             )}
           </CardContent>
         </Card>
@@ -203,19 +248,17 @@ export default function UserTracking() {
           <div className="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Informações da Manifestação */}
             <div className="lg:col-span-2">
-              <Card className="shadow-lg">
-                <CardHeader className="bg-blue-50">
-                  <CardTitle className="text-blue-800">
-                    Informações da Manifestação
-                  </CardTitle>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Informações da Manifestação</CardTitle>
                 </CardHeader>
-                <CardContent className="p-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-3">
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
                       <div className="flex items-center gap-2">
-                        <FileText className="h-4 w-4 text-blue-600" />
+                        <FileText className="h-4 w-4 text-primary" />
                         <span className="font-medium">Protocolo:</span>
-                        <span className="font-mono bg-gray-100 px-2 py-1 rounded">
+                        <span className="font-mono bg-muted px-2 py-1 rounded text-sm">
                           {ticketInfo.numero_protocolo}
                         </span>
                       </div>
@@ -226,7 +269,7 @@ export default function UserTracking() {
                         </Badge>
                       </div>
                       <div className="flex items-center gap-2">
-                        <MapPin className="h-4 w-4 text-blue-600" />
+                        <MapPin className="h-4 w-4 text-primary" />
                         <span className="font-medium">Campus:</span>
                         <span>{ticketInfo.campus}</span>
                       </div>
@@ -236,20 +279,20 @@ export default function UserTracking() {
                       </div>
                     </div>
 
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                       <div className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4 text-blue-600" />
+                        <Calendar className="h-4 w-4 text-primary" />
                         <span className="font-medium">Abertura:</span>
-                        <span>{formatDate(ticketInfo.created_at)}</span>
+                        <span className="text-sm">{formatDate(ticketInfo.created_at)}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4 text-blue-600" />
+                        <Calendar className="h-4 w-4 text-primary" />
                         <span className="font-medium">Prazo:</span>
-                        <span>{formatDate(ticketInfo.data_vencimento)}</span>
+                        <span className="text-sm">{formatDateOnly(ticketInfo.data_vencimento)}</span>
                       </div>
                       {!ticketInfo.eh_anonimo && ticketInfo.nome_completo && (
                         <div className="flex items-center gap-2">
-                          <User className="h-4 w-4 text-blue-600" />
+                          <User className="h-4 w-4 text-primary" />
                           <span className="font-medium">Solicitante:</span>
                           <span>{ticketInfo.nome_completo}</span>
                         </div>
@@ -257,17 +300,17 @@ export default function UserTracking() {
                     </div>
                   </div>
 
-                  <div className="mt-6">
-                    <h4 className="font-semibold text-gray-800 mb-2">Descrição</h4>
-                    <p className="text-gray-700 bg-gray-50 p-4 rounded border">
+                  <div>
+                    <h4 className="font-semibold mb-2">Descrição</h4>
+                    <p className="text-muted-foreground bg-muted p-3 rounded">
                       {ticketInfo.descricao}
                     </p>
                   </div>
 
                   {ticketInfo.resumo_tratativa && (
-                    <div className="mt-4">
-                      <h4 className="font-semibold text-gray-800 mb-2">Resumo da Tratativa</h4>
-                      <p className="text-gray-700 bg-green-50 p-4 rounded border border-green-200">
+                    <div>
+                      <h4 className="font-semibold mb-2">Resumo da Tratativa</h4>
+                      <p className="text-muted-foreground bg-green-50 p-3 rounded border border-green-200">
                         {ticketInfo.resumo_tratativa}
                       </p>
                     </div>
@@ -276,68 +319,58 @@ export default function UserTracking() {
               </Card>
             </div>
 
-            {/* Timeline e Status */}
-            <div className="space-y-6">
-              {/* Status Card */}
-              <Card className="shadow-lg">
-                <CardHeader className="bg-gradient-to-r from-green-500 to-blue-500 text-white">
+            {/* Status */}
+            <div>
+              <Card>
+                <CardHeader>
                   <CardTitle className="text-center">Status Atual</CardTitle>
                 </CardHeader>
-                <CardContent className="p-6 text-center">
+                <CardContent className="text-center space-y-4">
                   <Badge 
                     variant={getStatusBadgeVariant(ticketInfo.status) as any}
-                    className="text-lg px-4 py-2 mb-4"
+                    className="text-lg px-4 py-2"
                   >
                     {ticketInfo.status}
                   </Badge>
-                  <div className="text-sm text-gray-600">
-                    {getDaysRemaining(ticketInfo.data_vencimento) > 0 ? (
-                      <p className="text-orange-600">
-                        {getDaysRemaining(ticketInfo.data_vencimento)} dias restantes
-                      </p>
-                    ) : (
-                      <p className="text-red-600">Prazo vencido</p>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
+                  
+                  {ticketInfo.status === "Fechado" ? (
+                    <div className="text-sm text-muted-foreground">
+                      Encerrado em {formatDateOnly(ticketInfo.updated_at)}
+                    </div>
+                  ) : shouldShowDaysRemaining(ticketInfo.status) ? (
+                    <div className="text-sm">
+                      {getDaysRemaining(ticketInfo.data_vencimento) > 0 ? (
+                        <span className="text-orange-600">
+                          {getDaysRemaining(ticketInfo.data_vencimento)} dias restantes
+                        </span>
+                      ) : (
+                        <span className="text-destructive">Prazo vencido</span>
+                      )}
+                    </div>
+                  ) : null}
 
-              {/* Timeline */}
-              <Card className="shadow-lg">
-                <CardHeader className="bg-gray-50">
-                  <CardTitle className="text-gray-800">Histórico</CardTitle>
-                </CardHeader>
-                <CardContent className="p-6">
-                  <div className="space-y-4">
-                    {history.map((item, index) => (
-                      <div key={item.id} className="flex gap-3">
-                        <div className="flex flex-col items-center">
-                          <div className="p-2 bg-blue-100 rounded-full">
-                            {getTimelineIcon(item.action_type, item.new_value)}
-                          </div>
-                          {index < history.length - 1 && (
-                            <div className="w-px bg-gray-300 h-8 mt-2"></div>
-                          )}
-                        </div>
-                        <div className="flex-1 pb-4">
-                          <p className="font-medium text-gray-800">
-                            {item.description}
-                          </p>
-                          <p className="text-xs text-gray-500 mt-1">
-                            {formatDate(item.created_at)}
-                          </p>
-                          {item.new_value && item.action_type === "status_change" && (
-                            <Badge 
-                              variant={getStatusBadgeVariant(item.new_value) as any}
-                              className="mt-2"
-                            >
-                              {item.new_value}
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  {canReopen(ticketInfo) && (
+                    <div className="pt-4 border-t">
+                      <p className="text-sm text-muted-foreground mb-3">
+                        Você pode contestar esta tratativa
+                      </p>
+                      <Button
+                        onClick={handleReopen}
+                        disabled={isReopening}
+                        variant="destructive"
+                        size="sm"
+                      >
+                        {isReopening ? (
+                          "Reabrindo..."
+                        ) : (
+                          <>
+                            <RotateCcw className="mr-2 h-4 w-4" />
+                            Reabrir
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </div>
