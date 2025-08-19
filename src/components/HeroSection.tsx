@@ -23,7 +23,7 @@ export const HeroSection = ({ onOpenForm, content }: HeroSectionProps) => {
               <img 
                 src="/lovable-uploads/127fdf71-f341-47a6-9849-5730551fe462.png" 
                 alt="Igreja Novos Começos" 
-                className="h-12 w-auto opacity-60"
+                className="h-12 w-auto filter brightness-0"
               />
             </div>
             
