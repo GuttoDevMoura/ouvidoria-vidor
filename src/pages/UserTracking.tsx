@@ -64,10 +64,7 @@ export default function UserTracking() {
     try {
       const { data: ticketData, error: ticketError } = await supabase
         .from("tickets")
-        .select(`
-          *,
-          ticket_history!inner(action_type)
-        `)
+        .select("*")
         .eq("numero_protocolo", protocolCode.trim().toUpperCase())
         .maybeSingle();
 
