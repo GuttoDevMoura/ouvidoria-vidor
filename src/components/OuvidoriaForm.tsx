@@ -9,7 +9,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Send, CheckCircle, Shield } from "lucide-react";
+import { ArrowLeft, Send, CheckCircle, Shield, Copy } from "lucide-react";
 
 interface OuvidoriaFormProps {
   onBack: () => void;
@@ -117,6 +117,22 @@ export const OuvidoriaForm = ({ onBack, selectedType }: OuvidoriaFormProps) => {
       });
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast({
+        title: "Copiado!",
+        description: "Número do protocolo copiado para a área de transferência.",
+      });
+    } catch (err) {
+      toast({
+        title: "Erro",
+        description: "Não foi possível copiar o número do protocolo.",
+        variant: "destructive"
+      });
     }
   };
 
@@ -316,8 +332,16 @@ export const OuvidoriaForm = ({ onBack, selectedType }: OuvidoriaFormProps) => {
               <div className="mb-2 text-sm text-muted-foreground">
                 Número do Protocolo:
               </div>
-              <div className="rounded-lg bg-muted p-3 font-mono text-lg font-bold">
-                {protocolNumber}
+              <div className="rounded-lg bg-muted p-3 font-mono text-lg font-bold flex items-center justify-between">
+                <span>{protocolNumber}</span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => copyToClipboard(protocolNumber)}
+                  className="ml-2"
+                >
+                  <Copy className="h-4 w-4" />
+                </Button>
               </div>
             </div>
 
@@ -340,7 +364,7 @@ export const OuvidoriaForm = ({ onBack, selectedType }: OuvidoriaFormProps) => {
                   </div>
                 </div>
 
-                <div className="text-sm text-muted-foreground">
+                <div className="text-sm text-red-600 font-medium">
                   <strong>Importante:</strong> Salve este número de protocolo para acompanhar sua solicitação. 
                   Você pode consultar o andamento na página de acompanhamento.
                 </div>
@@ -354,6 +378,11 @@ export const OuvidoriaForm = ({ onBack, selectedType }: OuvidoriaFormProps) => {
                       Um e-mail de confirmação foi enviado para {formData.email} com os detalhes da sua solicitação.
                     </div>
                   </div>
+                </div>
+                
+                <div className="text-sm text-red-600 font-medium">
+                  <strong>Importante:</strong> Salve este número de protocolo para acompanhar sua solicitação. 
+                  Você pode consultar o andamento na página de acompanhamento.
                 </div>
                 
                 <div className="text-sm text-muted-foreground">
