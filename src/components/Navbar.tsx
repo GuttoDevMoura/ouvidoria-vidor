@@ -70,8 +70,8 @@ export const Navbar = ({ onSectionChange, currentSection, onTrackingClick }: Nav
                 className="border-border hover:bg-muted/50 text-xs lg:text-sm flex items-center gap-2"
               >
                 <Search className="h-4 w-4" />
-                <span className="hidden lg:inline">Acompanhar</span>
-                <span className="lg:hidden">Track</span>
+                <span className="hidden lg:inline">Digite o protocolo</span>
+                <span className="lg:hidden">Protocolo</span>
               </Button>
             </Link>
           </div>
@@ -112,7 +112,7 @@ export const Navbar = ({ onSectionChange, currentSection, onTrackingClick }: Nav
                   className="w-full mt-3 border-border hover:bg-muted/50 flex items-center gap-2"
                 >
                   <Search className="h-4 w-4" />
-                  Acompanhar Manifestação
+                  Acompanhe sua solicitação aqui
                 </Button>
               </Link>
             </div>
