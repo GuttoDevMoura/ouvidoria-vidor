@@ -107,9 +107,29 @@ export default function UserTracking() {
       console.log("Histórico encontrado:", historyData);
       console.log("Erro no histórico:", historyError);
 
-      if (historyData) {
-        setHistory(historyData);
+      // Sempre garantir que existe informação de abertura no histórico
+      let finalHistory: HistoryItem[] = [];
+      
+      // Adicionar evento de abertura (sempre primeiro)
+      const openingEvent: HistoryItem = {
+        id: `opening-${ticketData.id}`,
+        action_type: "created",
+        description: "Manifestação aberta",
+        created_at: ticketData.created_at,
+        agente_id: undefined,
+        old_value: undefined,
+        new_value: "Aberto"
+      };
+      finalHistory.push(openingEvent);
+
+      // Adicionar outros eventos do histórico (se existirem)
+      if (historyData && historyData.length > 0) {
+        // Filtrar evento de criação se já existe para evitar duplicata
+        const otherEvents = historyData.filter(item => item.action_type !== "created");
+        finalHistory.push(...otherEvents);
       }
+
+      setHistory(finalHistory);
 
     } catch (error) {
       console.error("Erro:", error);
