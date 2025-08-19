@@ -6,9 +6,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Send } from "lucide-react";
+import { ArrowLeft, Send, CheckCircle, Shield } from "lucide-react";
 
 interface OuvidoriaFormProps {
   onBack: () => void;
@@ -18,6 +19,9 @@ interface OuvidoriaFormProps {
 export const OuvidoriaForm = ({ onBack, selectedType }: OuvidoriaFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isIdentified, setIsIdentified] = useState<string>("");
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [protocolNumber, setProtocolNumber] = useState<string>("");
+  const [isAnonymous, setIsAnonymous] = useState(false);
   const [formData, setFormData] = useState({
     nomeCompleto: "",
     whatsapp: "",
@@ -69,18 +73,15 @@ export const OuvidoriaForm = ({ onBack, selectedType }: OuvidoriaFormProps) => {
 
       if (error) throw error;
 
-      // Enviar email de confirmação se for identificado
-      console.log("Verificando envio de email:", {
-        isIdentified,
-        hasEmail: !!formData.email,
-        email: formData.email,
-        protocolNumber: data.numero_protocolo
-      });
-      
+      // Configurar dados para o popup
+      setProtocolNumber(data.numero_protocolo);
+      setIsAnonymous(isIdentified === "anonimo");
+      setShowSuccessDialog(true);
+
+      // Enviar email de confirmação apenas se for identificado
       if (isIdentified === "identificado" && formData.email) {
-        console.log("Tentando enviar email de confirmação...");
         try {
-          const emailResult = await supabase.functions.invoke('send-notification-email', {
+          await supabase.functions.invoke('send-notification-email', {
             body: {
               to: formData.email,
               subject: 'Confirmação de Manifestação - Ouvidoria Igreja Novos Começos',
@@ -90,19 +91,11 @@ export const OuvidoriaForm = ({ onBack, selectedType }: OuvidoriaFormProps) => {
               isAnonymous: false
             }
           });
-          console.log("Resultado do envio de email:", emailResult);
         } catch (emailError) {
           console.error('Erro ao enviar email:', emailError);
           // Não bloquear o processo se o email falhar
         }
-      } else {
-        console.log("Email não enviado - usuário não identificado ou sem email");
       }
-
-      toast({
-        title: "Solicitação enviada com sucesso!",
-        description: `Protocolo: ${data.numero_protocolo}. Você receberá uma resposta em até 15 dias úteis.`,
-      });
 
       // Reset form
       setFormData({
@@ -115,7 +108,6 @@ export const OuvidoriaForm = ({ onBack, selectedType }: OuvidoriaFormProps) => {
         descricao: ""
       });
       setIsIdentified("");
-      onBack();
     } catch (error) {
       console.error('Erro ao enviar solicitação:', error);
       toast({
@@ -128,17 +120,23 @@ export const OuvidoriaForm = ({ onBack, selectedType }: OuvidoriaFormProps) => {
     }
   };
 
+  const handleDialogClose = () => {
+    setShowSuccessDialog(false);
+    onBack();
+  };
+
   return (
-    <div className="min-h-screen bg-background pt-20 pb-16">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Button 
-          variant="ghost" 
-          onClick={onBack}
-          className="mb-6"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Voltar
-        </Button>
+    <>
+      <div className="min-h-screen bg-background pt-20 pb-16">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Button 
+            variant="ghost" 
+            onClick={onBack}
+            className="mb-6"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Voltar
+          </Button>
 
         <Card>
           <CardHeader>
@@ -300,5 +298,78 @@ export const OuvidoriaForm = ({ onBack, selectedType }: OuvidoriaFormProps) => {
         </Card>
       </div>
     </div>
+
+      {/* Dialog de Sucesso */}
+      <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader className="text-center">
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+              <CheckCircle className="h-6 w-6 text-green-600" />
+            </div>
+            <DialogTitle className="text-xl font-semibold">
+              Solicitação Enviada com Sucesso!
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <div className="text-center">
+              <div className="mb-2 text-sm text-muted-foreground">
+                Número do Protocolo:
+              </div>
+              <div className="rounded-lg bg-muted p-3 font-mono text-lg font-bold">
+                {protocolNumber}
+              </div>
+            </div>
+
+            {isAnonymous ? (
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 rounded-lg bg-blue-50 p-3">
+                  <Shield className="h-5 w-5 text-blue-600" />
+                  <div className="text-sm">
+                    <div className="font-medium text-blue-900">Solicitação Anônima</div>
+                    <div className="text-blue-700">Seu anonimato será mantido durante todo o processo.</div>
+                  </div>
+                </div>
+                
+                <div className="rounded-lg border border-orange-200 bg-orange-50 p-3">
+                  <div className="text-sm">
+                    <div className="font-medium text-orange-900 mb-1">Prazo para Resposta</div>
+                    <div className="text-orange-700">
+                      Manifestações anônimas têm prazo de <strong>30 dias úteis</strong> para resposta.
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-sm text-muted-foreground">
+                  <strong>Importante:</strong> Salve este número de protocolo para acompanhar sua solicitação. 
+                  Você pode consultar o andamento na página de acompanhamento.
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <div className="rounded-lg border border-green-200 bg-green-50 p-3">
+                  <div className="text-sm">
+                    <div className="font-medium text-green-900 mb-1">E-mail de Confirmação</div>
+                    <div className="text-green-700">
+                      Um e-mail de confirmação foi enviado para {formData.email} com os detalhes da sua solicitação.
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="text-sm text-muted-foreground">
+                  Você receberá uma resposta em até <strong>15 dias úteis</strong>.
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="mt-6">
+            <Button onClick={handleDialogClose} className="w-full">
+              Entendi
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };

@@ -268,7 +268,7 @@ export type Database = {
     }
     Functions: {
       calculate_due_date: {
-        Args: Record<PropertyKey, never>
+        Args: Record<PropertyKey, never> | { is_anonymous?: boolean }
         Returns: string
       }
       generate_protocol_number: {

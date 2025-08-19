@@ -141,17 +141,19 @@ const Admin = () => {
     return count;
   };
 
-  const getSLAStatus = (createdAt: string, status: string) => {
+  const getSLAStatus = (createdAt: string, status: string, isAnonymous: boolean = false) => {
     if (status === 'Fechado') return null;
     
     const created = new Date(createdAt);
     const now = new Date();
     const businessDaysElapsed = calculateBusinessDays(created, now);
+    const slaLimit = isAnonymous ? 30 : 15; // 30 dias para anônimas, 15 para identificadas
+    const warningThreshold = Math.floor(slaLimit * 0.7); // 70% do prazo como aviso
     
-    if (businessDaysElapsed >= 15) {
+    if (businessDaysElapsed >= slaLimit) {
       return 'overdue'; // Vencido
-    } else if (businessDaysElapsed >= 10) {
-      return 'warning'; // Faltando 5 dias
+    } else if (businessDaysElapsed >= warningThreshold) {
+      return 'warning'; // Próximo do vencimento
     } else {
       return 'ok'; // No prazo
     }
@@ -340,7 +342,7 @@ const Admin = () => {
                 >
                   <div className="flex-1">
                     <div className="flex items-center space-x-4">
-                      {getSLAIcon(getSLAStatus(ticket.created_at, ticket.status), ticket.status)}
+                      {getSLAIcon(getSLAStatus(ticket.created_at, ticket.status, ticket.eh_anonimo), ticket.status)}
                        <Badge 
                          variant={getStatusBadgeVariant(ticket.status)}
                          className={
@@ -357,7 +359,16 @@ const Admin = () => {
                        </Badge>
                       <span className="font-medium">{ticket.numero_protocolo}</span>
                       <span className="text-sm text-muted-foreground">
-                        {ticket.eh_anonimo ? "Anônimo" : ticket.nome_completo}
+                        {ticket.eh_anonimo ? (
+                          <span className="flex items-center gap-1">
+                            <Badge variant="secondary" className="bg-blue-100 text-blue-800 text-xs">
+                              Anônima
+                            </Badge>
+                            <span className="text-xs">(30 dias úteis)</span>
+                          </span>
+                        ) : (
+                          <span>{ticket.nome_completo} <span className="text-xs">(15 dias úteis)</span></span>
+                        )}
                       </span>
                     </div>
                     <div className="mt-2">

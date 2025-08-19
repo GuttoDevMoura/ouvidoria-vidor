@@ -217,15 +217,25 @@ export const TrackingForm = ({ onBack }: TrackingFormProps) => {
                           </div>
                         </div>
 
-                        {!ticketInfo.eh_anonimo && ticketInfo.nome_completo && (
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <User className="h-4 w-4 text-blue-600" />
-                              <span className="font-medium">Solicitante:</span>
-                              <span>{ticketInfo.nome_completo}</span>
-                            </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <User className="h-4 w-4 text-blue-600" />
+                            <span className="font-medium">Solicitante:</span>
+                            {ticketInfo.eh_anonimo ? (
+                              <div className="flex items-center gap-2">
+                                <Badge variant="secondary" className="bg-blue-100 text-blue-800 text-xs">
+                                  Anônimo
+                                </Badge>
+                                <span className="text-xs text-muted-foreground">(Prazo: 30 dias úteis)</span>
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-2">
+                                <span>{ticketInfo.nome_completo}</span>
+                                <span className="text-xs text-muted-foreground">(Prazo: 15 dias úteis)</span>
+                              </div>
+                            )}
                           </div>
-                        )}
+                        </div>
                       </div>
                     </div>
 
