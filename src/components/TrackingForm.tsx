@@ -201,7 +201,7 @@ export const TrackingForm = ({ onBack }: TrackingFormProps) => {
                               <span className="font-medium">Manifestante:</span>
                               {ticketInfo.eh_anonimo ? (
                                 <Badge variant="secondary" className="bg-gray-100 text-gray-700 text-xs">
-                                  Anônima
+                                  Anônimo (a)
                                 </Badge>
                               ) : (
                                 <Badge variant="default" className="bg-blue-100 text-blue-700 text-xs">

@@ -316,7 +316,7 @@ export default function UserTracking() {
                           <span className="font-medium text-xs">Manifestante:</span>
                           {ticketInfo.eh_anonimo ? (
                             <Badge variant="secondary" className="text-xs px-1.5 py-0.5 bg-gray-100 text-gray-700">
-                              Anônima
+                              Anônimo (a)
                             </Badge>
                           ) : (
                             <Badge variant="default" className="text-xs px-1.5 py-0.5 bg-blue-100 text-blue-700">
