@@ -3,11 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Search, Calendar, User, MapPin, FileText, RotateCcw } from "lucide-react";
+import { Search, Calendar, User, MapPin, FileText, RotateCcw, ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { useNavigate } from "react-router-dom";
 
 interface TicketInfo {
   id: string;
@@ -42,6 +43,7 @@ export default function UserTracking() {
   const [isReopening, setIsReopening] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleSearch = async () => {
     if (!protocolCode.trim()) {
@@ -196,6 +198,17 @@ export default function UserTracking() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
+        <div className="mb-6">
+          <Button
+            variant="ghost"
+            onClick={() => navigate("/")}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Voltar
+          </Button>
+        </div>
+        
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">
             Acompanhar Manifestação
