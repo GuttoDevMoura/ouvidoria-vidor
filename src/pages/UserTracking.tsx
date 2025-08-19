@@ -211,53 +211,54 @@ export default function UserTracking() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
+      <div className="container mx-auto px-4 py-6">
+        <div className="mb-6">
           <Button
             variant="default"
-            size="lg"
+            size="default"
             onClick={() => navigate("/")}
             className="bg-primary hover:bg-primary/90"
           >
-            <ArrowLeft className="mr-2 h-5 w-5" />
-            Voltar para Nova Solicitação
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Voltar
           </Button>
         </div>
         
         <div className="text-center mb-6">
-          <h1 className="text-2xl font-semibold text-foreground mb-1">
+          <h1 className="text-xl font-semibold text-foreground mb-1">
             Acompanhar Manifestação
           </h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             Digite o código da sua manifestação
           </p>
         </div>
 
-        <Card className="max-w-xl mx-auto mb-6">
-          <CardHeader className="bg-primary text-primary-foreground py-3">
-            <CardTitle className="text-lg text-center">
+        <Card className="max-w-lg mx-auto mb-4 animate-fade-in">
+          <CardHeader className="bg-primary text-primary-foreground py-2">
+            <CardTitle className="text-base text-center">
               Buscar Manifestação
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-4">
-            <div className="flex gap-3">
+          <CardContent className="p-3">
+            <div className="flex gap-2">
               <Input
                 placeholder="Ex: OUV2025000001"
                 value={protocolCode}
                 onChange={(e) => setProtocolCode(e.target.value.toUpperCase())}
                 onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-                className="text-sm"
+                className="text-xs h-8"
               />
               <Button
                 onClick={handleSearch}
                 disabled={isLoading}
                 size="sm"
+                className="h-8 px-3"
               >
                 {isLoading ? (
-                  "Buscando..."
+                  "..."
                 ) : (
                   <>
-                    <Search className="mr-2 h-4 w-4" />
+                    <Search className="mr-1 h-3 w-3" />
                     Buscar
                   </>
                 )}
@@ -265,8 +266,8 @@ export default function UserTracking() {
             </div>
 
             {notFound && (
-              <div className="mt-3 p-3 bg-destructive/10 border border-destructive/20 rounded-md">
-                <p className="text-destructive text-center text-sm">
+              <div className="mt-2 p-2 bg-destructive/10 border border-destructive/20 rounded-md">
+                <p className="text-destructive text-center text-xs">
                   Manifestação não encontrada. Verifique o código.
                 </p>
               </div>
@@ -280,68 +281,68 @@ export default function UserTracking() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
                 <Card>
-                  <CardHeader>
-                    <CardTitle>Informações da Manifestação</CardTitle>
+                  <CardHeader className="py-3">
+                    <CardTitle className="text-base">Informações da Manifestação</CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                          <FileText className="h-4 w-4 text-primary" />
-                          <span className="font-medium">Protocolo:</span>
-                          <span className="font-mono bg-muted px-2 py-1 rounded text-sm">
+                  <CardContent className="space-y-3 p-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div className="space-y-1.5">
+                        <div className="flex items-center gap-1.5 text-sm">
+                          <FileText className="h-3 w-3 text-primary" />
+                          <span className="font-medium text-xs">Protocolo:</span>
+                          <span className="font-mono bg-muted px-1.5 py-0.5 rounded text-xs">
                             {ticketInfo.numero_protocolo}
                           </span>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">Status:</span>
-                          <Badge variant={getStatusBadgeVariant(ticketInfo.status) as any}>
+                        <div className="flex items-center gap-1.5 text-sm">
+                          <span className="font-medium text-xs">Status:</span>
+                          <Badge variant={getStatusBadgeVariant(ticketInfo.status) as any} className="text-xs px-1.5 py-0.5">
                             {ticketInfo.status}
                           </Badge>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <MapPin className="h-4 w-4 text-primary" />
-                          <span className="font-medium">Campus:</span>
-                          <span>{ticketInfo.campus}</span>
+                        <div className="flex items-center gap-1.5 text-sm">
+                          <MapPin className="h-3 w-3 text-primary" />
+                          <span className="font-medium text-xs">Campus:</span>
+                          <span className="text-xs">{ticketInfo.campus}</span>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">Tipo:</span>
-                          <span>{ticketInfo.tipo_solicitacao}</span>
+                        <div className="flex items-center gap-1.5 text-sm">
+                          <span className="font-medium text-xs">Tipo:</span>
+                          <span className="text-xs">{ticketInfo.tipo_solicitacao}</span>
                         </div>
                       </div>
 
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                          <Calendar className="h-4 w-4 text-primary" />
-                          <span className="font-medium">Abertura:</span>
-                          <span className="text-sm">{formatDate(ticketInfo.created_at)}</span>
+                      <div className="space-y-1.5">
+                        <div className="flex items-center gap-1.5 text-sm">
+                          <Calendar className="h-3 w-3 text-primary" />
+                          <span className="font-medium text-xs">Abertura:</span>
+                          <span className="text-xs">{formatDate(ticketInfo.created_at)}</span>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Calendar className="h-4 w-4 text-primary" />
-                          <span className="font-medium">Prazo:</span>
-                          <span className="text-sm">{formatDateOnly(ticketInfo.data_vencimento)}</span>
+                        <div className="flex items-center gap-1.5 text-sm">
+                          <Calendar className="h-3 w-3 text-primary" />
+                          <span className="font-medium text-xs">Prazo:</span>
+                          <span className="text-xs">{formatDateOnly(ticketInfo.data_vencimento)}</span>
                         </div>
                         {!ticketInfo.eh_anonimo && ticketInfo.nome_completo && (
-                          <div className="flex items-center gap-2">
-                            <User className="h-4 w-4 text-primary" />
-                            <span className="font-medium">Solicitante:</span>
-                            <span>{ticketInfo.nome_completo}</span>
+                          <div className="flex items-center gap-1.5 text-sm">
+                            <User className="h-3 w-3 text-primary" />
+                            <span className="font-medium text-xs">Solicitante:</span>
+                            <span className="text-xs">{ticketInfo.nome_completo}</span>
                           </div>
                         )}
                       </div>
                     </div>
 
                     <div>
-                      <h4 className="font-semibold mb-2">Descrição</h4>
-                      <p className="text-muted-foreground bg-muted p-3 rounded">
+                      <h4 className="font-semibold mb-1 text-sm">Descrição</h4>
+                      <p className="text-muted-foreground bg-muted p-2 rounded text-xs">
                         {ticketInfo.descricao}
                       </p>
                     </div>
 
                     {ticketInfo.resumo_tratativa && (
                       <div>
-                        <h4 className="font-semibold mb-2">Resumo da Tratativa</h4>
-                        <p className="text-muted-foreground bg-green-50 p-3 rounded border border-green-200">
+                        <h4 className="font-semibold mb-1 text-sm">Resumo da Tratativa</h4>
+                        <p className="text-muted-foreground bg-green-50 p-2 rounded border border-green-200 text-xs">
                           {ticketInfo.resumo_tratativa}
                         </p>
                       </div>
@@ -352,24 +353,24 @@ export default function UserTracking() {
 
               {/* Status */}
               <div>
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-center">Status Atual</CardTitle>
+                <Card className="hover-scale">
+                  <CardHeader className="py-3">
+                    <CardTitle className="text-center text-base">Status Atual</CardTitle>
                   </CardHeader>
-                  <CardContent className="text-center space-y-4">
+                  <CardContent className="text-center space-y-3 p-4">
                     <Badge 
                       variant={getStatusBadgeVariant(ticketInfo.status) as any}
-                      className="text-lg px-4 py-2"
+                      className="text-sm px-3 py-1"
                     >
                       {ticketInfo.status}
                     </Badge>
                     
                     {ticketInfo.status === "Fechado" ? (
-                      <div className="text-sm text-muted-foreground">
+                      <div className="text-xs text-muted-foreground">
                         Encerrado em {formatDateOnly(ticketInfo.updated_at)}
                       </div>
                     ) : shouldShowDaysRemaining(ticketInfo.status) ? (
-                      <div className="text-sm">
+                      <div className="text-xs">
                         {getDaysRemaining(ticketInfo.data_vencimento) > 0 ? (
                           <span className="text-orange-600">
                             {getDaysRemaining(ticketInfo.data_vencimento)} dias restantes
@@ -381,8 +382,8 @@ export default function UserTracking() {
                     ) : null}
 
                     {canReopen(ticketInfo) && (
-                      <div className="pt-4 border-t">
-                        <p className="text-sm text-muted-foreground mb-3">
+                      <div className="pt-3 border-t">
+                        <p className="text-xs text-muted-foreground mb-2">
                           Você pode contestar esta tratativa
                         </p>
                         <Button
@@ -390,12 +391,13 @@ export default function UserTracking() {
                           disabled={isReopening}
                           variant="destructive"
                           size="sm"
+                          className="h-7 px-2 text-xs"
                         >
                           {isReopening ? (
-                            "Reabrindo..."
+                            "..."
                           ) : (
                             <>
-                              <RotateCcw className="mr-2 h-4 w-4" />
+                              <RotateCcw className="mr-1 h-3 w-3" />
                               Reabrir
                             </>
                           )}
@@ -409,38 +411,38 @@ export default function UserTracking() {
             
             {/* Histórico */}
             {history.length > 0 && (
-              <div className="max-w-4xl mx-auto mt-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Histórico</CardTitle>
+              <div className="animate-fade-in">
+                <Card className="hover-scale">
+                  <CardHeader className="py-3">
+                    <CardTitle className="text-base">Histórico</CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
+                  <CardContent className="p-4">
+                    <div className="space-y-3">
                       {history.map((item, index) => (
-                        <div key={item.id} className="flex gap-3">
+                        <div key={item.id} className="flex gap-2">
                           <div className="flex flex-col items-center">
-                            <div className="p-2 bg-primary/10 rounded-full">
+                            <div className="p-1.5 bg-primary/10 rounded-full">
                               {item.action_type === "created" ? (
-                                <FileText className="h-4 w-4 text-primary" />
+                                <FileText className="h-3 w-3 text-primary" />
                               ) : (
-                                <Calendar className="h-4 w-4 text-primary" />
+                                <Calendar className="h-3 w-3 text-primary" />
                               )}
                             </div>
                             {index < history.length - 1 && (
-                              <div className="w-px bg-border h-8 mt-2"></div>
+                              <div className="w-px bg-border h-6 mt-1"></div>
                             )}
                           </div>
-                          <div className="flex-1 pb-4">
-                            <p className="font-medium text-foreground">
+                          <div className="flex-1 pb-3">
+                            <p className="font-medium text-foreground text-sm">
                               {item.description}
                             </p>
-                            <p className="text-xs text-muted-foreground mt-1">
+                            <p className="text-xs text-muted-foreground mt-0.5">
                               {formatDate(item.created_at)}
                             </p>
                             {item.new_value && item.action_type === "status_change" && (
                               <Badge 
                                 variant={getStatusBadgeVariant(item.new_value) as any}
-                                className="mt-2"
+                                className="mt-1 text-xs px-1.5 py-0.5"
                               >
                                 {item.new_value}
                               </Badge>
