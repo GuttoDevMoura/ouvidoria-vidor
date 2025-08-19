@@ -161,6 +161,12 @@ export const TrackingForm = ({ onBack }: TrackingFormProps) => {
 
   const canReopen = (ticket: TicketInfo) => {
     const allowedTypes = ["Critica", "Denuncia"];
+    console.log("Verificando se pode reabrir:", {
+      status: ticket.status,
+      tipo: ticket.tipo_solicitacao,
+      allowedTypes,
+      reaberto_count: ticket.reaberto_count
+    });
     return (
       ticket.status === "Concluído" &&
       allowedTypes.includes(ticket.tipo_solicitacao) &&
@@ -170,6 +176,11 @@ export const TrackingForm = ({ onBack }: TrackingFormProps) => {
 
   const canShowContestButton = (ticket: TicketInfo) => {
     const allowedTypes = ["Critica", "Denuncia"];
+    console.log("Verificando se pode mostrar botão:", {
+      tipo: ticket.tipo_solicitacao,
+      allowedTypes,
+      includes: allowedTypes.includes(ticket.tipo_solicitacao)
+    });
     return allowedTypes.includes(ticket.tipo_solicitacao);
   };
 
