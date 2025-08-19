@@ -47,6 +47,7 @@ export const TicketDetails = ({ ticket, onBack, onTicketUpdate }: TicketDetailsP
   const [resumoTratativa, setResumoTratativa] = useState(ticket.resumo_tratativa || "");
   const [loading, setLoading] = useState(false);
   const [currentTicket, setCurrentTicket] = useState(ticket);
+  const [historyKey, setHistoryKey] = useState(0);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -96,6 +97,10 @@ export const TicketDetails = ({ ticket, onBack, onTicketUpdate }: TicketDetailsP
 
       setNewNote("");
       loadNotes();
+      
+      // Forçar atualização do histórico
+      setHistoryKey(prev => prev + 1);
+      
       toast({
         title: "Nota interna adicionada",
         description: "A nota foi adicionada com sucesso e é visível apenas para administradores e agentes.",
@@ -154,6 +159,9 @@ export const TicketDetails = ({ ticket, onBack, onTicketUpdate }: TicketDetailsP
         title: "Ticket atualizado",
         description: "O ticket foi atualizado com sucesso.",
       });
+      
+      // Forçar atualização do histórico
+      setHistoryKey(prev => prev + 1);
       onTicketUpdate();
     } catch (error) {
       console.error('Erro ao atualizar ticket:', error);
@@ -365,7 +373,7 @@ export const TicketDetails = ({ ticket, onBack, onTicketUpdate }: TicketDetailsP
         </div>
 
         {/* Histórico em uma seção separada mais compacta */}
-        <TicketHistory ticketId={ticket.id} />
+        <TicketHistory key={historyKey} ticketId={ticket.id} />
       </div>
     </div>
   );
