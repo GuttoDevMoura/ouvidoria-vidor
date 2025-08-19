@@ -39,6 +39,7 @@ interface HistoryItem {
 export default function UserTracking() {
   const [protocolCode, setProtocolCode] = useState("");
   const [ticketInfo, setTicketInfo] = useState<TicketInfo | null>(null);
+  const [history, setHistory] = useState<HistoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isReopening, setIsReopening] = useState(false);
   const [notFound, setNotFound] = useState(false);
@@ -58,6 +59,7 @@ export default function UserTracking() {
     setIsLoading(true);
     setNotFound(false);
     setTicketInfo(null);
+    setHistory([]);
 
     try {
       const { data: ticketData, error: ticketError } = await supabase
@@ -96,6 +98,18 @@ export default function UserTracking() {
         ...ticketData,
         reaberto_count: reopenHistory?.length || 0
       });
+
+      // Buscar histórico público (apenas mudanças de status visíveis ao usuário)
+      const { data: historyData } = await supabase
+        .from("ticket_history")
+        .select("*")
+        .eq("ticket_id", ticketData.id)
+        .in("action_type", ["created", "status_change"])
+        .order("created_at", { ascending: true });
+
+      if (historyData) {
+        setHistory(historyData);
+      }
 
     } catch (error) {
       console.error("Erro:", error);
@@ -261,135 +275,184 @@ export default function UserTracking() {
         </Card>
 
         {ticketInfo && (
-          <div className="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="max-w-4xl mx-auto space-y-6">
             {/* Informações da Manifestação */}
-            <div className="lg:col-span-2">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Informações da Manifestação</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <FileText className="h-4 w-4 text-primary" />
-                        <span className="font-medium">Protocolo:</span>
-                        <span className="font-mono bg-muted px-2 py-1 rounded text-sm">
-                          {ticketInfo.numero_protocolo}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium">Status:</span>
-                        <Badge variant={getStatusBadgeVariant(ticketInfo.status) as any}>
-                          {ticketInfo.status}
-                        </Badge>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <MapPin className="h-4 w-4 text-primary" />
-                        <span className="font-medium">Campus:</span>
-                        <span>{ticketInfo.campus}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium">Tipo:</span>
-                        <span>{ticketInfo.tipo_solicitacao}</span>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4 text-primary" />
-                        <span className="font-medium">Abertura:</span>
-                        <span className="text-sm">{formatDate(ticketInfo.created_at)}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4 text-primary" />
-                        <span className="font-medium">Prazo:</span>
-                        <span className="text-sm">{formatDateOnly(ticketInfo.data_vencimento)}</span>
-                      </div>
-                      {!ticketInfo.eh_anonimo && ticketInfo.nome_completo && (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Informações da Manifestação</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
                         <div className="flex items-center gap-2">
-                          <User className="h-4 w-4 text-primary" />
-                          <span className="font-medium">Solicitante:</span>
-                          <span>{ticketInfo.nome_completo}</span>
+                          <FileText className="h-4 w-4 text-primary" />
+                          <span className="font-medium">Protocolo:</span>
+                          <span className="font-mono bg-muted px-2 py-1 rounded text-sm">
+                            {ticketInfo.numero_protocolo}
+                          </span>
                         </div>
-                      )}
-                    </div>
-                  </div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">Status:</span>
+                          <Badge variant={getStatusBadgeVariant(ticketInfo.status) as any}>
+                            {ticketInfo.status}
+                          </Badge>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <MapPin className="h-4 w-4 text-primary" />
+                          <span className="font-medium">Campus:</span>
+                          <span>{ticketInfo.campus}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">Tipo:</span>
+                          <span>{ticketInfo.tipo_solicitacao}</span>
+                        </div>
+                      </div>
 
-                  <div>
-                    <h4 className="font-semibold mb-2">Descrição</h4>
-                    <p className="text-muted-foreground bg-muted p-3 rounded">
-                      {ticketInfo.descricao}
-                    </p>
-                  </div>
-
-                  {ticketInfo.resumo_tratativa && (
-                    <div>
-                      <h4 className="font-semibold mb-2">Resumo da Tratativa</h4>
-                      <p className="text-muted-foreground bg-green-50 p-3 rounded border border-green-200">
-                        {ticketInfo.resumo_tratativa}
-                      </p>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Status */}
-            <div>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-center">Status Atual</CardTitle>
-                </CardHeader>
-                <CardContent className="text-center space-y-4">
-                  <Badge 
-                    variant={getStatusBadgeVariant(ticketInfo.status) as any}
-                    className="text-lg px-4 py-2"
-                  >
-                    {ticketInfo.status}
-                  </Badge>
-                  
-                  {ticketInfo.status === "Fechado" ? (
-                    <div className="text-sm text-muted-foreground">
-                      Encerrado em {formatDateOnly(ticketInfo.updated_at)}
-                    </div>
-                  ) : shouldShowDaysRemaining(ticketInfo.status) ? (
-                    <div className="text-sm">
-                      {getDaysRemaining(ticketInfo.data_vencimento) > 0 ? (
-                        <span className="text-orange-600">
-                          {getDaysRemaining(ticketInfo.data_vencimento)} dias restantes
-                        </span>
-                      ) : (
-                        <span className="text-destructive">Prazo vencido</span>
-                      )}
-                    </div>
-                  ) : null}
-
-                  {canReopen(ticketInfo) && (
-                    <div className="pt-4 border-t">
-                      <p className="text-sm text-muted-foreground mb-3">
-                        Você pode contestar esta tratativa
-                      </p>
-                      <Button
-                        onClick={handleReopen}
-                        disabled={isReopening}
-                        variant="destructive"
-                        size="sm"
-                      >
-                        {isReopening ? (
-                          "Reabrindo..."
-                        ) : (
-                          <>
-                            <RotateCcw className="mr-2 h-4 w-4" />
-                            Reabrir
-                          </>
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4 text-primary" />
+                          <span className="font-medium">Abertura:</span>
+                          <span className="text-sm">{formatDate(ticketInfo.created_at)}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4 text-primary" />
+                          <span className="font-medium">Prazo:</span>
+                          <span className="text-sm">{formatDateOnly(ticketInfo.data_vencimento)}</span>
+                        </div>
+                        {!ticketInfo.eh_anonimo && ticketInfo.nome_completo && (
+                          <div className="flex items-center gap-2">
+                            <User className="h-4 w-4 text-primary" />
+                            <span className="font-medium">Solicitante:</span>
+                            <span>{ticketInfo.nome_completo}</span>
+                          </div>
                         )}
-                      </Button>
+                      </div>
                     </div>
-                  )}
-                </CardContent>
-              </Card>
+
+                    <div>
+                      <h4 className="font-semibold mb-2">Descrição</h4>
+                      <p className="text-muted-foreground bg-muted p-3 rounded">
+                        {ticketInfo.descricao}
+                      </p>
+                    </div>
+
+                    {ticketInfo.resumo_tratativa && (
+                      <div>
+                        <h4 className="font-semibold mb-2">Resumo da Tratativa</h4>
+                        <p className="text-muted-foreground bg-green-50 p-3 rounded border border-green-200">
+                          {ticketInfo.resumo_tratativa}
+                        </p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Status */}
+              <div>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-center">Status Atual</CardTitle>
+                  </CardHeader>
+                  <CardContent className="text-center space-y-4">
+                    <Badge 
+                      variant={getStatusBadgeVariant(ticketInfo.status) as any}
+                      className="text-lg px-4 py-2"
+                    >
+                      {ticketInfo.status}
+                    </Badge>
+                    
+                    {ticketInfo.status === "Fechado" ? (
+                      <div className="text-sm text-muted-foreground">
+                        Encerrado em {formatDateOnly(ticketInfo.updated_at)}
+                      </div>
+                    ) : shouldShowDaysRemaining(ticketInfo.status) ? (
+                      <div className="text-sm">
+                        {getDaysRemaining(ticketInfo.data_vencimento) > 0 ? (
+                          <span className="text-orange-600">
+                            {getDaysRemaining(ticketInfo.data_vencimento)} dias restantes
+                          </span>
+                        ) : (
+                          <span className="text-destructive">Prazo vencido</span>
+                        )}
+                      </div>
+                    ) : null}
+
+                    {canReopen(ticketInfo) && (
+                      <div className="pt-4 border-t">
+                        <p className="text-sm text-muted-foreground mb-3">
+                          Você pode contestar esta tratativa
+                        </p>
+                        <Button
+                          onClick={handleReopen}
+                          disabled={isReopening}
+                          variant="destructive"
+                          size="sm"
+                        >
+                          {isReopening ? (
+                            "Reabrindo..."
+                          ) : (
+                            <>
+                              <RotateCcw className="mr-2 h-4 w-4" />
+                              Reabrir
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
             </div>
+            
+            {/* Histórico */}
+            {history.length > 0 && (
+              <div className="max-w-4xl mx-auto mt-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Histórico</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {history.map((item, index) => (
+                        <div key={item.id} className="flex gap-3">
+                          <div className="flex flex-col items-center">
+                            <div className="p-2 bg-primary/10 rounded-full">
+                              {item.action_type === "created" ? (
+                                <FileText className="h-4 w-4 text-primary" />
+                              ) : (
+                                <Calendar className="h-4 w-4 text-primary" />
+                              )}
+                            </div>
+                            {index < history.length - 1 && (
+                              <div className="w-px bg-border h-8 mt-2"></div>
+                            )}
+                          </div>
+                          <div className="flex-1 pb-4">
+                            <p className="font-medium text-foreground">
+                              {item.description}
+                            </p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {formatDate(item.created_at)}
+                            </p>
+                            {item.new_value && item.action_type === "status_change" && (
+                              <Badge 
+                                variant={getStatusBadgeVariant(item.new_value) as any}
+                                className="mt-2"
+                              >
+                                {item.new_value}
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
           </div>
         )}
       </div>
