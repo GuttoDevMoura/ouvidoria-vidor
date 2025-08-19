@@ -97,12 +97,15 @@ export default function UserTracking() {
       });
 
       // Buscar histórico público (apenas mudanças de status visíveis ao usuário)
-      const { data: historyData } = await supabase
+      const { data: historyData, error: historyError } = await supabase
         .from("ticket_history")
         .select("*")
         .eq("ticket_id", ticketData.id)
         .in("action_type", ["created", "status_change"])
         .order("created_at", { ascending: true });
+
+      console.log("Histórico encontrado:", historyData);
+      console.log("Erro no histórico:", historyError);
 
       if (historyData) {
         setHistory(historyData);
@@ -395,19 +398,11 @@ export default function UserTracking() {
                         )}
                       </div>
                     ) : null}
-
-                    {canShowContestButton(ticketInfo) && !canReopen(ticketInfo) && (
-                      <div className="pt-3 border-t">
-                        <p className="text-xs text-muted-foreground mb-2 text-center">
-                          Botão de contestação aparecerá após encerramento
-                        </p>
-                      </div>
-                    )}
                   </CardContent>
                 </Card>
 
                 {/* Botão de Contestação - separado para ficar embaixo do Status */}
-                {ticketInfo && canShowContestButton(ticketInfo) && (
+                {canShowContestButton(ticketInfo) && (
                   <Card className="hover-scale mt-4">
                     <CardContent className="p-4 text-center">
                       {canReopen(ticketInfo) ? (
@@ -455,13 +450,13 @@ export default function UserTracking() {
             </div>
             
             {/* Histórico - sempre embaixo dos cards principais */}
-            {history.length > 0 && (
-              <div className="animate-fade-in mt-6">
-                <Card className="hover-scale">
-                  <CardHeader className="py-3">
-                    <CardTitle className="text-base">Histórico</CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-4">
+            <div className="animate-fade-in mt-6">
+              <Card className="hover-scale">
+                <CardHeader className="py-3">
+                  <CardTitle className="text-base">Histórico</CardTitle>
+                </CardHeader>
+                <CardContent className="p-4">
+                  {history.length > 0 ? (
                     <div className="space-y-3">
                       {history.map((item, index) => (
                         <div key={item.id} className="flex gap-2">
@@ -496,8 +491,21 @@ export default function UserTracking() {
                         </div>
                       ))}
                     </div>
-                  </CardContent>
-                </Card>
+                  ) : (
+                    <p className="text-center text-muted-foreground text-sm">
+                      Nenhum histórico disponível ainda.
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Debug - mostrar sempre histórico se ticket existe */}
+            {history.length === 0 && (
+              <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded">
+                <p className="text-sm text-yellow-700">
+                  Debug: Ticket encontrado mas histórico vazio. ID: {ticketInfo.id}
+                </p>
               </div>
             )}
           </div>
