@@ -70,7 +70,7 @@ export const Navbar = ({ onSectionChange, currentSection, onTrackingClick }: Nav
                 className="border-border hover:bg-muted/50 text-xs lg:text-sm flex items-center gap-2"
               >
                 <Search className="h-4 w-4" />
-                <span className="hidden lg:inline">Digite o protocolo</span>
+                <span className="hidden lg:inline">Digite o seu Protocolo</span>
                 <span className="lg:hidden">Protocolo</span>
               </Button>
             </Link>
