@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Search, ArrowLeft, Calendar, User, MapPin, FileText } from "lucide-react";
+import { Search, ArrowLeft, Calendar, User, MapPin, FileText, RotateCcw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -23,12 +23,15 @@ interface TicketInfo {
   created_at: string;
   data_vencimento: string;
   resumo_tratativa?: string;
+  updated_at: string;
+  reaberto_count?: number;
 }
 
 export const TrackingForm = ({ onBack }: TrackingFormProps) => {
   const [protocolCode, setProtocolCode] = useState("");
   const [ticketInfo, setTicketInfo] = useState<TicketInfo | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isReopening, setIsReopening] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const { toast } = useToast();
 
@@ -73,7 +76,18 @@ export const TrackingForm = ({ onBack }: TrackingFormProps) => {
         return;
       }
 
-      setTicketInfo(data);
+      // Contar quantas vezes foi reaberto
+      const { data: reopenHistory } = await supabase
+        .from("ticket_history")
+        .select("id")
+        .eq("ticket_id", data.id)
+        .eq("action_type", "status_change")
+        .eq("new_value", "Reaberto");
+
+      setTicketInfo({
+        ...data,
+        reaberto_count: reopenHistory?.length || 0
+      });
     } catch (error) {
       console.error("Erro:", error);
       toast({
@@ -83,6 +97,48 @@ export const TrackingForm = ({ onBack }: TrackingFormProps) => {
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleReopen = async () => {
+    if (!ticketInfo) return;
+
+    setIsReopening(true);
+    try {
+      const { error } = await supabase
+        .from("tickets")
+        .update({ 
+          status: "Reaberto",
+          updated_at: new Date().toISOString()
+        })
+        .eq("id", ticketInfo.id);
+
+      if (error) {
+        console.error("Erro ao reabrir manifestação:", error);
+        toast({
+          title: "Erro",
+          description: "Ocorreu um erro ao reabrir a manifestação.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Manifestação reaberta",
+        description: "Sua manifestação foi reaberta e retornou para análise.",
+      });
+
+      // Recarregar os dados
+      handleSearch();
+    } catch (error) {
+      console.error("Erro:", error);
+      toast({
+        title: "Erro",
+        description: "Ocorreu um erro inesperado.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsReopening(false);
     }
   };
 
@@ -101,6 +157,20 @@ export const TrackingForm = ({ onBack }: TrackingFormProps) => {
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("pt-BR");
+  };
+
+  const canReopen = (ticket: TicketInfo) => {
+    const allowedTypes = ["Critica", "Denuncia"];
+    return (
+      ticket.status === "Concluído" &&
+      allowedTypes.includes(ticket.tipo_solicitacao) &&
+      (ticket.reaberto_count || 0) < 1
+    );
+  };
+
+  const canShowContestButton = (ticket: TicketInfo) => {
+    const allowedTypes = ["Critica", "Denuncia"];
+    return allowedTypes.includes(ticket.tipo_solicitacao);
   };
 
   return (
@@ -237,7 +307,7 @@ export const TrackingForm = ({ onBack }: TrackingFormProps) => {
                             {ticketInfo.eh_anonimo ? (
                               <div className="flex items-center gap-2">
                                 <Badge variant="secondary" className="bg-blue-100 text-blue-800 text-xs">
-                                  Anônimo
+                                  Anônimo (a)
                                 </Badge>
                                 <span className="text-xs text-muted-foreground">(Prazo: 30 dias úteis)</span>
                               </div>
@@ -269,6 +339,52 @@ export const TrackingForm = ({ onBack }: TrackingFormProps) => {
                         </div>
                       )}
                     </div>
+
+                    {/* Botão de Contestação */}
+                    {canShowContestButton(ticketInfo) && (
+                      <div className="mt-6 pt-6 border-t border-blue-200">
+                        <div className="text-center">
+                          {canReopen(ticketInfo) ? (
+                            <>
+                              <p className="text-blue-800 mb-3 text-sm font-medium">
+                                Você pode contestar esta tratativa
+                              </p>
+                              <Button
+                                onClick={handleReopen}
+                                disabled={isReopening}
+                                variant="destructive"
+                                size="default"
+                                className="px-6"
+                              >
+                                {isReopening ? (
+                                  "Contestando..."
+                                ) : (
+                                  <>
+                                    <RotateCcw className="mr-2 h-4 w-4" />
+                                    Contestar
+                                  </>
+                                )}
+                              </Button>
+                            </>
+                          ) : (
+                            <>
+                              <p className="text-blue-600 mb-3 text-sm">
+                                Contestação disponível após encerramento
+                              </p>
+                              <Button
+                                disabled
+                                variant="outline"
+                                size="default"
+                                className="px-6 opacity-50"
+                              >
+                                <RotateCcw className="mr-2 h-4 w-4" />
+                                Contestar
+                              </Button>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               )}
