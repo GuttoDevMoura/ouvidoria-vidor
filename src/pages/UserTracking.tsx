@@ -198,43 +198,46 @@ export default function UserTracking() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-6">
+        <div className="mb-8">
           <Button
-            variant="ghost"
+            variant="default"
+            size="lg"
             onClick={() => navigate("/")}
-            className="text-muted-foreground hover:text-foreground"
+            className="bg-primary hover:bg-primary/90"
           >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Voltar
+            <ArrowLeft className="mr-2 h-5 w-5" />
+            Voltar para Nova Solicitação
           </Button>
         </div>
         
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">
+        <div className="text-center mb-6">
+          <h1 className="text-2xl font-semibold text-foreground mb-1">
             Acompanhar Manifestação
           </h1>
-          <p className="text-muted-foreground">
-            Digite o código da sua manifestação para ver o andamento
+          <p className="text-sm text-muted-foreground">
+            Digite o código da sua manifestação
           </p>
         </div>
 
-        <Card className="max-w-2xl mx-auto mb-8">
-          <CardHeader className="bg-primary text-primary-foreground">
-            <CardTitle className="text-center">
+        <Card className="max-w-xl mx-auto mb-6">
+          <CardHeader className="bg-primary text-primary-foreground py-3">
+            <CardTitle className="text-lg text-center">
               Buscar Manifestação
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-6">
-            <div className="flex gap-4">
+          <CardContent className="p-4">
+            <div className="flex gap-3">
               <Input
                 placeholder="Ex: OUV2025000001"
                 value={protocolCode}
                 onChange={(e) => setProtocolCode(e.target.value.toUpperCase())}
                 onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+                className="text-sm"
               />
               <Button
                 onClick={handleSearch}
                 disabled={isLoading}
+                size="sm"
               >
                 {isLoading ? (
                   "Buscando..."
@@ -248,9 +251,9 @@ export default function UserTracking() {
             </div>
 
             {notFound && (
-              <div className="mt-4 p-4 bg-destructive/10 border border-destructive/20 rounded-md">
-                <p className="text-destructive text-center">
-                  Manifestação não encontrada. Verifique se o código foi digitado corretamente.
+              <div className="mt-3 p-3 bg-destructive/10 border border-destructive/20 rounded-md">
+                <p className="text-destructive text-center text-sm">
+                  Manifestação não encontrada. Verifique o código.
                 </p>
               </div>
             )}
